@@ -1,0 +1,37 @@
+@include reset();
+
+@function rem($pixels, $context: $mainFontSize) {
+  @if (unitless($pixels)) {
+    $pixels: $pixels * 1px;
+  }
+  @if (unitless($context)) {
+    $context: $context * 1px;
+  }
+  @return $pixels / $context * 1rem;
+}
+
+@mixin placeholder {
+  &::-webkit-input-placeholder { @content; }
+  &:-moz-placeholder           { @content; }
+  &::-moz-placeholder          { @content; }
+  &:-ms-input-placeholder      { @content; }
+}
+
+@mixin simple-size($width,$height: $width) {
+  width: $width;
+  height: $height;
+}
+
+@mixin adaptive_bg($src) {
+  width: 100%;
+  height: 100%;
+  background: url($src) no-repeat;
+  background-size: contain;
+}
+
+@mixin center_absolute_pos() {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}

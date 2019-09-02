@@ -9,7 +9,7 @@
       {
         "absoluteRuntime": false,
         "regenerator": true,
-      }
+      },
     ],
     "@babel/plugin-proposal-class-properties",
     "react-hot-loader/babel"

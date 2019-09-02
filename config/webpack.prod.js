@@ -1,6 +1,5 @@
-const path = require('path');
+const paths = require('./paths');
 const merge = require('webpack-merge');
-const autoprefixer = require('autoprefixer');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssPlugin = require('mini-css-extract-plugin');
@@ -11,17 +10,18 @@ const common = require('./webpack.config.js');
 module.exports = merge(common, {
   mode: 'production',
   output: {
-    path: path.join(__dirname, '/build'),
-    filename: 'js/[name].[hash:4].js',
+    path: paths.appPublic,
+    filename: '[name].[hash].js',
   },
   optimization: {
     minimizer: [new OptimizeCssAssetsPlugin(), new TerserPlugin()],
   },
   plugins: [
     new CleanWebpackPlugin(),
-    new MiniCssPlugin({ filename: '[name].[hash:4].css' }),
+    new MiniCssPlugin({ filename: '[name].[hash].css' }),
     new HtmlWebpackPlugin({
-      template: './src/index.html',
+      template: paths.appHtml,
+      favicon: `${paths.appSrc}/favicon.ico`,
       minify: {
         removeAttributeQuotes: true,
         collapseWhitespace: true,
@@ -35,20 +35,17 @@ module.exports = merge(common, {
         test: /\.scss$/,
         use: [
           MiniCssPlugin.loader,
-          'css-loader',
-          'group-css-media-queries-loader',
+          { loader: 'css-loader', options: { sourceMap: true } },
           {
             loader: 'postcss-loader',
             options: {
-              plugins: [
-                autoprefixer({
-                  browsers: ['ie >= 8', 'last 4 version'],
-                }),
-              ],
               sourceMap: true,
+              config: {
+                path: `${paths.appConfig}/postcss.config.js`,
+              },
             },
           },
-          'sass-loader',
+          { loader: 'sass-loader', options: { sourceMap: true } },
         ],
       },
     ],

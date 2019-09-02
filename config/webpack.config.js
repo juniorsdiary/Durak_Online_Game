@@ -1,7 +1,11 @@
+const paths = require('./paths');
 module.exports = {
-  entry: ['@babel/polyfill', './src/index.js'],
+  entry: ['@babel/polyfill', paths.appIndex],
   resolve: {
     alias: {
+      Components: `${paths.appComponents}`,
+      Store: `${paths.appStore}`,
+      Assets: `${paths.appAssets}`,
       'react-dom': '@hot-loader/react-dom',
     },
   },
@@ -12,7 +16,7 @@ module.exports = {
         use: ['html-loader'],
       },
       {
-        test: /\.js$/,
+        test: /\.js|jsx$/,
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
@@ -24,7 +28,7 @@ module.exports = {
           {
             loader: 'file-loader',
             options: {
-              name: '[name].[hash:4].[ext]',
+              name: '[name].[ext]',
               outputPath: 'imgs',
             },
           },
@@ -40,12 +44,12 @@ module.exports = {
         ],
       },
       {
-        test: /\.(otf|woff|woff2)$/,
+        test: /\.(otf|woff|woff2|ttf|eot)$/,
         use: {
           loader: 'file-loader',
           options: {
-            name: '[name].[hash:4].[ext]',
-            outputPath: 'fonts/',
+            name: '[name].[hash].[ext]',
+            outputPath: 'fonts',
           },
         },
       },
