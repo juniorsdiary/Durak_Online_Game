@@ -8,9 +8,7 @@ import './styles/styles.scss';
 
 ReactDOM.render(
   <Provider store={store}>
-    <ConnectedRouter history={history}>
-      <div>Hello Mother Fucerk</div>
-    </ConnectedRouter>
+    <ConnectedRouter history={history}></ConnectedRouter>
   </Provider>,
   document.getElementById('container')
 );

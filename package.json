@@ -1,5 +1,5 @@
 {
-  "name": "",
+  "name": "React-Redux-Bundle",
   "version": "1.0.0",
   "description": "",
   "main": "src/index.jsx",
@@ -11,7 +11,8 @@
     "last 3 version"
   ],
   "scripts": {
-    "start": "node server/server.js",
+    "now-start": "node server/main.js",
+    "start": "node scripts/start.js",
     "build": "webpack --color --config config/webpack.prod.js",
     "deploy": "now",
     "lint": "eslint src/**/*.js src/**/*.jsx --fix"
