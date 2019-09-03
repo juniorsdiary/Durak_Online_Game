@@ -9,7 +9,7 @@ import './styles/styles.scss';
 ReactDOM.render(
   <Provider store={store}>
     <ConnectedRouter history={history}>
-      <div>Hello</div>
+      <div>Hello Mother Fucerk</div>
     </ConnectedRouter>
   </Provider>,
   document.getElementById('container')
