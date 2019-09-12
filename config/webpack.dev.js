@@ -9,10 +9,11 @@ module.exports = merge(common, {
   output: {
     path: paths.appPublic,
     filename: '[name].js',
+    chunkFilename: '[name].bundle.js',
     publicPath: '/',
   },
+  devtool: 'source-map',
   devServer: {
-    port: 1302,
     clientLogLevel: 'silent',
     compress: true,
     overlay: true,
@@ -23,27 +24,5 @@ module.exports = merge(common, {
     noInfo: true,
     open: true,
   },
-  devtool: 'eval-sourcemap',
-  module: {
-    rules: [
-      {
-        test: /\.scss$/,
-        use: [
-          'style-loader',
-          'css-loader',
-          {
-            loader: 'postcss-loader',
-            options: {
-              sourceMap: true,
-              config: {
-                path: `${paths.appConfig}/postcss.config.js`,
-              },
-            },
-          },
-          'sass-loader',
-        ],
-      },
-    ],
-  },
-  plugins: [new HtmlWebpackPlugin({ template: paths.appHtml, favicon: `${paths.appSrc}/favicon.ico` }), new CleanWebpackPlugin()],
+  plugins: [new HtmlWebpackPlugin({ template: paths.appHtml, inject: true, favicon: `${paths.appSrc}/favicon.ico` }), new CleanWebpackPlugin()],
 });
