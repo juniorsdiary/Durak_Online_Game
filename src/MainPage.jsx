@@ -41,12 +41,12 @@ class MainPage extends Component {
     this.initSocket();
   }
   initSocket = () => {
-    // const socket = io('https://localhost:8080');
-    // socket.emit('connected');
-    // socket.on('connected', msg => {
-    //   this.setState({ msg: 'Connected' });
-    // });
-    // this.setState({ socket });
+    const socket = io();
+    socket.emit('connected');
+    socket.on('connected', msg => {
+      this.setState({ msg: 'Connected' });
+    });
+    this.setState({ socket });
   };
   render() {
     return (

@@ -8,6 +8,6 @@ app.get('/user', (req, res) => {
 const server = app.listen(PORT, () => {
   console.log(`Connected to port ${PORT}`);
 });
-// const io = (module.exports = require('socket.io')(server));
-// const socketHandler = require('./socketHandler');
-// io.on('connection', socketHandler);
+const io = (module.exports = require('socket.io')(server));
+const socketHandler = require('./socketHandler');
+io.on('connection', socketHandler);
