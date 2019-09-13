@@ -14,7 +14,7 @@ class MainPage extends Component {
   }
 
   initSocket = () => {
-    const socket = io('http://localhost:8080');
+    const socket = io();
     this.props.setSocket(socket);
   };
 
