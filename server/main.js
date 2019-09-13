@@ -2,7 +2,7 @@
 const app = require('express')();
 const PORT = process.env.PORT || 8080;
 console.log('creating server');
-app.get('/', (req, res) => {
+app.get('/user', (req, res) => {
   res.send('users endpoint');
 });
 const server = app.listen(PORT, () => {
