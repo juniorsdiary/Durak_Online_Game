@@ -4,36 +4,10 @@ import io from 'socket.io-client';
 import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Button, TextField, Container, Typography } from '@material-ui/core';
-// import { makeStyles } from '@material-ui/core/styles';
-// const useStyles = makeStyles(theme => ({
-//   '@global': {
-//     body: {
-//       backgroundColor: theme.palette.common.white,
-//     },
-//   },
-//   paper: {
-//     marginTop: theme.spacing(8),
-//     display: 'flex',
-//     flexDirection: 'column',
-//     alignItems: 'center',
-//   },
-//   avatar: {
-//     margin: theme.spacing(1),
-//     backgroundColor: theme.palette.secondary.main,
-//   },
-//   form: {
-//     width: '100%', // Fix IE 11 issue.
-//     marginTop: theme.spacing(1),
-//   },
-//   submit: {
-//     margin: theme.spacing(3, 0, 2),
-//   },
-// }));
 
 class MainPage extends Component {
   state = {
     nickname: '',
-    socket: null,
   };
   componentDidMount() {
     this.initSocket();
@@ -41,7 +15,7 @@ class MainPage extends Component {
 
   initSocket = () => {
     const socket = io('http://localhost:8080');
-    this.setState({ socket });
+    this.props.setSocket(socket);
   };
 
   setUser = ({ isNickUsed }) => {
@@ -60,13 +34,16 @@ class MainPage extends Component {
   };
   handleSubmit = e => {
     e.preventDefault();
-    const { nickname, socket } = this.state;
+    const { nickname } = this.state;
+    const { socket } = this.props;
     socket.emit('authenticate', nickname, this.setUser);
   };
 
   render() {
     const { nickname } = this.state;
-    if (this.props.isAuthenticated) return <Redirect to={'/lobby'} />;
+    if (this.props.isAuthenticated) {
+      return <Redirect to={'/lobby'} />;
+    }
     return (
       <Container component='main' maxWidth='xs'>
         <Typography component='h1' variant='h5' align='center'>
@@ -95,15 +72,21 @@ class MainPage extends Component {
 MainPage.propTypes = {
   isAuthenticated: PropTypes.bool,
   setAuth: PropTypes.func,
+  socket: PropTypes.object,
+  setSocket: PropTypes.func,
 };
 
 export default connect(
   state => ({
     isAuthenticated: state.authentication,
+    socket: state.socket,
   }),
   dispatch => ({
     setAuth: value => {
       dispatch({ type: 'SET_AUTH', payload: value });
+    },
+    setSocket: socket => {
+      dispatch({ type: 'SET_SOCKET', payload: socket });
     },
   })
 )(MainPage);
