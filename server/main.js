@@ -4,9 +4,6 @@ const app = express();
 const PORT = process.env.PORT || 8080;
 console.log('creating server');
 app.use(express.static('public'));
-app.get('/', (req, res) => {
-  res.send('index.html');
-});
 const server = app.listen(PORT, () => {
   console.log(`Connected to port ${PORT}`);
 });
