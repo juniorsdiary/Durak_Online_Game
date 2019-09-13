@@ -7,7 +7,7 @@ const server = new WebpackDS(compiler, config.devServer);
 const DEFAULT_PORT = parseInt(process.env.PORT, 10) || 1302;
 const HOST = process.env.HOST || '0.0.0.0';
 
-console.log('Starting server...');
+console.log('Starting dev server...');
 server.listen(DEFAULT_PORT, HOST, err => {
   if (err) {
     return console.log(err);
