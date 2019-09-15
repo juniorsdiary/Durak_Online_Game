@@ -1,3 +1,3 @@
 import store, { history } from './store';
-import { setUsersData } from './actions/data';
-export { store, history, setUsersData };
+import { setUsersData, setRoomsData } from './actions/data';
+export { store, history, setUsersData, setRoomsData };

@@ -2,7 +2,7 @@ import { combineReducers } from 'redux';
 import { connectRouter } from 'connected-react-router';
 import * as types from '../types';
 import authentication from './authentication';
-import usersData from './dataReducer';
+import commonData from './dataReducer';
 
 function socket(state = {}, action) {
   if (action.type === types.SET_SOCKET) {
@@ -15,7 +15,7 @@ const rootReducer = history =>
   combineReducers({
     authentication,
     socket,
-    usersData,
+    commonData,
     router: connectRouter(history),
   });
 

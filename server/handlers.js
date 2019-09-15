@@ -10,67 +10,70 @@ class DataHandler {
   checkNicknames(nickname) {
     return this.nicknamesUsed.includes(nickname);
   }
-  joinRoom(socket, roomName, nickname) {
-    socket.join(roomName);
+  joinRoom(roomName, nickname) {
     this.currRoom[nickname] = roomName;
     if (!this.roomsNamesUsed.includes(roomName)) {
       this.roomsNamesUsed.push(roomName);
       this.allRoomsInfo.push({ room: roomName, users: [], settings: '' });
     }
   }
-  addUser(nickname, socket) {
+  addUser(nickname, id) {
     this.nicknamesUsed.push(nickname);
-
-    this.connectedUsers.push({ id: socket.id, name: nickname, connectTime: new Date() });
+    this.connectedUsers.push({ id, name: nickname, connectTime: new Date() });
   }
-  updatePlayRoom(roomName, nickname, socket) {
-    this.allRoomsInfo.filter(item => item.room === roomName)[0].users.push(nickname);
+  updatePlayRoom(roomName, nickname) {
+    this.allRoomsInfo.find(item => item.room === roomName).users.push(nickname);
     this.connectedUsers.find(item => item.name === nickname).room = roomName;
   }
   getAvalableRooms() {
-    return this.allRoomsInfo.filter(item => !this.isRoomFull(this.findRoomIndex(item.room)));
+    return this.allRoomsInfo.filter(item => !this.isRoomFull(this.findRoomIndex(item.room)) && item.room !== 'Lobby');
   }
   isRoomFull(roomIndex) {
     const targetRoom = this.allRoomsInfo[roomIndex];
     return targetRoom.users.length === +targetRoom.settings[1];
   }
   findRoomIndex(roomName) {
-    return this.allRoomsInfo.indexOf(this.allRoomsInfo.filter(item => item.room === roomName)[0]);
+    return this.allRoomsInfo.indexOf(this.allRoomsInfo.find(item => item.room === roomName));
+  }
+  checkUserConnection(nickname) {
+    return !!this.connectedUsers.find(user => user.name === nickname);
+  }
+  getUserRoom(nickname) {
+    return this.currRoom[nickname];
+  }
+  removeUser(nickname, room) {
+    const targetRoom = this.allRoomsInfo.filter(item => item.room === room)[0];
+    if (targetRoom) {
+      const usersInRoom = targetRoom.users;
+      const userInRoomIndex = usersInRoom.indexOf(nickname);
+      const nicknameIndex = this.nicknamesUsed.indexOf(nickname);
+      const connectedUser = this.connectedUsers.find(item => item.name === nickname);
+      const connectedUsersIndex = this.connectedUsers.indexOf(connectedUser);
+      usersInRoom.splice(userInRoomIndex, 1);
+      this.nicknamesUsed.splice(nicknameIndex, 1);
+      this.connectedUsers.splice(connectedUsersIndex, 1);
+      delete this.currRoom[nickname];
+    }
+  }
+  addMessage(msg, nickname) {
+    this.messages = [...this.messages, { nickname: nickname, msg: msg, time: new Date() }];
+  }
+  leaveRoom(room, nickname) {
+    const targetRoom = this.allRoomsInfo.find(item => item.room === room);
+    const users = targetRoom.users;
+    const index = users.indexOf(nickname);
+    users.splice(index, 1);
+  }
+  setSettings(roomname, pass, access, players, cards) {
+    this.allRoomsInfo.find(item => item.room === roomname).settings = [pass, players, cards, access];
   }
 }
-
-// const removeUser = (connectedUsers, socket, nicknamesUsed, allRoomsInfo, currRoom, room) => {
-//   let targetRoom = allRoomsInfo.filter(item => item.room === room)[0];
-//
-//   if (targetRoom) {
-//     targetRoom.users.splice(targetRoom.users.indexOf(connectedUsers[socket.id].name), 1);
-//     nicknamesUsed.splice(nicknamesUsed.indexOf(connectedUsers[socket.id].name), 1);
-//     delete currRoom[connectedUsers[socket.id].name];
-//     socket.leave(connectedUsers[socket.id].room);
-//     delete connectedUsers[socket.id];
-//   }
-// };
-//
-// const setSettings = (roomName, pass, isPrivate, numberOfPlayers, numberOfCards, allRoomsInfo) => {
-//   allRoomsInfo[allRoomsInfo.length - 1].settings = [pass, numberOfPlayers, numberOfCards, isPrivate];
-// };
-//
 // const broadcastData = (allRoomsInfo, connectedUsers, io, socket) => {
 //   let roomsAvailable = allRoomsInfo.filter(item => !isRoomFull(findRoomIndex(item.room, allRoomsInfo), allRoomsInfo));
 //
 //   socket.broadcast.to('Lobby').emit('displayPlayers', connectedUsers);
 //
 //   socket.broadcast.to('Lobby').emit('displayRooms', roomsAvailable);
-// };
-//
-// const leavePrevRoom = (socket, room, allRoomsInfo, connectedUsers) => {
-//   let targetRoom = allRoomsInfo.filter(item => item.room === room)[0];
-//
-//   let users = targetRoom.users;
-//
-//   let index = users.indexOf(connectedUsers[socket.id].name);
-//
-//   users.splice(index, 1);
 // };
 
 module.exports = new DataHandler();

@@ -12,20 +12,19 @@ class MainPage extends Component {
   componentDidMount() {
     this.initSocket();
   }
-
   initSocket = () => {
-    const socket = io();
+    const socket = io('http://localhost:8080');
     this.props.setSocket(socket);
   };
-
-  setUser = ({ isNickUsed }) => {
+  setUser = ({ isNickUsed, userData }) => {
     const { nickname } = this.state;
-    const { setAuth } = this.props;
+    const { setAuth, setUserData } = this.props;
     if (isNickUsed) {
       this.setState({ error: `Nick Name ${nickname} is used` });
     } else {
       this.setState({ error: '' });
       setAuth(!isNickUsed);
+      setUserData(userData);
     }
   };
   handleChange = e => {
@@ -74,6 +73,7 @@ MainPage.propTypes = {
   setAuth: PropTypes.func,
   socket: PropTypes.object,
   setSocket: PropTypes.func,
+  setUserData: PropTypes.func,
 };
 
 export default connect(
@@ -84,6 +84,9 @@ export default connect(
   dispatch => ({
     setAuth: value => {
       dispatch({ type: 'SET_AUTH', payload: value });
+    },
+    setUserData: data => {
+      dispatch({ type: 'SET_USER_DATA', payload: data });
     },
     setSocket: socket => {
       dispatch({ type: 'SET_SOCKET', payload: socket });

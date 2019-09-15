@@ -12,13 +12,14 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const Header = ({ userData }) => {
+const Header = ({ userData, signOut }) => {
   const classes = useStyles();
+  /* eslint-enable */
   return (
-    <AppBar>
+    <AppBar position='relative'>
       <Grid container justify='space-between' direction='row' alignItems='center'>
         <Typography className={classes.typo}>Hello, {userData.name}</Typography>
-        <Button variant='contained' color='secondary' margin='normal' className={classes.button}>
+        <Button variant='contained' color='secondary' margin='normal' className={classes.button} onClick={() => signOut(userData.name)}>
           Sign out
         </Button>
       </Grid>
@@ -28,6 +29,7 @@ const Header = ({ userData }) => {
 
 Header.propTypes = {
   userData: PropTypes.object,
+  signOut: PropTypes.func,
 };
 
 Header.defaultProps = {
@@ -38,5 +40,4 @@ Header.defaultProps = {
     connectTime: '',
   },
 };
-
 export default Header;

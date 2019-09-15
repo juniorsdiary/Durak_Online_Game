@@ -11,8 +11,7 @@
     "last 3 version"
   ],
   "scripts": {
-    "server": "nodemon server/main.js",
-    "dev": "node scripts/start.js",
+    "start": "concurrently \"nodemon server/main.js\" \"node scripts/start.js\"",
     "build": "webpack --color --config config/webpack.prod.js",
     "deploy": "now",
     "lint": "eslint src/**/*.js src/**/*.jsx --fix",
@@ -23,6 +22,7 @@
   "dependencies": {
     "@material-ui/core": "^4.4.2",
     "axios": "^0.19.0",
+    "concurrently": "^4.1.2",
     "connected-react-router": "^6.5.2",
     "crypto-js": "^3.1.9-1",
     "express": "^4.17.1",
@@ -49,6 +49,7 @@
     "@babel/preset-react": "^7.0.0",
     "@babel/runtime": "^7.6.0",
     "@hot-loader/react-dom": "^16.9.0",
+    "@welldone-software/why-did-you-render": "^3.3.4",
     "babel-eslint": "^10.0.3",
     "babel-loader": "^8.0.6",
     "clean-webpack-plugin": "^2.0.2",

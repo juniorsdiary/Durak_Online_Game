@@ -7,6 +7,9 @@ export function setUsersData(data) {
   };
 }
 
-export function deleteUser(id) {
-  return {};
+export function setRoomsData(data) {
+  return {
+    type: types.SET_ROOMS_DATA,
+    payload: data,
+  };
 }

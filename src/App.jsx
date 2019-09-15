@@ -9,23 +9,9 @@ const Global = createGlobalStyle`
   body {
     overflow-y: overlay;
   }
-  :root {
-    font-size: calc(0.5em + 0.6vw);
-    font-family: "Segoe UI", Helvetica, Arial,sans-serif ;
-  }
-  ::before,
-  ::after {
-    box-sizing: inherit
-  }
   * {
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
-  }
-  #container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
   }
 `;
 
