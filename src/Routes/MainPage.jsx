@@ -13,7 +13,7 @@ class MainPage extends Component {
     this.initSocket();
   }
   initSocket = () => {
-    const socket = io('http://localhost:8080');
+    const socket = io();
     this.props.setSocket(socket);
   };
   setUser = ({ isNickUsed, userData }) => {
