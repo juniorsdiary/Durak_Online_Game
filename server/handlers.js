@@ -64,16 +64,9 @@ class DataHandler {
     const index = users.indexOf(nickname);
     users.splice(index, 1);
   }
-  setSettings(roomname, pass, access, players, cards) {
-    this.allRoomsInfo.find(item => item.room === roomname).settings = [pass, players, cards, access];
+  setSettings(roomname, password, access, players, cards) {
+    this.allRoomsInfo.find(item => item.room === roomname).settings = { password, players, cards, access };
   }
 }
-// const broadcastData = (allRoomsInfo, connectedUsers, io, socket) => {
-//   let roomsAvailable = allRoomsInfo.filter(item => !isRoomFull(findRoomIndex(item.room, allRoomsInfo), allRoomsInfo));
-//
-//   socket.broadcast.to('Lobby').emit('displayPlayers', connectedUsers);
-//
-//   socket.broadcast.to('Lobby').emit('displayRooms', roomsAvailable);
-// };
 
 module.exports = new DataHandler();

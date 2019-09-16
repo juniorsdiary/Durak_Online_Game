@@ -10,7 +10,7 @@ const SendMessageComponent = ({ submit }) => {
   const submitMessage = useCallback(
     e => {
       e.preventDefault();
-      submit(value);
+      value && submit(value);
       setValue('');
     },
     [submit, value]

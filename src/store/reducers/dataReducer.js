@@ -3,6 +3,7 @@ const initialState = {
   usersData: [],
   roomsData: [],
   userData: {},
+  messages: [],
 };
 export default function commonData(state = initialState, action) {
   const { type, payload } = action;
@@ -14,6 +15,11 @@ export default function commonData(state = initialState, action) {
     return {
       ...state,
       userData: payload,
+    };
+  } else if (type === types.SET_MESSAGES) {
+    return {
+      ...state,
+      messages: payload,
     };
   }
   return state;

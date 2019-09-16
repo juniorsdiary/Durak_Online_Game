@@ -8,22 +8,22 @@ import { Button, TextField, Container, Typography } from '@material-ui/core';
 class MainPage extends Component {
   state = {
     nickname: '',
+    error: '',
   };
   componentDidMount() {
     this.initSocket();
   }
   initSocket = () => {
-    const socket = io();
+    const socket = io('http://localhost:8080');
     this.props.setSocket(socket);
   };
-  setUser = ({ isNickUsed, userData }) => {
-    const { nickname } = this.state;
+  setUser = ({ error, userData, errorMsg }) => {
     const { setAuth, setUserData } = this.props;
-    if (isNickUsed) {
-      this.setState({ error: `Nick Name ${nickname} is used` });
+    if (error) {
+      this.setState({ error: errorMsg });
     } else {
-      this.setState({ error: '' });
-      setAuth(!isNickUsed);
+      this.setState({ error: errorMsg });
+      setAuth(!error);
       setUserData(userData);
     }
   };
@@ -39,7 +39,7 @@ class MainPage extends Component {
   };
 
   render() {
-    const { nickname } = this.state;
+    const { nickname, error } = this.state;
     if (this.props.isAuthenticated) {
       return <Redirect to={'/lobby'} />;
     }
@@ -48,8 +48,9 @@ class MainPage extends Component {
         <Typography component='h1' variant='h5' align='center'>
           Create nickname
         </Typography>
-        <form noValidate onSubmit={this.handleSubmit}>
+        <form onSubmit={this.handleSubmit}>
           <TextField
+            error={!!error}
             onChange={this.handleChange}
             value={nickname}
             variant='outlined'
@@ -78,8 +79,8 @@ MainPage.propTypes = {
 
 export default connect(
   state => ({
-    isAuthenticated: state.authentication,
-    socket: state.socket,
+    isAuthenticated: state.authentication.isAuthenticated,
+    socket: state.authentication.socket,
   }),
   dispatch => ({
     setAuth: value => {

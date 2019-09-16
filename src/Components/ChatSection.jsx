@@ -5,11 +5,6 @@ import { Grid, Typography } from '@material-ui/core';
 import { MessageComponent, SendMessageComponent } from 'Components';
 import { withStyles } from '@material-ui/core/styles';
 
-// if (process.env.NODE_ENV !== 'production') {
-//   const whyDidYouRender = require('@welldone-software/why-did-you-render');
-//   whyDidYouRender(React);
-// }
-
 const styles = {
   chat: {},
   wrapper: {
@@ -24,17 +19,13 @@ const styles = {
 };
 
 class ChatSection extends Component {
-  state = {
-    messages: [],
-  };
   componentDidMount() {
-    const { socket } = this.props;
+    const { socket, setMessagesData } = this.props;
     socket.on('syncMsgs', messages => {
-      // let filteredMsgs = messages.filter(item => item.time > connectedUsers[socket.id].connectTime);
-      this.setState({ messages });
+      setMessagesData(messages);
     });
     socket.on('addMsg', messages => {
-      this.setState({ messages });
+      setMessagesData(messages);
     });
   }
   handleChange = e => {
@@ -46,8 +37,7 @@ class ChatSection extends Component {
     socket.emit('sendMsg', { msg, nickname });
   };
   render() {
-    const { messages } = this.state;
-    const { classes } = this.props;
+    const { classes, messages } = this.props;
     const renderMessages = messages.map((msg, i) => <MessageComponent key={i} {...msg} />);
     return (
       <Grid item xs={4} className={classes.wrapper}>
@@ -67,15 +57,23 @@ ChatSection.propTypes = {
   socket: PropTypes.object,
   nickname: PropTypes.string,
   classes: PropTypes.object,
+  setMessagesData: PropTypes.func,
+  messages: PropTypes.array,
 };
-
-ChatSection.whyDidYouRender = true;
 
 const StyledReactComponent = withStyles(styles)(ChatSection);
 
-const ReduxConnected = connect(state => ({
-  socket: state.socket,
-  nickname: state.commonData.userData.name,
-}))(StyledReactComponent);
+const ReduxConnected = connect(
+  state => ({
+    socket: state.authentication.socket,
+    nickname: state.commonData.userData.name,
+    messages: state.commonData.messages,
+  }),
+  dispatch => ({
+    setMessagesData: data => {
+      dispatch({ type: 'SET_MESSAGES', payload: data });
+    },
+  })
+)(StyledReactComponent);
 
 export default ReduxConnected;

@@ -7,4 +7,16 @@ import MessageComponent from './MessageComponent.jsx';
 import SendMessageComponent from './SendMessageComponent.jsx';
 import SettingsComponent from './SettingsComponent.jsx';
 import RoomComponent from './RoomComponent.jsx';
-export { PlayersData, Header, UserCard, ChatSection, AvailableRooms, MessageComponent, SendMessageComponent, SettingsComponent, RoomComponent };
+import PasswordComponent from './PasswordComponent.jsx';
+export {
+  PlayersData,
+  Header,
+  UserCard,
+  ChatSection,
+  AvailableRooms,
+  MessageComponent,
+  SendMessageComponent,
+  SettingsComponent,
+  RoomComponent,
+  PasswordComponent,
+};

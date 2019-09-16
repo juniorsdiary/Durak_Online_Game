@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Dialog, DialogTitle, Button, TextField, FormControlLabel, RadioGroup, FormLabel, FormControl, Radio } from '@material-ui/core';
+import { Dialog, DialogTitle, Button, TextField, FormControlLabel, RadioGroup, FormLabel, Radio } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import { useForm } from 'Utilities';
 
@@ -14,7 +14,7 @@ const useStyles = makeStyles({
 });
 
 const SettingsComponent = ({ open, onClose, createRoom }) => {
-  const [values, setValue] = useForm({ roomname: '', players: '2', cards: '36', access: 'Public' });
+  const [values, setValue] = useForm({ roomname: '', players: '2', cards: '36', access: 'Public', password: '' });
   const [error, setError] = useState(false);
   const classes = useStyles();
 
@@ -58,6 +58,16 @@ const SettingsComponent = ({ open, onClose, createRoom }) => {
           <FormControlLabel value='Public' control={<Radio />} label='Public' />
           <FormControlLabel value='Private' control={<Radio />} label='Private' />
         </RadioGroup>
+        <TextField
+          type='password'
+          disabled={values.access !== 'Private'}
+          required
+          id='password'
+          label='Set password'
+          name='password'
+          value={values.password}
+          onChange={setValue}
+        />
         <Button type='submit' onClick={create}>
           Create
         </Button>
