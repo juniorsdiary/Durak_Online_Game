@@ -30,7 +30,7 @@ class DataHandler {
   }
   isRoomFull(roomIndex) {
     const targetRoom = this.allRoomsInfo[roomIndex];
-    return targetRoom.users.length === +targetRoom.settings[1];
+    return targetRoom.users.length === +targetRoom.settings.players;
   }
   findRoomIndex(roomName) {
     return this.allRoomsInfo.indexOf(this.allRoomsInfo.find(item => item.room === roomName));

@@ -8,6 +8,7 @@ import SendMessageComponent from './SendMessageComponent.jsx';
 import SettingsComponent from './SettingsComponent.jsx';
 import RoomComponent from './RoomComponent.jsx';
 import PasswordComponent from './PasswordComponent.jsx';
+import CreateNickName from './CreateNickName.jsx';
 export {
   PlayersData,
   Header,
@@ -19,4 +20,5 @@ export {
   SettingsComponent,
   RoomComponent,
   PasswordComponent,
+  CreateNickName,
 };

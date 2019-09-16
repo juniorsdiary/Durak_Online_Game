@@ -13,7 +13,6 @@
   "scripts": {
     "start": "concurrently \"nodemon server/main.js\" \"node scripts/start.js\"",
     "build": "webpack --color --config config/webpack.prod.js",
-    "deploy": "now",
     "lint": "eslint src/**/*.js src/**/*.jsx --fix",
     "lint:css": "stylelint './src/**/*.js'"
   },

@@ -7,20 +7,22 @@ const initialState = {
 };
 export default function commonData(state = initialState, action) {
   const { type, payload } = action;
-  if (type === types.SET_USERS_DATA) {
-    return { ...state, usersData: payload };
-  } else if (type === types.SET_ROOMS_DATA) {
-    return { ...state, roomsData: payload };
-  } else if (type === types.SET_USER_DATA) {
-    return {
-      ...state,
-      userData: payload,
-    };
-  } else if (type === types.SET_MESSAGES) {
-    return {
-      ...state,
-      messages: payload,
-    };
+  switch (type) {
+    case types.SET_USERS_DATA:
+      return { ...state, usersData: payload };
+    case types.SET_ROOMS_DATA:
+      return { ...state, roomsData: payload };
+    case types.SET_USER_DATA:
+      return {
+        ...state,
+        userData: payload,
+      };
+    case types.SET_MESSAGES:
+      return {
+        ...state,
+        messages: payload,
+      };
+    default:
+      return state;
   }
-  return state;
 }

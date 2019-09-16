@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import io from 'socket.io-client';
 import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Button, TextField, Container, Typography } from '@material-ui/core';
+import { Grid, Typography } from '@material-ui/core';
+import { CreateNickName } from 'Components';
 
 class MainPage extends Component {
   state = {
-    nickname: '',
     error: '',
   };
   componentDidMount() {
@@ -27,45 +27,25 @@ class MainPage extends Component {
       setUserData(userData);
     }
   };
-  handleChange = e => {
-    let nickname = e.target.value;
-    this.setState({ nickname });
-  };
-  handleSubmit = e => {
-    e.preventDefault();
-    const { nickname } = this.state;
+  handleSubmit = nickname => {
     const { socket } = this.props;
     socket.emit('authenticate', nickname, this.setUser);
   };
 
   render() {
-    const { nickname, error } = this.state;
+    const { error } = this.state;
     if (this.props.isAuthenticated) {
       return <Redirect to={'/lobby'} />;
     }
     return (
-      <Container component='main' maxWidth='xs'>
-        <Typography component='h1' variant='h5' align='center'>
-          Create nickname
-        </Typography>
-        <form onSubmit={this.handleSubmit}>
-          <TextField
-            error={!!error}
-            onChange={this.handleChange}
-            value={nickname}
-            variant='outlined'
-            margin='normal'
-            required
-            fullWidth
-            id='nickname'
-            name='nickname'
-            label='Awesome nickname'
-          />
-          <Button type='submit' fullWidth variant='contained' color='primary'>
-            Join Lobby
-          </Button>
-        </form>
-      </Container>
+      <Grid container direction='column' justify='center' alignItems='center'>
+        <Grid item xs={4}>
+          <Typography component='h1' variant='h5' align='center'>
+            Create nickname
+          </Typography>
+          <CreateNickName submit={this.handleSubmit} error={error} />
+        </Grid>
+      </Grid>
     );
   }
 }

@@ -132,7 +132,7 @@ const boundedActions = dispatch => ({
     dispatch({ type: 'JOIN_ROOM', payload: roomname });
   },
   signout: () => {
-    dispatch({ type: 'SIGN_OUT', payload: false });
+    dispatch({ type: 'SET_AUTH', payload: false });
   },
 });
 

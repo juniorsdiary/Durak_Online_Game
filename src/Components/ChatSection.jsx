@@ -6,7 +6,6 @@ import { MessageComponent, SendMessageComponent } from 'Components';
 import { withStyles } from '@material-ui/core/styles';
 
 const styles = {
-  chat: {},
   wrapper: {
     padding: '0 1em',
     height: '100%',

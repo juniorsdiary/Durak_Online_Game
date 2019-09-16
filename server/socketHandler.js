@@ -5,10 +5,6 @@ emitter.setMaxListeners(100);
 const DataHandler = require('./handlers');
 
 const socketHandler = socket => {
-  socket.on('connected', () => {
-    io.sockets.emit('connected');
-  });
-
   socket.on('authenticate', (nickname, cb) => {
     const isUsed = DataHandler.checkNicknames(nickname);
     if (isUsed) {
@@ -75,21 +71,6 @@ const socketHandler = socket => {
     io.sockets.emit('addMsg', DataHandler.messages);
   });
 
-  socket.on('createRoom', async ({ roomname, password, access, players, cards, nickname }) => {
-    const room = DataHandler.getUserRoom(nickname);
-    socket.leave(room);
-    DataHandler.leaveRoom(room, nickname);
-    socket.join(roomname);
-    DataHandler.joinRoom(roomname, nickname);
-    DataHandler.updatePlayRoom(roomname, nickname);
-    DataHandler.setSettings(roomname, password, access, players, cards);
-    const roomsAvailable = DataHandler.getAvalableRooms();
-    io.sockets.to('Lobby').emit('displayPlayers', DataHandler.connectedUsers);
-    io.sockets.to('Lobby').emit('displayRooms', roomsAvailable);
-
-    // gameManager.initializeData(numberOfPlayers, numberOfCards, roomName, nickname, socket.id);
-  });
-
   socket.on('disconnect', () => {
     const user = DataHandler.connectedUsers.find(item => item.id === socket.id);
     if (user) {
@@ -120,6 +101,21 @@ const socketHandler = socket => {
       io.sockets.to('Lobby').emit('displayPlayers', DataHandler.connectedUsers);
       io.sockets.to('Lobby').emit('displayRooms', roomsAvailable);
     }
+  });
+
+  socket.on('createRoom', async ({ roomname, password, access, players, cards, nickname }) => {
+    const room = DataHandler.getUserRoom(nickname);
+    socket.leave(room);
+    DataHandler.leaveRoom(room, nickname);
+    socket.join(roomname);
+    DataHandler.joinRoom(roomname, nickname);
+    DataHandler.updatePlayRoom(roomname, nickname);
+    DataHandler.setSettings(roomname, password, access, players, cards);
+    const roomsAvailable = DataHandler.getAvalableRooms();
+    io.sockets.to('Lobby').emit('displayPlayers', DataHandler.connectedUsers);
+    io.sockets.to('Lobby').emit('displayRooms', roomsAvailable);
+
+    // gameManager.initializeData(numberOfPlayers, numberOfCards, roomName, nickname, socket.id);
   });
 
   socket.on('joinRoom', (roomname, nickname) => {
