@@ -1,3 +1,3 @@
-import { getWidth, convertTime } from './functions';
+import { getWidth } from './functions';
 import useForm from './hooks';
-export { getWidth, convertTime, useForm };
+export { getWidth, useForm };

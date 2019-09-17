@@ -2,7 +2,8 @@ const io = require('./main');
 const EventEmitter = require('events');
 const emitter = new EventEmitter();
 emitter.setMaxListeners(100);
-const DataHandler = require('./handlers');
+const DataHandler = require('./DataHandler');
+const GameManager = require('./GameManager');
 
 const socketHandler = socket => {
   socket.on('authenticate', (nickname, cb) => {
@@ -29,7 +30,7 @@ const socketHandler = socket => {
     const isLoggedIn = DataHandler.checkUserConnection(nickname);
     if (isLoggedIn) {
       const room = DataHandler.getUserRoom(nickname);
-      // const playRoom = gameManager.getPlayRoom(room);
+      // const playRoom = GameManager.getPlayRoom(room);
       if (room !== 'Lobby') {
         // let index = findIndex(room, socket);
         //
@@ -105,38 +106,52 @@ const socketHandler = socket => {
 
   socket.on('createRoom', async ({ roomname, password, access, players, cards, nickname }) => {
     const room = DataHandler.getUserRoom(nickname);
-    socket.leave(room);
-    DataHandler.leaveRoom(room, nickname);
-    socket.join(roomname);
-    DataHandler.joinRoom(roomname, nickname);
-    DataHandler.updatePlayRoom(roomname, nickname);
-    DataHandler.setSettings(roomname, password, access, players, cards);
-    const roomsAvailable = DataHandler.getAvalableRooms();
-    io.sockets.to('Lobby').emit('displayPlayers', DataHandler.connectedUsers);
-    io.sockets.to('Lobby').emit('displayRooms', roomsAvailable);
 
-    // gameManager.initializeData(numberOfPlayers, numberOfCards, roomName, nickname, socket.id);
+    socket.leave(room, () => {
+      DataHandler.leaveRoom(room, nickname);
+    });
+    socket.join(roomname, () => {
+      DataHandler.joinRoom(roomname, nickname);
+      DataHandler.updatePlayRoom(roomname, nickname);
+      DataHandler.setSettings(roomname, password, access, players, cards);
+      const roomsAvailable = DataHandler.getAvalableRooms();
+      io.sockets.to('Lobby').emit('displayPlayers', DataHandler.connectedUsers);
+      io.sockets.to('Lobby').emit('displayRooms', roomsAvailable);
+      GameManager.initializeData(players, cards, roomname, nickname, socket.id);
+    });
   });
 
   socket.on('joinRoom', (roomname, nickname) => {
     const room = DataHandler.getUserRoom(nickname);
-    socket.leave(room);
-    DataHandler.leaveRoom(room, nickname);
-    socket.join(roomname);
-    DataHandler.joinRoom(roomname, nickname);
-    DataHandler.updatePlayRoom(roomname, nickname);
-
-    const roomsAvailable = DataHandler.getAvalableRooms();
-    io.sockets.to('Lobby').emit('displayPlayers', DataHandler.connectedUsers);
-    io.sockets.to('Lobby').emit('displayRooms', roomsAvailable);
-
-    // gameManager.addUser(roomName, nickname, socket.id);
-
-    // let playRoom = gameManager.getPlayRoom(roomName);
-
-    // if (playRoom.users.length === +playRoom.numberOfPlayers) {
-    //   io.sockets.to(roomName).emit('readyStage', playRoom, roomName);
-    // }
+    socket.leave(room, () => {
+      DataHandler.leaveRoom(room, nickname);
+    });
+    socket.join(roomname, () => {
+      DataHandler.joinRoom(roomname, nickname);
+      DataHandler.updatePlayRoom(roomname, nickname);
+      const roomsAvailable = DataHandler.getAvalableRooms();
+      io.sockets.to('Lobby').emit('displayPlayers', DataHandler.connectedUsers);
+      io.sockets.to('Lobby').emit('displayRooms', roomsAvailable);
+      GameManager.addUser(roomname, nickname, socket.id);
+      let playRoom = GameManager.getPlayRoom(roomname);
+      if (playRoom.users.length === +playRoom.numberOfPlayers) {
+        io.sockets.to(roomname).emit('readyStage', playRoom, roomname);
+      }
+    });
+  });
+  socket.on('ready', nickname => {
+    const room = DataHandler.getUserRoom(nickname);
+    let index = GameManager.findIndex(room, nickname);
+    let playRoom = GameManager.getPlayRoom(room);
+    playRoom.activateUser(index);
+    let numberOfUsersReady = playRoom.usersReady.filter(item => item).length;
+    io.sockets.to(room).emit('syncData', playRoom);
+    if (numberOfUsersReady === +playRoom.numberOfPlayers) {
+      playRoom.dealCards();
+      io.sockets.to(room).emit('initialSync', playRoom, room);
+      io.sockets.to(room).emit('defineMove');
+      io.sockets.to(room).emit('logMsgs', playRoom.logMsges);
+    }
   });
 };
 

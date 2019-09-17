@@ -1,3 +1,4 @@
 import store, { history } from './store';
 import { setUsersData, setRoomsData } from './actions/data';
-export { store, history, setUsersData, setRoomsData };
+import { setPlayRoomData, setClientIndex, assignPlayersInfo, definePlayersMove } from './actions/playroom';
+export { store, history, setUsersData, setRoomsData, definePlayersMove, setPlayRoomData, setClientIndex, assignPlayersInfo };

@@ -36,9 +36,9 @@ class Lobby extends Component {
   }
 
   createRoom = settings => {
-    const { socket, userData } = this.props;
+    const { socket, userData, joinRoom } = this.props;
     socket.emit('createRoom', { ...settings, nickname: userData.name });
-    this.joinRoom(settings.roomname);
+    joinRoom(settings.roomname);
   };
 
   checkPassword = (roomname, password) => {

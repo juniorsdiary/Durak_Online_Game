@@ -1,14 +1,19 @@
-import PlayersData from './PlayersData.jsx';
-import Header from './Header.jsx';
-import UserCard from './UserCard.jsx';
-import ChatSection from './ChatSection.jsx';
-import AvailableRooms from './AvailableRooms.jsx';
-import MessageComponent from './MessageComponent.jsx';
-import SendMessageComponent from './SendMessageComponent.jsx';
-import SettingsComponent from './SettingsComponent.jsx';
-import RoomComponent from './RoomComponent.jsx';
-import PasswordComponent from './PasswordComponent.jsx';
-import CreateNickName from './CreateNickName.jsx';
+import PlayersData from './LobbyComponents/PlayersData.jsx';
+import Header from './LobbyComponents/Header.jsx';
+import UserCard from './LobbyComponents/UserCard.jsx';
+import ChatSection from './LobbyComponents/ChatSection.jsx';
+import AvailableRooms from './LobbyComponents/AvailableRooms.jsx';
+import MessageComponent from './LobbyComponents/MessageComponent.jsx';
+import SendMessageComponent from './LobbyComponents/SendMessageComponent.jsx';
+import SettingsComponent from './LobbyComponents/SettingsComponent.jsx';
+import RoomComponent from './LobbyComponents/RoomComponent.jsx';
+import PasswordComponent from './LobbyComponents/PasswordComponent.jsx';
+import CreateNickName from './LobbyComponents/CreateNickName.jsx';
+import ReadyComponent from './PlayRoomComponents/ReadyComponent.jsx';
+import Deck from './PlayRoomComponents/Deck.jsx';
+import EachCardComponent from './PlayRoomComponents/EachCardComponent.jsx';
+import Trump from './PlayRoomComponents/Trump.jsx';
+
 export {
   PlayersData,
   Header,
@@ -21,4 +26,8 @@ export {
   RoomComponent,
   PasswordComponent,
   CreateNickName,
+  ReadyComponent,
+  Deck,
+  EachCardComponent,
+  Trump,
 };
