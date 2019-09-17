@@ -1,11 +1,22 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { ReadyComponent, Deck, Trump } from 'Components';
+import { ReadyComponent, Deck, Trump, DiscardPile, Player } from 'Components';
 import { setPlayRoomData, setClientIndex, assignPlayersInfo, definePlayersMove } from 'Store';
 import { withStyles } from '@material-ui/styles';
+import { Container } from '@material-ui/core';
 
-const styles = {};
+const styles = {
+  cards: {
+    width: '250px',
+    display: 'flex',
+    justifyContent: 'space-around',
+    position: 'absolute',
+    top: '10%',
+    left: '10%',
+    padding: '0',
+  },
+};
 
 class PlayRoom extends Component {
   componentDidMount() {
@@ -41,55 +52,56 @@ class PlayRoom extends Component {
     let index4 = players === 4 ? this.definePlayerIndex(index, players, 3) : -1;
     return [index1, index2, index3, index4];
   }
+  forbidMsg = () => {
+    // this.setState(prevState => {
+    //   return {
+    //     hidden: !prevState.hidden,
+    //   };
+    // });
+    //
+    // setTimeout(() => {
+    //   this.setState(prevState => {
+    //     return {
+    //       hidden: !prevState.hidden,
+    //     };
+    //   });
+    // }, 1500);
+  };
+  dragEvent = e => {
+    const { socket } = this.props;
+    if (!e) e = window.event;
+    let cardData = [
+      e.target.firstElementChild.getAttribute('datasuit'),
+      e.target.firstElementChild.firstElementChild.style.backgroundPosition.split(' ')[0],
+      e.target.firstElementChild.firstElementChild.style.backgroundPosition.split(' ')[1],
+      e.target.firstElementChild.getAttribute('datavalue'),
+    ];
+    socket.emit('initCard', cardData);
+  };
   render() {
-    const { isReady, data } = this.props;
+    const { socket, isReady, data, classes, player0info, player1info, player2info, player3info } = this.props;
     const isUsersReady = data.usersReady && data.usersReady.every(item => item);
     return (
       <>
         <ReadyComponent activeUsers={isUsersReady} users={data.users} isReady={isReady} setReadyState={this.setReadyValue} />
         <div role='presentation' className='board' onSelect={() => false} onMouseDown={() => false}>
-          <Deck deck={data.shuffledDeck} />
-          {isUsersReady && <Trump trump={data.trumpData} />}
-
-          {/* <div className='discardPile'>{renderDiscardPile}</div> */}
+          {isUsersReady && (
+            <Container className={classes.cards}>
+              <Deck deck={data.shuffledDeck} />
+              <Trump trump={data.trumpData} />
+            </Container>
+          )}
+          {isUsersReady && <DiscardPile data={data.discardPile} />}
 
           {/* <Timer timerBlock={timerBlock} widthValue={widthValue} text={textsData[9]} /> */}
-
-          {/* <Player
-            playerInfo={player1Info}
-            className={'player1'}
-            socket={socket}
-            playerTitle={'player1Title'}
-            roomName={roomName}
-            forbidMsg={this.forbidMsg}
-          /> */}
-
-          {/* <Player
-            playerInfo={player2Info}
-            className={'player2'}
-            socket={socket}
-            playerTitle={'player2Title'}
-            roomName={roomName}
-            forbidMsg={this.forbidMsg}
-          /> */}
-
-          {/* <Player
-            playerInfo={player3Info}
-            className={'player3'}
-            socket={socket}
-            playerTitle={'player3Title'}
-            roomName={roomName}
-            forbidMsg={this.forbidMsg}
-          /> */}
-
-          {/* <Player
-            playerInfo={player4Info}
-            className={'player4'}
-            socket={socket}
-            playerTitle={'player4Title'}
-            roomName={roomName}
-            forbidMsg={this.forbidMsg}
-          /> */}
+          {isUsersReady && (
+            <>
+              <Player playerInfo={player0info} playerNumber={0} socket={socket} dragEvent={this.dragEvent} />
+              <Player playerInfo={player1info} playerNumber={1} socket={socket} dragEvent={this.dragEvent} />
+              <Player playerInfo={player2info} playerNumber={2} socket={socket} dragEvent={this.dragEvent} />
+              <Player playerInfo={player3info} playerNumber={3} socket={socket} dragEvent={this.dragEvent} />
+            </>
+          )}
 
           {/* <GameField
             turn={turn}
@@ -136,6 +148,11 @@ PlayRoom.propTypes = {
   setClientIndex: PropTypes.func,
   assignPlayersInfo: PropTypes.func,
   definePlayersMove: PropTypes.func,
+  classes: PropTypes.object,
+  player0info: PropTypes.object,
+  player1info: PropTypes.object,
+  player2info: PropTypes.object,
+  player3info: PropTypes.object,
 };
 
 const props = state => ({
@@ -144,6 +161,10 @@ const props = state => ({
   isReady: state.playRoomData.isReady,
   nickname: state.commonData.userData.name,
   clientIndex: state.playRoomData.clientIndex,
+  player0info: state.playRoomData.player0,
+  player1info: state.playRoomData.player1,
+  player2info: state.playRoomData.player2,
+  player3info: state.playRoomData.player3,
 });
 
 const dispatch = dispatch => ({

@@ -44,7 +44,7 @@ class Game {
     this.playerHasLeft = false;
     this.endGame = false;
     this.endGameMsg = '';
-    this.lastPlayer = {};
+    this.lastPlayer = [];
     this.gameInProgress = false;
 
     this.shuffleDeck();
@@ -89,7 +89,6 @@ class Game {
     this.gameField = new GameField();
 
     this.gameInProgress = true;
-
     if (!this.lastPlayer) {
       this.defineFirstMove();
     } else {
@@ -174,7 +173,6 @@ class Game {
   }
 
   logNextTurn() {
-    //let msg = `${this.curPlayer.nickname} ${this.curPlayer.systMsgs[0]}`;
     let msg = { nickName: this.curPlayer.nickname, msgIndex: 0 };
 
     this.logMsges.unshift(msg);

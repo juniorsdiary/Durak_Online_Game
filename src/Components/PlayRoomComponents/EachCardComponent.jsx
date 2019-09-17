@@ -25,7 +25,6 @@ const useStyles = makeStyles(() => ({
     height: 'inherit',
     borderRadius: '6px',
     background: `url(${cardDeck}) no-repeat`,
-    // backgroundPosition: `${0}px ${0}px`,
     backgroundPosition: props => props.backgroundPosition,
     backgroundSize: '1588%',
     transform: 'rotateY(180deg)',
@@ -42,24 +41,28 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export default function EachCardComponent({ marginValue, dragValue, dragEvent, dataValue, rotated, dataSuit, posY, posX }) {
-  const classes = useStyles({ marginValue, rotated, backgroundPosition: `${posX} ${posY}` });
+export default function EachCardComponent({ marginValue, dragValue, dragEvent, rotated, cardData }) {
+  const backgroundPosition = `${cardData[1]}px ${cardData[2]}px`;
+  const classes = useStyles({ marginValue, rotated, backgroundPosition });
+
   return (
     <div className={classes.parent} draggable={dragValue} onDragStart={dragEvent}>
-      <div className={classes.card} datasuit={dataSuit} datavalue={dataValue}>
+      <div className={classes.card} datasuit={cardData[0]} datavalue={cardData[3]}>
         <div className={classes.face}></div>
         <div className={classes.back}></div>
       </div>
     </div>
   );
 }
+
 EachCardComponent.propTypes = {
   marginValue: PropTypes.number,
-  dragValue: PropTypes.bool,
   dragEvent: PropTypes.func,
-  dataValue: PropTypes.number,
   rotated: PropTypes.bool,
-  dataSuit: PropTypes.string,
-  posY: PropTypes.string,
-  posX: PropTypes.string,
+  dragValue: PropTypes.bool,
+  cardData: PropTypes.array,
+};
+
+EachCardComponent.defaultProps = {
+  cardData: [],
 };

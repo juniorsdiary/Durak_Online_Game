@@ -145,7 +145,7 @@ const socketHandler = socket => {
     let playRoom = GameManager.getPlayRoom(room);
     playRoom.activateUser(index);
     let numberOfUsersReady = playRoom.usersReady.filter(item => item).length;
-    io.sockets.to(room).emit('syncData', playRoom);
+    // io.sockets.to(room).emit('syncData', playRoom);
     if (numberOfUsersReady === +playRoom.numberOfPlayers) {
       playRoom.dealCards();
       io.sockets.to(room).emit('initialSync', playRoom, room);

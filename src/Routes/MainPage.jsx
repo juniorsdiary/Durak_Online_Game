@@ -5,7 +5,7 @@ import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Grid, Typography } from '@material-ui/core';
 import { CreateNickName } from 'Components';
-
+const port = 'http://localhost:8080';
 class MainPage extends Component {
   state = {
     error: '',
@@ -14,7 +14,7 @@ class MainPage extends Component {
     this.initSocket();
   }
   initSocket = () => {
-    const socket = io();
+    const socket = io(port);
     this.props.setSocket(socket);
   };
   setUser = ({ error, userData, errorMsg }) => {
@@ -57,7 +57,7 @@ MainPage.propTypes = {
   setUserData: PropTypes.func,
 };
 
-export default connect(
+const ReduxConnected = connect(
   state => ({
     isAuthenticated: state.authentication.isAuthenticated,
     socket: state.authentication.socket,
@@ -74,3 +74,5 @@ export default connect(
     },
   })
 )(MainPage);
+
+export default ReduxConnected;

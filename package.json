@@ -1,5 +1,5 @@
 {
-  "name": "React-Redux-Bundle",
+  "name": "react_redux_bundle",
   "version": "1.0.0",
   "description": "WebPack Bundle with React Redux",
   "main": "src/index.jsx",

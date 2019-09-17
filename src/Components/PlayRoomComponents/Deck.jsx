@@ -6,11 +6,8 @@ import { Paper } from '@material-ui/core';
 
 const useStyles = makeStyles({
   deck: {
-    position: 'absolute',
     width: '107px',
     height: '141px',
-    top: '10%',
-    left: '10%',
   },
 });
 
