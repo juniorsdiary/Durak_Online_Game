@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { ReadyComponent, Deck, Trump, DiscardPile, Player } from 'Components';
+import { ReadyComponent, Deck, Trump, DiscardPile, Player, GameField } from 'Components';
 import { setPlayRoomData, setClientIndex, assignPlayersInfo, definePlayersMove } from 'Store';
 import { withStyles } from '@material-ui/styles';
 import { Container } from '@material-ui/core';
+import { assignIndexes } from 'Utilities';
 
 const styles = {
   cards: {
@@ -21,20 +22,25 @@ const styles = {
 class PlayRoom extends Component {
   componentDidMount() {
     const { socket, setPlayRoomData, setClientIndex, definePlayersMove, assignPlayersInfo } = this.props;
-    socket.on('readyStage', (PlayRoomData, roomName) => {
+    socket.on('readyStage', PlayRoomData => {
       let player = PlayRoomData.players.find(item => item.id === socket.id);
       let startIndex = PlayRoomData.players.indexOf(player);
       setPlayRoomData(PlayRoomData);
       setClientIndex(startIndex);
     });
-    socket.on('initialSync', (PlayRoomData, roomName) => {
+    socket.on('initialSync', PlayRoomData => {
       const { clientIndex } = this.props;
       setPlayRoomData(PlayRoomData);
-      this.assignIndexes(clientIndex, PlayRoomData.numberOfPlayers).forEach(assignPlayersInfo);
+      assignIndexes(clientIndex, PlayRoomData.numberOfPlayers).forEach(assignPlayersInfo);
     });
     socket.on('defineMove', () => {
       const { data } = this.props;
       definePlayersMove(data.curPlayer, data.defender, socket.id);
+    });
+    socket.on('syncData', PlayRoomData => {
+      const { clientIndex } = this.props;
+      setPlayRoomData(PlayRoomData);
+      assignIndexes(clientIndex, PlayRoomData.numberOfPlayers).forEach(assignPlayersInfo);
     });
   }
   setReadyValue = () => {
@@ -42,16 +48,33 @@ class PlayRoom extends Component {
     setReady();
     socket.emit('ready', nickname);
   };
-  definePlayerIndex(index, players, addIndex) {
-    return index + addIndex >= players ? index + addIndex - players : index + addIndex;
-  }
-  assignIndexes(index, players) {
-    let index1 = index;
-    let index2 = this.definePlayerIndex(index, players, 1);
-    let index3 = players >= 3 ? this.definePlayerIndex(index, players, 2) : -1;
-    let index4 = players === 4 ? this.definePlayerIndex(index, players, 3) : -1;
-    return [index1, index2, index3, index4];
-  }
+
+  dragEvent = cardData => {
+    const { socket, nickname } = this.props;
+    socket.emit('initCard', nickname, cardData);
+  };
+
+  dragOverEvent = e => {
+    if (!e) e = window.event;
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'copy';
+  };
+
+  makeOffenceMove = () => {
+    const { socket, turn, nickname } = this.props;
+    if (turn) {
+      socket.emit('makeOffenceMove', nickname);
+    }
+  };
+
+  makeDefenceMove = () => {
+    const { socket, turn } = this.props;
+
+    if (turn) {
+      socket.emit('makeDeffenceMove');
+    }
+  };
+
   forbidMsg = () => {
     // this.setState(prevState => {
     //   return {
@@ -67,50 +90,48 @@ class PlayRoom extends Component {
     //   });
     // }, 1500);
   };
-  dragEvent = e => {
-    const { socket } = this.props;
-    if (!e) e = window.event;
-    let cardData = [
-      e.target.firstElementChild.getAttribute('datasuit'),
-      e.target.firstElementChild.firstElementChild.style.backgroundPosition.split(' ')[0],
-      e.target.firstElementChild.firstElementChild.style.backgroundPosition.split(' ')[1],
-      e.target.firstElementChild.getAttribute('datavalue'),
-    ];
-    socket.emit('initCard', cardData);
-  };
+
   render() {
-    const { socket, isReady, data, classes, player0info, player1info, player2info, player3info } = this.props;
+    const {
+      socket,
+      isReady,
+      data,
+      classes,
+      player0info,
+      player1info,
+      player2info,
+      player3info,
+      defenceOrOffence,
+    } = this.props;
     const isUsersReady = data.usersReady && data.usersReady.every(item => item);
+
     return (
       <>
-        <ReadyComponent activeUsers={isUsersReady} users={data.users} isReady={isReady} setReadyState={this.setReadyValue} />
-        <div role='presentation' className='board' onSelect={() => false} onMouseDown={() => false}>
-          {isUsersReady && (
-            <Container className={classes.cards}>
-              <Deck deck={data.shuffledDeck} />
-              <Trump trump={data.trumpData} />
-            </Container>
-          )}
-          {isUsersReady && <DiscardPile data={data.discardPile} />}
-
-          {/* <Timer timerBlock={timerBlock} widthValue={widthValue} text={textsData[9]} /> */}
+        <ReadyComponent
+          activeUsers={isUsersReady}
+          users={data.users}
+          isReady={isReady}
+          setReadyState={this.setReadyValue}
+        />
+        <div role='presentation' onSelect={() => false} onMouseDown={() => false}>
           {isUsersReady && (
             <>
+              <Container className={classes.cards}>
+                <Deck deck={data.shuffledDeck} />
+                <Trump trump={data.trumpData} />
+              </Container>
+              <DiscardPile data={data.discardPile} />
               <Player playerInfo={player0info} playerNumber={0} socket={socket} dragEvent={this.dragEvent} />
               <Player playerInfo={player1info} playerNumber={1} socket={socket} dragEvent={this.dragEvent} />
               <Player playerInfo={player2info} playerNumber={2} socket={socket} dragEvent={this.dragEvent} />
               <Player playerInfo={player3info} playerNumber={3} socket={socket} dragEvent={this.dragEvent} />
+              <GameField
+                gameField={data.gameField}
+                onDragOver={this.dragOverEvent}
+                onDrop={defenceOrOffence === 'offence' ? this.makeOffenceMove : this.makeDefenceMove}
+              />
             </>
           )}
-
-          {/* <GameField
-            turn={turn}
-            socket={socket}
-            roomName={roomName}
-            offenceCards={gameFieldOffenceCards ? gameFieldOffenceCards : []}
-            defenceCards={gameFieldDeffenceCards}
-            defenceOrOffence={defenceOrOffence}
-          /> */}
 
           {/* <div id='gameOver' hidden={endGameVisible}>
             {PlayRoom.endGameMsg.nickName} {textsData[PlayRoom.endGameMsg.msgIndex]}
@@ -131,6 +152,7 @@ class PlayRoom extends Component {
               Discard
             </button>
           </div> */}
+          {/* <Timer timerBlock={timerBlock} widthValue={widthValue} text={textsData[9]} /> */}
         </div>
       </>
     );
@@ -153,6 +175,8 @@ PlayRoom.propTypes = {
   player1info: PropTypes.object,
   player2info: PropTypes.object,
   player3info: PropTypes.object,
+  turn: PropTypes.bool,
+  defenceOrOffence: PropTypes.string,
 };
 
 const props = state => ({
@@ -165,6 +189,8 @@ const props = state => ({
   player1info: state.playRoomData.player1,
   player2info: state.playRoomData.player2,
   player3info: state.playRoomData.player3,
+  turn: state.playRoomData.turn,
+  defenceOrOffence: state.playRoomData.defenceOrOffence,
 });
 
 const dispatch = dispatch => ({

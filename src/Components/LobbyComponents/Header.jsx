@@ -22,7 +22,12 @@ const Header = ({ userData, signOut }) => {
     <AppBar position='relative'>
       <Grid container justify='space-between' direction='row' alignItems='center'>
         <Typography className={classes.greet}>Hello, {userData.name}</Typography>
-        <Button variant='contained' color='secondary' margin='normal' className={classes.button} onClick={handleSignOut}>
+        <Button
+          variant='contained'
+          color='secondary'
+          margin='normal'
+          className={classes.button}
+          onClick={handleSignOut}>
           Sign out
         </Button>
       </Grid>

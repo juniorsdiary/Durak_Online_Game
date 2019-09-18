@@ -1,6 +1,15 @@
 import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Dialog, DialogTitle, Button, TextField, FormControlLabel, RadioGroup, FormLabel, Radio } from '@material-ui/core';
+import {
+  Dialog,
+  DialogTitle,
+  Button,
+  TextField,
+  FormControlLabel,
+  RadioGroup,
+  FormLabel,
+  Radio,
+} from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import { useForm } from 'Utilities';
 
@@ -14,7 +23,7 @@ const useStyles = makeStyles({
 });
 
 const SettingsComponent = ({ open, onClose, createRoom }) => {
-  const [values, setValue] = useForm({ roomname: '', players: '2', cards: '36', access: 'Public', password: '' });
+  const [values, setValue] = useForm({ roomName: '', players: '2', cards: '36', access: 'Public', password: '' });
   const [error, setError] = useState(false);
   const classes = useStyles();
 
@@ -26,7 +35,7 @@ const SettingsComponent = ({ open, onClose, createRoom }) => {
   const create = useCallback(
     e => {
       e.preventDefault();
-      if (values.roomname === '') {
+      if (values.roomName === '') {
         setError(true);
       } else {
         setError(false);
@@ -41,7 +50,15 @@ const SettingsComponent = ({ open, onClose, createRoom }) => {
     <Dialog onClose={closeDialog} open={open}>
       <DialogTitle>Choose Room Settings</DialogTitle>
       <form onSubmit={create} className={classes.form}>
-        <TextField error={error} required id='roomname' label='Create Room Name' name='roomname' value={values.roomname} onChange={setValue} />
+        <TextField
+          error={error}
+          required
+          id='roomName'
+          label='Create Room Name'
+          name='roomName'
+          value={values.roomName}
+          onChange={setValue}
+        />
         <FormLabel>Players</FormLabel>
         <RadioGroup aria-label='players' name='players' value={values.players} onChange={setValue}>
           <FormControlLabel value='2' control={<Radio />} label='2' />

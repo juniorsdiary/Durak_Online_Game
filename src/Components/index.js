@@ -15,6 +15,8 @@ import EachCardComponent from './PlayRoomComponents/EachCardComponent.jsx';
 import Trump from './PlayRoomComponents/Trump.jsx';
 import DiscardPile from './PlayRoomComponents/DiscardPile.jsx';
 import Player from './PlayRoomComponents/Player.jsx';
+import GameField from './PlayRoomComponents/GameField.jsx';
+import GameFieldCardPlace from './PlayRoomComponents/GameFieldCardPlace.jsx';
 
 export {
   PlayersData,
@@ -34,4 +36,6 @@ export {
   Trump,
   Player,
   DiscardPile,
+  GameField,
+  GameFieldCardPlace,
 };

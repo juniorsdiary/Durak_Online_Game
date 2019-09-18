@@ -17,7 +17,7 @@ const socketHandler = socket => {
       DataHandler.joinRoom('Lobby', nickname);
       DataHandler.addUser(nickname, socket.id);
       DataHandler.updatePlayRoom('Lobby', nickname);
-      const roomsAvailable = DataHandler.getAvalableRooms();
+      const roomsAvailable = DataHandler.getAvailableRooms();
       const userData = DataHandler.connectedUsers.find(item => item.name === nickname);
       cb({ error: false, userData, errorMsg: `` });
       io.sockets.to('Lobby').emit('displayPlayers', DataHandler.connectedUsers);
@@ -30,38 +30,27 @@ const socketHandler = socket => {
     const isLoggedIn = DataHandler.checkUserConnection(nickname);
     if (isLoggedIn) {
       const room = DataHandler.getUserRoom(nickname);
-      // const playRoom = GameManager.getPlayRoom(room);
+      const playRoom = GameManager.getPlayRoom(room);
       if (room !== 'Lobby') {
-        // let index = findIndex(room, socket);
-        //
-        // let targetRoom = allRoomsInfo.filter(item => item.room === room)[0];
-        //
-        // let roomIndex = allRoomsInfo.indexOf(targetRoom);
-        //
-        // let player = playRoom.players.filter(item => item.id === socket.id);
-        //
-        // if (playRoom.gameInProgress && !player[0].active) {
-        //   gameManager.deletePlayerFromRoom(room, index);
-        // } else {
-        //   gameManager.deletePlayerFromRoom(room, index);
-        //
-        //   playRoom.resetSettings();
-        //
-        //   playRoom.lastPlayer = undefined;
-        //
-        //   io.sockets.to(room).emit('resetEvent', playRoom);
-        // }
-        //
-        // removeUser(connectedUsers, socket, nicknamesUsed, allRoomsInfo, currRoom, room);
-        //
-        // if (targetRoom.users.length === 0) {
-        //   allRoomsInfo.splice(roomIndex, 1);
-        // }
-      } else {
-        socket.leave(room);
-        DataHandler.removeUser(nickname, room);
+        const index = GameManager.findIndex(room, nickname);
+        const targetRoom = DataHandler.allRoomsInfo.find(item => item.room === room);
+        const roomIndex = DataHandler.allRoomsInfo.indexOf(targetRoom);
+        const player = playRoom.players.find(item => item.id === socket.id);
+        if (playRoom.gameInProgress && !player.active) {
+          GameManager.deletePlayerFromRoom(room, index);
+        } else {
+          GameManager.deletePlayerFromRoom(room, index);
+          playRoom.resetSettings();
+          playRoom.lastPlayer = undefined;
+          io.sockets.to(room).emit('resetEvent', playRoom);
+        }
+        if (targetRoom.users.length === 0) {
+          DataHandler.allRoomsInfo.splice(roomIndex, 1);
+        }
       }
-      const roomsAvailable = DataHandler.getAvalableRooms();
+      socket.leave(room);
+      DataHandler.removeUser(nickname, room);
+      const roomsAvailable = DataHandler.getAvailableRooms();
       io.sockets.to('Lobby').emit('displayPlayers', DataHandler.connectedUsers);
       io.sockets.to('Lobby').emit('displayRooms', roomsAvailable);
     }
@@ -75,67 +64,63 @@ const socketHandler = socket => {
   socket.on('disconnect', () => {
     const user = DataHandler.connectedUsers.find(item => item.id === socket.id);
     if (user) {
-      let room = DataHandler.currRoom[user.name];
-      // let playRoom = gameManager.getPlayRoom(room);
+      const room = DataHandler.getUserRoom(user.name);
+      const playRoom = GameManager.getPlayRoom(room);
       if (room !== 'Lobby') {
-        // let index = findIndex(room, socket);
-        // let targetRoom = allRoomsInfo.filter(item => item.room === room)[0];
-        // let roomIndex = allRoomsInfo.indexOf(targetRoom);
-        // let player = playRoom.players.filter(item => item.id === socket.id);
-        // if (playRoom.gameInProgress && !player[0].active) {
-        //   gameManager.deletePlayerFromRoom(room, index);
-        // } else {
-        //   gameManager.deletePlayerFromRoom(room, index);
-        //   playRoom.resetSettings();
-        //   playRoom.lastPlayer = undefined;
-        //   io.sockets.to(room).emit('resetEvent', playRoom);
-        // }
-        // removeUser(connectedUsers, socket, nicknamesUsed, allRoomsInfo, currRoom, room);
-        // if (targetRoom.users.length === 0) {
-        //   allRoomsInfo.splice(roomIndex, 1);
-        // }
-      } else {
-        socket.leave(room);
-        DataHandler.removeUser(user.name, room);
+        const index = GameManager.findIndex(room, user.name);
+        const targetRoom = DataHandler.allRoomsInfo.find(item => item.room === room);
+        const roomIndex = DataHandler.allRoomsInfo.indexOf(targetRoom);
+        const player = playRoom.players.find(item => item.id === socket.id);
+        if (playRoom.gameInProgress && !player[0].active) {
+          GameManager.deletePlayerFromRoom(room, index);
+        } else {
+          GameManager.deletePlayerFromRoom(room, index);
+          playRoom.resetSettings();
+          playRoom.lastPlayer = undefined;
+          io.sockets.to(room).emit('resetEvent', playRoom);
+        }
+        if (targetRoom.users.length === 0) DataHandler.allRoomsInfo.splice(roomIndex, 1);
       }
-      const roomsAvailable = DataHandler.getAvalableRooms();
+      DataHandler.removeUser(user.name, room);
+      socket.leave(room);
+      const roomsAvailable = DataHandler.getAvailableRooms();
       io.sockets.to('Lobby').emit('displayPlayers', DataHandler.connectedUsers);
       io.sockets.to('Lobby').emit('displayRooms', roomsAvailable);
     }
   });
 
-  socket.on('createRoom', async ({ roomname, password, access, players, cards, nickname }) => {
+  socket.on('createRoom', async ({ roomName, password, access, players, cards, nickname }) => {
     const room = DataHandler.getUserRoom(nickname);
 
     socket.leave(room, () => {
       DataHandler.leaveRoom(room, nickname);
     });
-    socket.join(roomname, () => {
-      DataHandler.joinRoom(roomname, nickname);
-      DataHandler.updatePlayRoom(roomname, nickname);
-      DataHandler.setSettings(roomname, password, access, players, cards);
-      const roomsAvailable = DataHandler.getAvalableRooms();
+    socket.join(roomName, () => {
+      DataHandler.joinRoom(roomName, nickname);
+      DataHandler.updatePlayRoom(roomName, nickname);
+      DataHandler.setSettings(roomName, password, access, players, cards);
+      const roomsAvailable = DataHandler.getAvailableRooms();
       io.sockets.to('Lobby').emit('displayPlayers', DataHandler.connectedUsers);
       io.sockets.to('Lobby').emit('displayRooms', roomsAvailable);
-      GameManager.initializeData(players, cards, roomname, nickname, socket.id);
+      GameManager.initializeData(players, cards, roomName, nickname, socket.id);
     });
   });
 
-  socket.on('joinRoom', (roomname, nickname) => {
+  socket.on('joinRoom', (roomName, nickname) => {
     const room = DataHandler.getUserRoom(nickname);
     socket.leave(room, () => {
       DataHandler.leaveRoom(room, nickname);
     });
-    socket.join(roomname, () => {
-      DataHandler.joinRoom(roomname, nickname);
-      DataHandler.updatePlayRoom(roomname, nickname);
-      const roomsAvailable = DataHandler.getAvalableRooms();
+    socket.join(roomName, () => {
+      DataHandler.joinRoom(roomName, nickname);
+      DataHandler.updatePlayRoom(roomName, nickname);
+      const roomsAvailable = DataHandler.getAvailableRooms();
       io.sockets.to('Lobby').emit('displayPlayers', DataHandler.connectedUsers);
       io.sockets.to('Lobby').emit('displayRooms', roomsAvailable);
-      GameManager.addUser(roomname, nickname, socket.id);
-      let playRoom = GameManager.getPlayRoom(roomname);
+      GameManager.addUser(roomName, nickname, socket.id);
+      let playRoom = GameManager.getPlayRoom(roomName);
       if (playRoom.users.length === +playRoom.numberOfPlayers) {
-        io.sockets.to(roomname).emit('readyStage', playRoom, roomname);
+        io.sockets.to(roomName).emit('readyStage', playRoom, roomName);
       }
     });
   });
@@ -151,6 +136,22 @@ const socketHandler = socket => {
       io.sockets.to(room).emit('initialSync', playRoom, room);
       io.sockets.to(room).emit('defineMove');
       io.sockets.to(room).emit('logMsgs', playRoom.logMsges);
+    }
+  });
+  socket.on('initCard', (nickname, cardData) => {
+    const room = DataHandler.getUserRoom(nickname);
+    const index = GameManager.findIndex(room, nickname);
+    GameManager.getPlayRoom(room).players[index].curCard = cardData;
+  });
+  socket.on('makeOffenceMove', nickname => {
+    const room = DataHandler.getUserRoom(nickname);
+    const playRoom = GameManager.getPlayRoom(room);
+    playRoom.makeOffenceMove();
+    if (!playRoom.endGame) {
+      io.sockets.to(room).emit('syncData', playRoom);
+      io.sockets.to(room).emit('defineMove');
+    } else {
+      io.sockets.to(room).emit('endGame', playRoom);
     }
   });
 };

@@ -44,7 +44,7 @@ class Game {
     this.playerHasLeft = false;
     this.endGame = false;
     this.endGameMsg = '';
-    this.lastPlayer = [];
+    this.lastPlayer = null;
     this.gameInProgress = false;
 
     this.shuffleDeck();
@@ -54,7 +54,12 @@ class Game {
   shuffleDeck() {
     for (let elem in this.initialDeck) {
       for (let item in this.initialDeck[elem]) {
-        this.genrealOrderDeck.push([elem, this.initialDeck[elem][item][0], this.initialDeck[elem][item][1], this.initialDeck[elem][item][2]]);
+        this.genrealOrderDeck.push([
+          elem,
+          this.initialDeck[elem][item][0],
+          this.initialDeck[elem][item][1],
+          this.initialDeck[elem][item][2],
+        ]);
       }
     }
 

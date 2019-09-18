@@ -38,25 +38,25 @@ class Lobby extends Component {
   createRoom = settings => {
     const { socket, userData, joinRoom } = this.props;
     socket.emit('createRoom', { ...settings, nickname: userData.name });
-    joinRoom(settings.roomname);
+    joinRoom(settings.roomName);
   };
 
-  checkPassword = (roomname, password) => {
+  checkPassword = (roomName, password) => {
     if (password) {
       this.setState({
         openPassword: true,
         requiredPassword: password,
-        targetRoom: roomname,
+        targetRoom: roomName,
       });
     } else {
-      this.joinRoom(roomname);
+      this.joinRoom(roomName);
     }
   };
 
-  joinRoom = roomname => {
+  joinRoom = roomName => {
     const { joinRoom, socket, userData } = this.props;
-    socket.emit('joinRoom', roomname, userData.name);
-    joinRoom(roomname);
+    socket.emit('joinRoom', roomName, userData.name);
+    joinRoom(roomName);
   };
 
   signOut = nickname => {
@@ -128,8 +128,8 @@ const boundedActions = dispatch => ({
   setAvailableRooms: data => {
     dispatch(setRoomsData(data));
   },
-  joinRoom: roomname => {
-    dispatch({ type: 'JOIN_ROOM', payload: roomname });
+  joinRoom: roomName => {
+    dispatch({ type: 'JOIN_ROOM', payload: roomName });
   },
   signout: () => {
     dispatch({ type: 'SET_AUTH', payload: false });

@@ -17,7 +17,14 @@ const SendMessageComponent = ({ submit }) => {
   );
   return (
     <form onSubmit={submitMessage}>
-      <TextField id='message' label='Type message' value={value} onChange={changeMessage} margin='normal' autoComplete={'off'} />
+      <TextField
+        id='message'
+        label='Type message'
+        value={value}
+        onChange={changeMessage}
+        margin='normal'
+        autoComplete={'off'}
+      />
     </form>
   );
 };

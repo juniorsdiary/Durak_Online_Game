@@ -5,7 +5,9 @@ import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Grid, Typography } from '@material-ui/core';
 import { CreateNickName } from 'Components';
+
 const port = 'http://localhost:8080';
+
 class MainPage extends Component {
   state = {
     error: '',

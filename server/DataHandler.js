@@ -25,7 +25,7 @@ class DataHandler {
     this.allRoomsInfo.find(item => item.room === roomName).users.push(nickname);
     this.connectedUsers.find(item => item.name === nickname).room = roomName;
   }
-  getAvalableRooms() {
+  getAvailableRooms() {
     return this.allRoomsInfo.filter(item => !this.isRoomFull(this.findRoomIndex(item.room)) && item.room !== 'Lobby');
   }
   isRoomFull(roomIndex) {
@@ -64,8 +64,8 @@ class DataHandler {
     const index = users.indexOf(nickname);
     users.splice(index, 1);
   }
-  setSettings(roomname, password, access, players, cards) {
-    this.allRoomsInfo.find(item => item.room === roomname).settings = { password, players, cards, access };
+  setSettings(roomName, password, access, players, cards) {
+    this.allRoomsInfo.find(item => item.room === roomName).settings = { password, players, cards, access };
   }
 }
 

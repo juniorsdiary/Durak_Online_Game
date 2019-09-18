@@ -6,11 +6,12 @@ import cardBack from '../../images/back.jpg';
 
 const useStyles = makeStyles(() => ({
   parent: {
-    marginLeft: props => `${props.marginValue}px`,
+    margin: props => `${props.margin}px`,
     position: 'absolute',
     width: '100px',
     height: '141px',
     perspective: '1000px',
+    zIndex: props => (props.beaten ? 1 : 0),
   },
   card: {
     position: 'relative',
@@ -41,13 +42,13 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export default function EachCardComponent({ marginValue, dragValue, dragEvent, rotated, cardData }) {
+export default function EachCardComponent({ margin, dragValue, dragEvent, rotated, cardData, beaten }) {
   const backgroundPosition = `${cardData[1]}px ${cardData[2]}px`;
-  const classes = useStyles({ marginValue, rotated, backgroundPosition });
+  const classes = useStyles({ margin, rotated, backgroundPosition, beaten });
 
   return (
-    <div className={classes.parent} draggable={dragValue} onDragStart={dragEvent}>
-      <div className={classes.card} datasuit={cardData[0]} datavalue={cardData[3]}>
+    <div className={classes.parent} draggable={dragValue} onDragStart={() => dragEvent(cardData)}>
+      <div className={classes.card}>
         <div className={classes.face}></div>
         <div className={classes.back}></div>
       </div>
@@ -56,11 +57,12 @@ export default function EachCardComponent({ marginValue, dragValue, dragEvent, r
 }
 
 EachCardComponent.propTypes = {
-  marginValue: PropTypes.number,
+  margin: PropTypes.string,
   dragEvent: PropTypes.func,
   rotated: PropTypes.bool,
   dragValue: PropTypes.bool,
   cardData: PropTypes.array,
+  beaten: PropTypes.bool,
 };
 
 EachCardComponent.defaultProps = {
