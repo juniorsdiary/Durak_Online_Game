@@ -22,7 +22,7 @@ const socketHandler = socket => {
       cb({ error: false, userData, errorMsg: `` });
       io.sockets.to('Lobby').emit('displayPlayers', DataHandler.connectedUsers);
       io.sockets.to('Lobby').emit('displayRooms', roomsAvailable);
-      io.sockets.emit('syncMsgs', DataHandler.messages);
+      io.sockets.emit('syncMessages', DataHandler.messages);
     }
   });
 
@@ -71,7 +71,7 @@ const socketHandler = socket => {
         const targetRoom = DataHandler.allRoomsInfo.find(item => item.room === room);
         const roomIndex = DataHandler.allRoomsInfo.indexOf(targetRoom);
         const player = playRoom.players.find(item => item.id === socket.id);
-        if (playRoom.gameInProgress && !player[0].active) {
+        if (playRoom.gameInProgress && !player.active) {
           GameManager.deletePlayerFromRoom(room, index);
         } else {
           GameManager.deletePlayerFromRoom(room, index);
@@ -135,7 +135,7 @@ const socketHandler = socket => {
       playRoom.dealCards();
       io.sockets.to(room).emit('initialSync', playRoom, room);
       io.sockets.to(room).emit('defineMove');
-      io.sockets.to(room).emit('logMsgs', playRoom.logMsges);
+      io.sockets.to(room).emit('logMessages', playRoom.logMessages);
     }
   });
   socket.on('initCard', (nickname, cardData) => {
