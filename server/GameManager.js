@@ -20,7 +20,7 @@ class Game {
     this.numberOfPlayers = +numberOfPlayers;
     this.numberOfCards = numberOfCards;
     this.initialDeck = cards;
-    this.genrealOrderDeck = [];
+    this.generalOrderDeck = [];
     this.shortDeck = [];
     this.shuffledDeck = [];
     this.initialDeal = 0;
@@ -36,7 +36,7 @@ class Game {
     this.curCard = [];
     this.marginValue = 0;
     this.defender = {};
-    this.logMsges = [];
+    this.logMessages = [];
     this.initialPlayerIndex = 0;
     this.taken = false;
     this.gameField = {};
@@ -54,7 +54,7 @@ class Game {
   shuffleDeck() {
     for (let elem in this.initialDeck) {
       for (let item in this.initialDeck[elem]) {
-        this.genrealOrderDeck.push([
+        this.generalOrderDeck.push([
           elem,
           this.initialDeck[elem][item][0],
           this.initialDeck[elem][item][1],
@@ -64,10 +64,10 @@ class Game {
     }
 
     if (this.numberOfCards !== '52') {
-      this.shortDeck = this.genrealOrderDeck.filter(item => item[3] > 5);
+      this.shortDeck = this.generalOrderDeck.filter(item => item[3] > 5);
       this.shuffledDeck = shuffle(this.shortDeck);
     } else {
-      this.shuffledDeck = shuffle(this.genrealOrderDeck);
+      this.shuffledDeck = shuffle(this.generalOrderDeck);
     }
   }
 
@@ -180,7 +180,7 @@ class Game {
   logNextTurn() {
     let msg = { nickName: this.curPlayer.nickname, msgIndex: 0 };
 
-    this.logMsges.unshift(msg);
+    this.logMessages.unshift(msg);
   }
 
   logMessages() {
@@ -192,7 +192,7 @@ class Game {
       msg = { nickName: this.defender.nickname, msgIndex: 2 };
     }
 
-    this.logMsges.unshift(msg);
+    this.logMessages.unshift(msg);
   }
 
   checkConditions() {
@@ -450,7 +450,7 @@ class Game {
 
     this.discardPile = [];
 
-    this.genrealOrderDeck = [];
+    this.generalOrderDeck = [];
 
     this.shortDeck = [];
 
@@ -466,7 +466,7 @@ class Game {
 
     this.endGame = false;
 
-    this.logMsges = [];
+    this.logMessages = [];
 
     this.shuffleDeck();
 
@@ -475,12 +475,12 @@ class Game {
 }
 
 class Player {
-  constructor(id, nickname, roomName, systMsgs) {
+  constructor(id, nickname, roomName, systMessages) {
     this.id = id;
     this.cards = [];
     this.nickname = nickname;
     this.roomName = roomName;
-    this.systMsgs = systMsgs;
+    this.systMessages = systMessages;
     this.trumps = [];
     this.cheapTrump = [];
     this.turn = false;
