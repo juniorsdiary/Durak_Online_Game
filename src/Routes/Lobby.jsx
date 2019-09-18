@@ -113,7 +113,7 @@ Lobby.propTypes = {
   joinRoom: PropTypes.func,
 };
 
-const props = state => ({
+const mapStateToProps = state => ({
   socket: state.authentication.socket,
   isInRoom: state.authentication.isInRoom,
   users: state.commonData.usersData,
@@ -121,7 +121,7 @@ const props = state => ({
   userData: state.commonData.userData,
 });
 
-const boundedActions = dispatch => ({
+const mapDispatchToProps = dispatch => ({
   setConnectedUsers: data => {
     dispatch(setUsersData(data));
   },
@@ -139,8 +139,8 @@ const boundedActions = dispatch => ({
 const StyledReactComponent = withStyles(styles)(Lobby);
 
 const ReduxConnected = connect(
-  props,
-  boundedActions
+  mapStateToProps,
+  mapDispatchToProps
 )(StyledReactComponent);
 
 export default ReduxConnected;

@@ -56,9 +56,9 @@ const socketHandler = socket => {
     }
   });
 
-  socket.on('sendMsg', ({ msg, nickname }) => {
+  socket.on('sendMessage', ({ msg, nickname }) => {
     DataHandler.addMessage(msg, nickname);
-    io.sockets.emit('addMsg', DataHandler.messages);
+    io.sockets.emit('addMessage', DataHandler.messages);
   });
 
   socket.on('disconnect', () => {

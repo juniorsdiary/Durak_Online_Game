@@ -9,9 +9,6 @@ import { CreateNickName } from 'Components';
 const port = 'http://localhost:8080';
 
 class MainPage extends Component {
-  state = {
-    error: '',
-  };
   componentDidMount() {
     this.initSocket();
   }
@@ -20,11 +17,9 @@ class MainPage extends Component {
     this.props.setSocket(socket);
   };
   setUser = ({ error, userData, errorMsg }) => {
-    const { setAuth, setUserData } = this.props;
-    if (error) {
-      this.setState({ error: errorMsg });
-    } else {
-      this.setState({ error: errorMsg });
+    const { setAuth, setUserData, setErrorMessage } = this.props;
+    setErrorMessage(errorMsg);
+    if (!error) {
       setAuth(!error);
       setUserData(userData);
     }
@@ -35,7 +30,7 @@ class MainPage extends Component {
   };
 
   render() {
-    const { error } = this.state;
+    const { errorMessage } = this.props;
     if (this.props.isAuthenticated) {
       return <Redirect to={'/lobby'} />;
     }
@@ -45,36 +40,47 @@ class MainPage extends Component {
           <Typography component='h1' variant='h5' align='center'>
             Create nickname
           </Typography>
-          <CreateNickName submit={this.handleSubmit} error={error} />
+          <CreateNickName submit={this.handleSubmit} error={errorMessage} />
         </Grid>
       </Grid>
     );
   }
 }
+
 MainPage.propTypes = {
   isAuthenticated: PropTypes.bool,
   setAuth: PropTypes.func,
   socket: PropTypes.object,
   setSocket: PropTypes.func,
   setUserData: PropTypes.func,
+  setErrorMessage: PropTypes.func,
+  errorMessage: PropTypes.string,
 };
 
+const mapStateToProps = state => ({
+  isAuthenticated: state.authentication.isAuthenticated,
+  socket: state.authentication.socket,
+  errorMessage: state.authentication.errorMessage,
+});
+
+const mapDispatchToProps = dispatch => ({
+  setAuth: value => {
+    dispatch({ type: 'SET_AUTH', payload: value });
+  },
+  setUserData: data => {
+    dispatch({ type: 'SET_USER_DATA', payload: data });
+  },
+  setErrorMessage: message => {
+    dispatch({ type: 'SET_ERROR', payload: message });
+  },
+  setSocket: socket => {
+    dispatch({ type: 'SET_SOCKET', payload: socket });
+  },
+});
+
 const ReduxConnected = connect(
-  state => ({
-    isAuthenticated: state.authentication.isAuthenticated,
-    socket: state.authentication.socket,
-  }),
-  dispatch => ({
-    setAuth: value => {
-      dispatch({ type: 'SET_AUTH', payload: value });
-    },
-    setUserData: data => {
-      dispatch({ type: 'SET_USER_DATA', payload: data });
-    },
-    setSocket: socket => {
-      dispatch({ type: 'SET_SOCKET', payload: socket });
-    },
-  })
+  mapStateToProps,
+  mapDispatchToProps
 )(MainPage);
 
 export default ReduxConnected;

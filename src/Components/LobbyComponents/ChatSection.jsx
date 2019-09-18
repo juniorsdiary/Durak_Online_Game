@@ -20,10 +20,10 @@ const styles = {
 class ChatSection extends Component {
   componentDidMount() {
     const { socket, setMessagesData } = this.props;
-    socket.on('syncMsgs', messages => {
+    socket.on('syncMessages', messages => {
       setMessagesData(messages);
     });
-    socket.on('addMsg', messages => {
+    socket.on('addMessage', messages => {
       setMessagesData(messages);
     });
   }
@@ -33,7 +33,7 @@ class ChatSection extends Component {
   };
   handleSubmit = msg => {
     const { socket, nickname } = this.props;
-    socket.emit('sendMsg', { msg, nickname });
+    socket.emit('sendMessage', { msg, nickname });
   };
   render() {
     const { classes, messages } = this.props;

@@ -23,7 +23,7 @@ const AvailableRooms = ({ rooms, checkPassword, openSettings }) => {
     <Grid item xs={4}>
       <Grid container direction='column' alignItems='center' className={classes.wrapper}>
         <Typography align='center' variant='h4'>
-          Avalable Rooms
+          Available Rooms
         </Typography>
         <Grid container direction='column' spacing={1} className={classes.content}>
           {renderRooms}

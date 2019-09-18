@@ -10,3 +10,4 @@ export const SET_READY = 'SET_READY';
 export const SET_CLIEN_INDEX = 'SET_CLIEN_INDEX';
 export const ASSIGN_PLAYERS_INFO = 'ASSIGN_PLAYERS_INFO';
 export const DEFINE_PLAYERS_MOVE = 'DEFINE_PLAYERS_MOVE';
+export const SET_ERROR = 'SET_ERROR';

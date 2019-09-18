@@ -3,6 +3,7 @@ const initialState = {
   isAuthenticated: false,
   isInRoom: '',
   socket: {},
+  errorMessage: '',
 };
 export default function authentication(state = initialState, action) {
   const { type, payload } = action;
@@ -21,6 +22,11 @@ export default function authentication(state = initialState, action) {
       return {
         ...state,
         isInRoom: payload,
+      };
+    case types.SET_ERROR:
+      return {
+        ...state,
+        errorMessage: payload,
       };
     default:
       return state;
