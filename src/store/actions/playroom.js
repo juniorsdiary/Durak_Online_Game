@@ -12,6 +12,14 @@ export function assignPlayersInfo(number, index) {
   return { type: types.ASSIGN_PLAYERS_INFO, payload: [number, index] };
 }
 
+export function setControlsState(data) {
+  console.log('TCL: setControlsState -> args', data);
+  return {
+    type: types.SET_CONTROLS,
+    paylaod: data,
+  };
+}
+
 export function definePlayersMove(curPlayer, defender, id) {
   let value = {};
   if (curPlayer.id === id && curPlayer.turn) {

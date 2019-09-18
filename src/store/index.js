@@ -1,13 +1,20 @@
 import store, { history } from './store';
 import { setUsersData, setRoomsData } from './actions/data';
-import { setPlayRoomData, setClientIndex, assignPlayersInfo, definePlayersMove } from './actions/playroom';
+import {
+  setClientIndex,
+  setPlayRoomData,
+  setControlsState,
+  definePlayersMove,
+  assignPlayersInfo,
+} from './actions/playroom';
 export {
   store,
   history,
   setUsersData,
   setRoomsData,
-  definePlayersMove,
-  setPlayRoomData,
   setClientIndex,
+  setPlayRoomData,
+  setControlsState,
+  definePlayersMove,
   assignPlayersInfo,
 };

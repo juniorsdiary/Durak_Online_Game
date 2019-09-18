@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { ReadyComponent, Deck, Trump, DiscardPile, Player, GameField } from 'Components';
-import { setPlayRoomData, setClientIndex, assignPlayersInfo, definePlayersMove } from 'Store';
+import { ReadyComponent, Deck, Trump, DiscardPile, Player, GameField, ControlsComponent } from 'Components';
+import { setPlayRoomData, setClientIndex, assignPlayersInfo, definePlayersMove, setControlsState } from 'Store';
 import { withStyles } from '@material-ui/styles';
 import { Container } from '@material-ui/core';
 import { assignIndexes } from 'Utilities';
@@ -22,27 +22,32 @@ const styles = {
 class PlayRoom extends Component {
   componentDidMount() {
     const { socket, setPlayRoomData, setClientIndex, definePlayersMove, assignPlayersInfo } = this.props;
+
     socket.on('readyStage', PlayRoomData => {
       let player = PlayRoomData.players.find(item => item.id === socket.id);
       let startIndex = PlayRoomData.players.indexOf(player);
       setPlayRoomData(PlayRoomData);
       setClientIndex(startIndex);
     });
+
     socket.on('initialSync', PlayRoomData => {
       const { clientIndex } = this.props;
       setPlayRoomData(PlayRoomData);
       assignIndexes(clientIndex, PlayRoomData.numberOfPlayers).forEach(assignPlayersInfo);
     });
+
     socket.on('defineMove', () => {
       const { data } = this.props;
       definePlayersMove(data.curPlayer, data.defender, socket.id);
     });
+
     socket.on('syncData', PlayRoomData => {
       const { clientIndex } = this.props;
       setPlayRoomData(PlayRoomData);
       assignIndexes(clientIndex, PlayRoomData.numberOfPlayers).forEach(assignPlayersInfo);
     });
   }
+
   setReadyValue = () => {
     const { socket, setReady, nickname } = this.props;
     setReady();
@@ -68,28 +73,31 @@ class PlayRoom extends Component {
   };
 
   makeDefenceMove = () => {
-    const { socket, turn } = this.props;
+    const { socket, turn, nickname } = this.props;
 
     if (turn) {
-      socket.emit('makeDeffenceMove');
+      socket.emit('makeDeffenceMove', nickname);
     }
   };
 
-  forbidMsg = () => {
-    // this.setState(prevState => {
-    //   return {
-    //     hidden: !prevState.hidden,
-    //   };
-    // });
-    //
-    // setTimeout(() => {
-    //   this.setState(prevState => {
-    //     return {
-    //       hidden: !prevState.hidden,
-    //     };
-    //   });
-    // }, 1500);
+  takeCards = () => {
+    const { socket, activeTake, setControlsState, nickname } = this.props;
+
+    if (activeTake) {
+      socket.emit('interPhase', nickname);
+      setControlsState({ activeTake: false, activeDiscard: false });
+    }
   };
+
+  discardCards = () => {
+    const { socket, activeDiscard, nickname } = this.props;
+
+    if (activeDiscard) {
+      socket.emit('takeOrDiscard', nickname, false);
+    }
+  };
+
+  forbidMsg = () => {};
 
   render() {
     const {
@@ -102,7 +110,10 @@ class PlayRoom extends Component {
       player2info,
       player3info,
       defenceOrOffence,
+      activeTake,
+      activeDiscard,
     } = this.props;
+
     const isUsersReady = data.usersReady && data.usersReady.every(item => item);
 
     return (
@@ -120,15 +131,25 @@ class PlayRoom extends Component {
                 <Deck deck={data.shuffledDeck} />
                 <Trump trump={data.trumpData} />
               </Container>
+
               <DiscardPile data={data.discardPile} />
+
               <Player playerInfo={player0info} playerNumber={0} socket={socket} dragEvent={this.dragEvent} />
               <Player playerInfo={player1info} playerNumber={1} socket={socket} dragEvent={this.dragEvent} />
               <Player playerInfo={player2info} playerNumber={2} socket={socket} dragEvent={this.dragEvent} />
               <Player playerInfo={player3info} playerNumber={3} socket={socket} dragEvent={this.dragEvent} />
+
               <GameField
                 gameField={data.gameField}
                 onDragOver={this.dragOverEvent}
                 onDrop={defenceOrOffence === 'offence' ? this.makeOffenceMove : this.makeDefenceMove}
+              />
+
+              <ControlsComponent
+                takeCards={this.takeCards}
+                discardCards={this.discardCards}
+                activeTake={activeTake}
+                activeDiscard={activeDiscard}
               />
             </>
           )}
@@ -143,15 +164,6 @@ class PlayRoom extends Component {
 
           {/* <div className='logBlock'>{renderLogMsgs}</div> */}
 
-          {/* <div className='controls'>
-            <button id='take' className={activeTake ? 'take activeBtn' : 'take inactiveBtn'} onClick={this.takeCards}>
-              Take
-            </button>
-
-            <button id='discard' className={activeDiscard ? 'discard activeBtn' : 'discard inactiveBtn'} onClick={this.discardCards}>
-              Discard
-            </button>
-          </div> */}
           {/* <Timer timerBlock={timerBlock} widthValue={widthValue} text={textsData[9]} /> */}
         </div>
       </>
@@ -160,36 +172,41 @@ class PlayRoom extends Component {
 }
 
 PlayRoom.propTypes = {
-  socket: PropTypes.object,
-  setPlayRoomData: PropTypes.func,
-  data: PropTypes.object,
-  setReady: PropTypes.func,
-  isReady: PropTypes.bool,
-  nickname: PropTypes.string,
   clientIndex: PropTypes.number,
+  nickname: PropTypes.string,
+  defenceOrOffence: PropTypes.string,
+  setReady: PropTypes.func,
   setClientIndex: PropTypes.func,
+  setControlsState: PropTypes.func,
+  setPlayRoomData: PropTypes.func,
   assignPlayersInfo: PropTypes.func,
   definePlayersMove: PropTypes.func,
+  data: PropTypes.object,
+  socket: PropTypes.object,
   classes: PropTypes.object,
   player0info: PropTypes.object,
   player1info: PropTypes.object,
   player2info: PropTypes.object,
   player3info: PropTypes.object,
   turn: PropTypes.bool,
-  defenceOrOffence: PropTypes.string,
+  isReady: PropTypes.bool,
+  activeTake: PropTypes.bool,
+  activeDiscard: PropTypes.bool,
 };
 
 const props = state => ({
   socket: state.authentication.socket,
+  nickname: state.commonData.userData.name,
+  turn: state.playRoomData.turn,
   data: state.playRoomData.playRoom,
   isReady: state.playRoomData.isReady,
-  nickname: state.commonData.userData.name,
-  clientIndex: state.playRoomData.clientIndex,
   player0info: state.playRoomData.player0,
   player1info: state.playRoomData.player1,
   player2info: state.playRoomData.player2,
   player3info: state.playRoomData.player3,
-  turn: state.playRoomData.turn,
+  activeTake: state.playRoomData.activeTake,
+  clientIndex: state.playRoomData.clientIndex,
+  activeDiscard: state.playRoomData.activeDiscard,
   defenceOrOffence: state.playRoomData.defenceOrOffence,
 });
 
@@ -205,6 +222,9 @@ const dispatch = dispatch => ({
   },
   definePlayersMove: (curPlayer, defender, id) => {
     dispatch(definePlayersMove(curPlayer, defender, id));
+  },
+  setControlsState: data => {
+    dispatch(setControlsState(data));
   },
   setReady: () => {
     dispatch({ type: 'SET_READY', payload: true });

@@ -17,8 +17,10 @@ import DiscardPile from './PlayRoomComponents/DiscardPile.jsx';
 import Player from './PlayRoomComponents/Player.jsx';
 import GameField from './PlayRoomComponents/GameField.jsx';
 import GameFieldCardPlace from './PlayRoomComponents/GameFieldCardPlace.jsx';
+import ControlsComponent from './PlayRoomComponents/ControlsComponent.jsx';
 
 export {
+  ControlsComponent,
   PlayersData,
   Header,
   UserCard,
