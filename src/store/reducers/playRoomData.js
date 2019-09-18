@@ -1,4 +1,5 @@
 import * as types from '../types';
+
 const initialState = {
   playRoom: {},
   isReady: false,
@@ -8,6 +9,7 @@ const initialState = {
   turn: false,
   defenceOrOffence: '',
 };
+
 export default function playRoomData(state = initialState, action) {
   const { type, payload } = action;
   switch (type) {
@@ -42,6 +44,8 @@ export default function playRoomData(state = initialState, action) {
         activeTake: payload.activeTake,
         activeDiscard: payload.activeDiscard,
       };
+    case types.RESET_DATA:
+      return { initialState };
     default:
       return state;
   }

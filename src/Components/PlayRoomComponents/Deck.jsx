@@ -13,9 +13,10 @@ const useStyles = makeStyles({
 
 function Deck({ deck }) {
   const classes = useStyles();
-  let renderCards = deck.map((item, index) => (
-    <EachCardComponent margin={`0 0 0 ${index / 3}`} key={index} cardData={item} />
-  ));
+
+  let renderCards = deck.map((item, index) => {
+    return <EachCardComponent margin={`0 0 0 ${index / 3}`} key={index} cardData={item} />;
+  });
 
   return <Paper className={classes.deck}>{renderCards}</Paper>;
 }

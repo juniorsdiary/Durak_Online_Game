@@ -1,7 +1,16 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { ReadyComponent, Deck, Trump, DiscardPile, Player, GameField, ControlsComponent } from 'Components';
+import {
+  ReadyComponent,
+  Deck,
+  Trump,
+  DiscardPile,
+  Player,
+  GameField,
+  ControlsComponent,
+  ByPlayMessages,
+} from 'Components';
 import { setPlayRoomData, setClientIndex, assignPlayersInfo, definePlayersMove, setControlsState } from 'Store';
 import { withStyles } from '@material-ui/styles';
 import { Container } from '@material-ui/core';
@@ -21,19 +30,13 @@ const styles = {
 
 class PlayRoom extends Component {
   componentDidMount() {
-    const { socket, setPlayRoomData, setClientIndex, definePlayersMove, assignPlayersInfo } = this.props;
+    const { socket, setPlayRoomData, setClientIndex, definePlayersMove, assignPlayersInfo, setReady } = this.props;
 
     socket.on('readyStage', PlayRoomData => {
       let player = PlayRoomData.players.find(item => item.id === socket.id);
       let startIndex = PlayRoomData.players.indexOf(player);
       setPlayRoomData(PlayRoomData);
       setClientIndex(startIndex);
-    });
-
-    socket.on('initialSync', PlayRoomData => {
-      const { clientIndex } = this.props;
-      setPlayRoomData(PlayRoomData);
-      assignIndexes(clientIndex, PlayRoomData.numberOfPlayers).forEach(assignPlayersInfo);
     });
 
     socket.on('defineMove', () => {
@@ -46,11 +49,24 @@ class PlayRoom extends Component {
       setPlayRoomData(PlayRoomData);
       assignIndexes(clientIndex, PlayRoomData.numberOfPlayers).forEach(assignPlayersInfo);
     });
+
+    socket.on('endGame', () => {
+      setReady(false);
+      setControlsState({ activeTake: false, activeDiscard: false });
+    });
+
+    socket.on('startTimer', curPlayer => {
+      const { turn } = this.props;
+      if (curPlayer.id === socket.id && turn) {
+        // if only the curPlayer is a client the timer starts and the progress line shows
+        // this.start();
+      }
+    });
   }
 
   setReadyValue = () => {
     const { socket, setReady, nickname } = this.props;
-    setReady();
+    setReady(true);
     socket.emit('ready', nickname);
   };
 
@@ -97,7 +113,13 @@ class PlayRoom extends Component {
     }
   };
 
-  forbidMsg = () => {};
+  forbidMsg = () => {
+    console.log('forbid');
+  };
+
+  start = () => {
+    console.log('start');
+  };
 
   render() {
     const {
@@ -113,9 +135,9 @@ class PlayRoom extends Component {
       activeTake,
       activeDiscard,
     } = this.props;
-
+    console.log(data.usersReady);
     const isUsersReady = data.usersReady && data.usersReady.every(item => item);
-
+    console.log('TCL: PlayRoom -> render -> isUsersReady', isUsersReady);
     return (
       <>
         <ReadyComponent
@@ -151,6 +173,8 @@ class PlayRoom extends Component {
                 activeTake={activeTake}
                 activeDiscard={activeDiscard}
               />
+
+              <ByPlayMessages messages={data.logMessages} />
             </>
           )}
 
@@ -161,8 +185,6 @@ class PlayRoom extends Component {
           {/* <div className='forbidMsg' hidden={hidden}>
             {textsData[3]}
           </div> */}
-
-          {/* <div className='logBlock'>{renderLogMsgs}</div> */}
 
           {/* <Timer timerBlock={timerBlock} widthValue={widthValue} text={textsData[9]} /> */}
         </div>
@@ -176,9 +198,10 @@ PlayRoom.propTypes = {
   nickname: PropTypes.string,
   defenceOrOffence: PropTypes.string,
   setReady: PropTypes.func,
+  resetData: PropTypes.func,
   setClientIndex: PropTypes.func,
-  setControlsState: PropTypes.func,
   setPlayRoomData: PropTypes.func,
+  setControlsState: PropTypes.func,
   assignPlayersInfo: PropTypes.func,
   definePlayersMove: PropTypes.func,
   data: PropTypes.object,
@@ -226,8 +249,11 @@ const dispatch = dispatch => ({
   setControlsState: data => {
     dispatch(setControlsState(data));
   },
-  setReady: () => {
-    dispatch({ type: 'SET_READY', payload: true });
+  resetData: () => {
+    dispatch({ type: 'RESET_DATA' });
+  },
+  setReady: value => {
+    dispatch({ type: 'SET_READY', payload: value });
   },
 });
 

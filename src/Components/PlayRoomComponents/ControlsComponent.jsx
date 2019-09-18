@@ -14,14 +14,14 @@ const useStyles = makeStyles({
 const ControlsComponent = ({ takeCards, discardCards, activeTake, activeDiscard }) => {
   const classes = useStyles();
   return (
-    <Container className={classes.controls}>
+    <div className={classes.controls}>
       <Button variant='contained' color='primary' disabled={!activeTake} onClick={takeCards}>
         Take
       </Button>
       <Button variant='contained' color='primary' disabled={!activeDiscard} onClick={discardCards}>
         Discard
       </Button>
-    </Container>
+    </div>
   );
 };
 

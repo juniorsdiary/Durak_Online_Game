@@ -13,10 +13,9 @@ export function assignPlayersInfo(number, index) {
 }
 
 export function setControlsState(data) {
-  console.log('TCL: setControlsState -> args', data);
   return {
     type: types.SET_CONTROLS,
-    paylaod: data,
+    payload: data,
   };
 }
 

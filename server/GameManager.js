@@ -34,7 +34,6 @@ class Game {
     this.curPlayerIndex = 0;
     this.curPlayer = {};
     this.curCard = [];
-    this.marginValue = 0;
     this.defender = {};
     this.logMessages = [];
     this.initialPlayerIndex = 0;
@@ -183,7 +182,7 @@ class Game {
     this.logMessages.unshift(msg);
   }
 
-  logMessages() {
+  logNextMessages() {
     let msg;
 
     if (this.taken) {
@@ -370,7 +369,7 @@ class Game {
   }
 
   takeScenario() {
-    this.logMessages();
+    this.logNextMessages();
 
     this.curPlayerIndex = this.players.indexOf(this.defender);
 
@@ -386,7 +385,7 @@ class Game {
   }
 
   discardScenario() {
-    this.logMessages();
+    this.logNextMessages();
 
     this.curPlayer = this.getPlayer(this.curPlayerIndex);
 
@@ -445,31 +444,19 @@ class Game {
 
   resetSettings() {
     this.players.forEach(item => item.resetUser());
-
-    this.usersReady = [];
-
+    this.usersReady = this.usersReady.map(item => !item);
     this.discardPile = [];
-
     this.generalOrderDeck = [];
-
     this.shortDeck = [];
-
     this.shuffledDeck = [];
-
     this.trumpData = undefined;
-
     this.gameInProgress = false;
-
     this.playerHasLeft = false;
-
     this.endGameMsg = '';
-
     this.endGame = false;
-
     this.logMessages = [];
-
+    this.gameField = {};
     this.shuffleDeck();
-
     this.chooseTrump();
   }
 }
