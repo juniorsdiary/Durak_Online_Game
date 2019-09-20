@@ -71,6 +71,7 @@ class PlayRoom extends Component {
   };
 
   dragEvent = cardData => {
+    console.log('TCL: PlayRoom -> cardData', cardData);
     const { socket, nickname } = this.props;
     socket.emit('initCard', nickname, cardData);
   };

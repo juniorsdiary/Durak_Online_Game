@@ -22,6 +22,7 @@ const socketHandler = socket => {
       cb({ error, message });
     }
   });
+
   socket.on('signOut', nickname => {
     const userData = DataHandler.getData('users', nickname);
     if (userData.room !== 'Lobby') {
@@ -37,19 +38,24 @@ const socketHandler = socket => {
         io.sockets.to(userData.room).emit('endGame');
         io.sockets.to(userData.room).emit('syncData', PlayRoom);
       }
+      DataHandler.deleteData('user', nickname);
       if (targetRoom.users.length === 0) {
         DataHandler.deleteData('room', userData.room);
       }
+    } else {
+      DataHandler.deleteData('user', nickname);
     }
     socket.leave(userData.room);
-    DataHandler.deleteData('user', nickname);
+
     io.sockets.to('Lobby').emit('displayPlayers', DataHandler.getData('users'));
     io.sockets.to('Lobby').emit('displayRooms', DataHandler.getData('rooms'));
   });
+
   socket.on('sendMessage', ({ message, name }) => {
     DataHandler.addData('message', message, name);
     io.sockets.emit('syncMessages', DataHandler.getData('messages'));
   });
+
   socket.on('disconnect', () => {
     const userData = DataHandler.getData('users').find(item => item.id === socket.id);
     if (userData) {
@@ -65,12 +71,14 @@ const socketHandler = socket => {
           io.sockets.to(userData.room).emit('endGame');
           io.sockets.to(userData.room).emit('syncData', PlayRoom);
         }
+        DataHandler.deleteData('user', userData.user);
         if (PlayRoom.users.length === 0) {
           DataHandler.deleteData('room', userData.room);
         }
+      } else {
+        DataHandler.deleteData('user', userData.user);
       }
       socket.leave(userData.room);
-      DataHandler.deleteData('user', userData.user);
       io.sockets.to('Lobby').emit('displayPlayers', DataHandler.getData('users'));
       io.sockets.to('Lobby').emit('displayRooms', DataHandler.getData('rooms'));
     }
@@ -128,6 +136,7 @@ const socketHandler = socket => {
   });
 
   socket.on('makeOffenceMove', nickname => {
+    console.log(nickname);
     const userData = DataHandler.getData('users', nickname);
     const PlayRoom = GameManager.getPlayRoom(userData.room);
     PlayRoom.makeOffenceMove();
