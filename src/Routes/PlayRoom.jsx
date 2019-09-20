@@ -47,7 +47,7 @@ class PlayRoom extends Component {
     socket.on('syncData', PlayRoomData => {
       const { clientIndex } = this.props;
       setPlayRoomData(PlayRoomData);
-      assignIndexes(clientIndex, PlayRoomData.numberOfPlayers).forEach(assignPlayersInfo);
+      assignIndexes(clientIndex, PlayRoomData.playersNumber).forEach(assignPlayersInfo);
     });
 
     socket.on('endGame', () => {
@@ -92,7 +92,7 @@ class PlayRoom extends Component {
     const { socket, turn, nickname } = this.props;
 
     if (turn) {
-      socket.emit('makeDeffenceMove', nickname);
+      socket.emit('makeDefenceMove', nickname);
     }
   };
 
@@ -135,19 +135,17 @@ class PlayRoom extends Component {
       activeTake,
       activeDiscard,
     } = this.props;
-    console.log(data.usersReady);
-    const isUsersReady = data.usersReady && data.usersReady.every(item => item);
-    console.log('TCL: PlayRoom -> render -> isUsersReady', isUsersReady);
     return (
       <>
         <ReadyComponent
-          activeUsers={isUsersReady}
+          activeUsers={data.usersReady}
           users={data.users}
           isReady={isReady}
+          isFull={data.isFull}
           setReadyState={this.setReadyValue}
         />
         <div role='presentation' onSelect={() => false} onMouseDown={() => false}>
-          {isUsersReady && (
+          {data.usersReady && data.isFull && (
             <>
               <Container className={classes.cards}>
                 <Deck deck={data.shuffledDeck} />
@@ -219,7 +217,7 @@ PlayRoom.propTypes = {
 
 const props = state => ({
   socket: state.authentication.socket,
-  nickname: state.commonData.userData.name,
+  nickname: state.commonData.userData.user,
   turn: state.playRoomData.turn,
   data: state.playRoomData.playRoom,
   isReady: state.playRoomData.isReady,

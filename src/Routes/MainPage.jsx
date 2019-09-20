@@ -16,9 +16,9 @@ class MainPage extends Component {
     const socket = io(port);
     this.props.setSocket(socket);
   };
-  setUser = ({ error, userData, errorMsg }) => {
+  setUser = ({ error, userData, message }) => {
     const { setAuth, setUserData, setErrorMessage } = this.props;
-    setErrorMessage(errorMsg);
+    setErrorMessage(message);
     if (!error) {
       setAuth(!error);
       setUserData(userData);

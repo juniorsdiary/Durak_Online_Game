@@ -1,17 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { ListItem, ListItemText } from '@material-ui/core';
-const UserCard = ({ id, name, room }) => {
+const UserCard = ({ user, room }) => {
   return (
     <ListItem dense>
-      <ListItemText primary={name} secondary={room} />
+      <ListItemText primary={user} secondary={room} />
     </ListItem>
   );
 };
 
 UserCard.propTypes = {
-  id: PropTypes.string,
-  name: PropTypes.string,
+  user: PropTypes.string,
   room: PropTypes.string,
 };
 

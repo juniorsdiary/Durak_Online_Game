@@ -10,18 +10,18 @@ const useStyles = makeStyles({
 });
 
 const Player = ({ socket, playerInfo, playerNumber, dragEvent }) => {
-  const { nickname, cards, id, position, turn } = playerInfo;
+  const { nickname, cards, id, turn } = playerInfo;
   const classes = useStyles({ playerNumber });
 
   const renderCards = cards.map((item, index) => {
-    const margin = id !== socket.id && position > 1 ? index * 20 : index * distance(cards.length);
+    const margin = id === socket.id ? index * 20 : index * distance(cards.length);
 
     return (
       <EachCardComponent
         key={index}
         cardData={item}
         margin={`0 0 0 ${margin}`}
-        rotated={playerInfo.id === socket.id}
+        rotated={id === socket.id}
         dragValue={turn}
         dragEvent={dragEvent}
       />

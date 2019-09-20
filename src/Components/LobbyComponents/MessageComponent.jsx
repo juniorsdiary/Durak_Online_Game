@@ -2,17 +2,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Grid, Typography } from '@material-ui/core';
 
-const MessageComponent = ({ nickname, msg, time }) => {
+const MessageComponent = ({ nickname, message, time }) => {
   return (
     <Grid item>
       <Typography>{nickname}</Typography>
-      <Typography>{msg}</Typography>
+      <Typography>{message}</Typography>
     </Grid>
   );
 };
 
 MessageComponent.propTypes = {
-  msg: PropTypes.string,
+  message: PropTypes.string,
   nickname: PropTypes.string,
   time: PropTypes.string,
 };

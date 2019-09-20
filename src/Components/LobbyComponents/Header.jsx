@@ -15,13 +15,12 @@ const useStyles = makeStyles(theme => ({
 const Header = ({ userData, signOut }) => {
   const classes = useStyles();
   const handleSignOut = useCallback(() => {
-    signOut(userData.name);
-  }, [signOut, userData.name]);
-  /* eslint-enable */
+    signOut(userData.user);
+  }, [signOut, userData.user]);
   return (
     <AppBar position='relative'>
       <Grid container justify='space-between' direction='row' alignItems='center'>
-        <Typography className={classes.greet}>Hello, {userData.name}</Typography>
+        <Typography className={classes.greet}>Hello, {userData.user}</Typography>
         <Button
           variant='contained'
           color='secondary'
@@ -48,4 +47,5 @@ Header.defaultProps = {
     connectTime: '',
   },
 };
+
 export default Header;

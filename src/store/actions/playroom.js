@@ -5,7 +5,7 @@ export function setPlayRoomData(data) {
 }
 
 export function setClientIndex(index) {
-  return { type: types.SET_CLIEN_INDEX, payload: index };
+  return { type: types.SET_CLIENT_INDEX, payload: index };
 }
 
 export function assignPlayersInfo(number, index) {

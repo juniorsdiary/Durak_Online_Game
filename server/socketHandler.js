@@ -4,208 +4,187 @@ const emitter = new EventEmitter();
 emitter.setMaxListeners(100);
 const DataHandler = require('./DataHandler');
 const GameManager = require('./GameManager');
+DataHandler.addData('room', 'Lobby', {});
 
 const socketHandler = socket => {
   socket.on('authenticate', (nickname, cb) => {
-    const isUsed = DataHandler.checkNicknames(nickname);
-    if (isUsed) {
-      cb({ error: true, errorMsg: `Nickname ${nickname} is used` });
-    } else if (!nickname) {
-      cb({ error: true, errorMsg: `Nickname can not be empty` });
-    } else {
+    const { error, message } = DataHandler.addData('user', nickname, socket.id);
+    if (!error) {
       socket.join('Lobby');
-      DataHandler.joinRoom('Lobby', nickname);
-      DataHandler.addUser(nickname, socket.id);
-      DataHandler.updatePlayRoom('Lobby', nickname);
-      const roomsAvailable = DataHandler.getAvailableRooms();
-      const userData = DataHandler.connectedUsers.find(item => item.name === nickname);
-      cb({ error: false, userData, errorMsg: `` });
-      io.sockets.to('Lobby').emit('displayPlayers', DataHandler.connectedUsers);
-      io.sockets.to('Lobby').emit('displayRooms', roomsAvailable);
-      io.sockets.emit('syncMessages', DataHandler.messages);
+      DataHandler.updateData('room', 'Lobby', nickname);
+      DataHandler.updateData('user', nickname, 'Lobby');
+      const userData = DataHandler.getData('users', nickname);
+      cb({ error: false, userData, message: `` });
+      io.sockets.to('Lobby').emit('displayPlayers', DataHandler.getData('users'));
+      io.sockets.to('Lobby').emit('displayRooms', DataHandler.getData('rooms'));
+      io.sockets.emit('syncMessages', DataHandler.getData('messages'));
+    } else {
+      cb({ error, message });
     }
   });
-
-  socket.on('signout', nickname => {
-    const isLoggedIn = DataHandler.checkUserConnection(nickname);
-    if (isLoggedIn) {
-      const room = DataHandler.getUserRoom(nickname);
-      const playRoom = GameManager.getPlayRoom(room);
-      if (room !== 'Lobby') {
-        const index = GameManager.findIndex(room, nickname);
-        const targetRoom = DataHandler.allRoomsInfo.find(item => item.room === room);
-        const roomIndex = DataHandler.allRoomsInfo.indexOf(targetRoom);
-        const player = playRoom.players.find(item => item.id === socket.id);
-        if (playRoom.gameInProgress && !player.active) {
-          GameManager.deletePlayerFromRoom(room, index);
-        } else {
-          GameManager.deletePlayerFromRoom(room, index);
-          playRoom.resetSettings();
-          playRoom.lastPlayer = undefined;
-          io.sockets.to(room).emit('resetEvent', playRoom);
-        }
-        if (targetRoom.users.length === 0) {
-          DataHandler.allRoomsInfo.splice(roomIndex, 1);
-        }
+  socket.on('signOut', nickname => {
+    const userData = DataHandler.getData('users', nickname);
+    if (userData.room !== 'Lobby') {
+      const PlayRoom = GameManager.getPlayRoom(userData.room);
+      const player = PlayRoom.players.find(item => item.nickname === userData.name);
+      const targetRoom = DataHandler.getData('rooms', userData.room);
+      if (PlayRoom.gameInProgress && !player.active) {
+        GameManager.deletePlayerFromRoom(userData);
+      } else {
+        GameManager.deletePlayerFromRoom(userData);
+        PlayRoom.resetSettings();
+        PlayRoom.lastPlayer = undefined;
+        io.sockets.to(userData.room).emit('resetEvent', PlayRoom);
       }
-      socket.leave(room);
-      DataHandler.removeUser(nickname, room);
-      const roomsAvailable = DataHandler.getAvailableRooms();
-      io.sockets.to('Lobby').emit('displayPlayers', DataHandler.connectedUsers);
-      io.sockets.to('Lobby').emit('displayRooms', roomsAvailable);
+      if (targetRoom.users.length === 0) {
+        DataHandler.deleteData('room', userData.room);
+      }
     }
+    socket.leave(userData.room);
+    DataHandler.deleteData('user', nickname);
+    io.sockets.to('Lobby').emit('displayPlayers', DataHandler.getData('users'));
+    io.sockets.to('Lobby').emit('displayRooms', DataHandler.getData('rooms'));
   });
-
-  socket.on('sendMessage', ({ msg, nickname }) => {
-    DataHandler.addMessage(msg, nickname);
-    io.sockets.emit('addMessage', DataHandler.messages);
+  socket.on('sendMessage', ({ message, name }) => {
+    DataHandler.addData('message', message, name);
+    io.sockets.emit('syncMessages', DataHandler.getData('messages'));
   });
-
   socket.on('disconnect', () => {
-    const user = DataHandler.connectedUsers.find(item => item.id === socket.id);
-    if (user) {
-      const room = DataHandler.getUserRoom(user.name);
-      const playRoom = GameManager.getPlayRoom(room);
-      if (room !== 'Lobby') {
-        const index = GameManager.findIndex(room, user.name);
-        const targetRoom = DataHandler.allRoomsInfo.find(item => item.room === room);
-        const roomIndex = DataHandler.allRoomsInfo.indexOf(targetRoom);
-        const player = playRoom.players.find(item => item.id === socket.id);
-        if (playRoom.gameInProgress && !player.active) {
-          GameManager.deletePlayerFromRoom(room, index);
+    const userData = DataHandler.getData('users').find(item => item.id === socket.id);
+    if (userData) {
+      if (userData.room !== 'Lobby') {
+        const PlayRoom = GameManager.getPlayRoom(userData.room);
+        const player = PlayRoom.players.find(item => item.nickname === userData.user);
+        if (PlayRoom.gameInProgress && !player.active) {
+          GameManager.deletePlayerFromRoom(userData);
         } else {
-          GameManager.deletePlayerFromRoom(room, index);
-          playRoom.resetSettings();
-          playRoom.lastPlayer = undefined;
-          io.sockets.to(room).emit('resetEvent', playRoom);
+          GameManager.deletePlayerFromRoom(userData);
+          PlayRoom.resetSettings();
+          PlayRoom.lastPlayer = undefined;
+          io.sockets.to(userData.room).emit('resetEvent', PlayRoom);
         }
-        if (targetRoom.users.length === 0) DataHandler.allRoomsInfo.splice(roomIndex, 1);
+        if (PlayRoom.users.length === 0) {
+          DataHandler.deleteData('room', userData.room);
+        }
       }
-      DataHandler.removeUser(user.name, room);
-      socket.leave(room);
-      const roomsAvailable = DataHandler.getAvailableRooms();
-      io.sockets.to('Lobby').emit('displayPlayers', DataHandler.connectedUsers);
-      io.sockets.to('Lobby').emit('displayRooms', roomsAvailable);
+      socket.leave(userData.room);
+      DataHandler.deleteData('user', userData.user);
+      io.sockets.to('Lobby').emit('displayPlayers', DataHandler.getData('users'));
+      io.sockets.to('Lobby').emit('displayRooms', DataHandler.getData('rooms'));
     }
   });
 
-  socket.on('createRoom', ({ roomName, password, access, players, cards, nickname }) => {
-    const room = DataHandler.getUserRoom(nickname);
-
-    socket.leave(room, () => {
-      DataHandler.leaveRoom(room, nickname);
-    });
-    socket.join(roomName, () => {
-      DataHandler.joinRoom(roomName, nickname);
-      DataHandler.updatePlayRoom(roomName, nickname);
-      DataHandler.setSettings(roomName, password, access, players, cards);
-      const roomsAvailable = DataHandler.getAvailableRooms();
-      io.sockets.to('Lobby').emit('displayPlayers', DataHandler.connectedUsers);
-      io.sockets.to('Lobby').emit('displayRooms', roomsAvailable);
-      GameManager.initializeData(players, cards, roomName, nickname, socket.id);
-    });
+  socket.on('createRoom', ({ roomName, nickname, password, access, players, cards }) => {
+    const userData = DataHandler.getData('users', nickname);
+    socket.leave(userData.room);
+    const room = DataHandler.getData('rooms', userData.room);
+    room.users = room.users.filter(item => item !== nickname);
+    socket.join(roomName);
+    DataHandler.addData('room', roomName, { password, access, players, cards });
+    DataHandler.updateData('room', roomName, nickname);
+    DataHandler.updateData('user', nickname, roomName);
+    GameManager.createGameRoom(Number(players), Number(cards), roomName);
+    GameManager.getPlayRoom(roomName).addUser(nickname, socket.id);
+    io.sockets.to('Lobby').emit('displayPlayers', DataHandler.getData('users'));
+    io.sockets.to('Lobby').emit('displayRooms', DataHandler.getData('rooms'));
   });
 
   socket.on('joinRoom', (roomName, nickname) => {
-    const room = DataHandler.getUserRoom(nickname);
-    socket.leave(room, () => {
-      DataHandler.leaveRoom(room, nickname);
-    });
-    socket.join(roomName, () => {
-      DataHandler.joinRoom(roomName, nickname);
-      DataHandler.updatePlayRoom(roomName, nickname);
-      const roomsAvailable = DataHandler.getAvailableRooms();
-      io.sockets.to('Lobby').emit('displayPlayers', DataHandler.connectedUsers);
-      io.sockets.to('Lobby').emit('displayRooms', roomsAvailable);
-      GameManager.addUser(roomName, nickname, socket.id);
-      const playRoom = GameManager.getPlayRoom(roomName);
-      if (playRoom.users.length === +playRoom.numberOfPlayers) {
-        io.sockets.to(roomName).emit('readyStage', playRoom);
-      }
-    });
+    const userData = DataHandler.getData('users', nickname);
+    socket.leave(userData.room);
+    const room = DataHandler.getData('rooms', userData.room);
+    room.users = room.users.filter(item => item !== nickname);
+    socket.join(roomName);
+    DataHandler.updateData('room', roomName, nickname);
+    DataHandler.updateData('user', nickname, roomName);
+    io.sockets.to('Lobby').emit('displayPlayers', DataHandler.getData('users'));
+    io.sockets.to('Lobby').emit('displayRooms', DataHandler.getData('rooms'));
+    const PlayRoom = GameManager.getPlayRoom(roomName);
+    PlayRoom.addUser(nickname, socket.id);
+    PlayRoom.checkVacantSpots();
+    if (PlayRoom.isFull) {
+      io.sockets.to(roomName).emit('readyStage', PlayRoom);
+    }
   });
 
   socket.on('ready', nickname => {
-    const room = DataHandler.getUserRoom(nickname);
-    let index = GameManager.findIndex(room, nickname);
-    let playRoom = GameManager.getPlayRoom(room);
-    playRoom.activateUser(index);
-    let numberOfUsersReady = playRoom.usersReady.filter(item => item).length;
-    if (numberOfUsersReady === +playRoom.numberOfPlayers) {
-      playRoom.dealCards();
-      io.sockets.to(room).emit('syncData', playRoom, room);
-      io.sockets.to(room).emit('defineMove');
+    const userData = DataHandler.getData('users', nickname);
+    const PlayRoom = GameManager.getPlayRoom(userData.room);
+    PlayRoom.getUser(nickname).activateUser();
+    PlayRoom.checkUsersReady();
+    PlayRoom.checkVacantSpots();
+    if (PlayRoom.usersReady && PlayRoom.isFull) {
+      PlayRoom.dealCards();
+      io.sockets.to(userData.room).emit('syncData', PlayRoom);
+      io.sockets.to(userData.room).emit('defineMove');
     }
   });
 
   socket.on('initCard', (nickname, cardData) => {
-    const room = DataHandler.getUserRoom(nickname);
-    const index = GameManager.findIndex(room, nickname);
-    GameManager.getPlayRoom(room).players[index].curCard = cardData;
+    const userData = DataHandler.getData('users', nickname);
+    GameManager.getPlayRoom(userData.room).getUser(nickname).curCard = cardData;
   });
 
   socket.on('makeOffenceMove', nickname => {
-    const room = DataHandler.getUserRoom(nickname);
-    const playRoom = GameManager.getPlayRoom(room);
-    playRoom.makeOffenceMove();
-    io.sockets.to(room).emit('syncData', playRoom);
-    if (!playRoom.endGame) {
-      io.sockets.to(room).emit('defineMove');
+    const userData = DataHandler.getData('users', nickname);
+    const PlayRoom = GameManager.getPlayRoom(userData.room);
+    PlayRoom.makeOffenceMove();
+    io.sockets.to(userData.room).emit('syncData', PlayRoom);
+    if (!PlayRoom.endGame) {
+      io.sockets.to(userData.room).emit('defineMove');
     } else {
-      playRoom.resetSettings();
-      io.sockets.to(room).emit('endGame');
-      if (playRoom.users.length === +playRoom.numberOfPlayers) {
-        io.sockets.to(room).emit('readyStage', playRoom);
+      PlayRoom.resetSettings();
+      io.sockets.to(userData.room).emit('endGame');
+      if (PlayRoom.users.length === PlayRoom.playersNumber) {
+        io.sockets.to(userData.room).emit('readyStage', PlayRoom);
       }
     }
   });
 
-  socket.on('makeDeffenceMove', nickname => {
-    const room = DataHandler.getUserRoom(nickname);
-    const playRoom = GameManager.getPlayRoom(room);
+  socket.on('makeDefenceMove', nickname => {
+    const userData = DataHandler.getData('users', nickname);
+    const playRoom = GameManager.getPlayRoom(userData.room);
     playRoom.makeDefenceMove();
-    io.sockets.to(room).emit('syncData', playRoom);
+    io.sockets.to(userData.room).emit('syncData', playRoom);
     if (!playRoom.endGame) {
-      io.sockets.to(room).emit('defineMove');
+      io.sockets.to(userData.room).emit('defineMove');
     } else {
       playRoom.resetSettings();
-      if (playRoom.users.length === +playRoom.numberOfPlayers) {
-        io.sockets.to(room).emit('readyStage', playRoom);
+      if (playRoom.users.length === playRoom.playersNumber) {
+        io.sockets.to(userData.room).emit('readyStage', playRoom);
       }
-      io.sockets.to(room).emit('endGame');
+      io.sockets.to(userData.room).emit('endGame');
     }
   });
 
   socket.on('takeOrDiscard', (nickname, value) => {
-    const room = DataHandler.getUserRoom(nickname);
-    const index = GameManager.findIndex(room, nickname);
-    const playRoom = GameManager.getPlayRoom(room);
-    playRoom.players[index].takeCards(value);
-    io.sockets.to(room).emit('syncData', playRoom);
-    io.sockets.to(room).emit('defineMove');
+    const userData = DataHandler.getData('users', nickname);
+    const playRoom = GameManager.getPlayRoom(userData.room);
+    playRoom.takeCards(value);
+    io.sockets.to(userData.room).emit('syncData', playRoom);
+    io.sockets.to(userData.room).emit('defineMove');
   });
 
   socket.on('interPhase', nickname => {
-    const room = DataHandler.getUserRoom(nickname);
-    const index = GameManager.findIndex(room, nickname);
-    const playRoom = GameManager.getPlayRoom(room);
+    const userData = DataHandler.getData('users', nickname);
+    const playRoom = GameManager.getPlayRoom(userData.room);
     playRoom.interPhase = true;
     playRoom.countCardsToTake();
     if (playRoom.curPlayer.active) {
       playRoom.defineMove(true, false, 'offence', '');
-      io.sockets.to(room).emit('logMessages', playRoom.logMessages);
-      io.sockets.to(room).emit('defineMove');
-      io.sockets.to(room).emit('syncData', playRoom);
-      io.sockets.to(room).emit('startTimer', playRoom.curPlayer);
+      io.sockets.to(userData.room).emit('defineMove');
+      io.sockets.to(userData.room).emit('syncData', playRoom);
+      io.sockets.to(userData.room).emit('startTimer', playRoom.curPlayer);
+      io.sockets.to(userData.room).emit('logMessages', playRoom.logMessages);
       setTimeout(() => {
-        playRoom.players[index].takeCards(true);
-        io.sockets.to(room).emit('syncData', playRoom);
-        io.sockets.to(room).emit('defineMove');
+        playRoom.takeCards(true);
+        io.sockets.to(userData.room).emit('syncData', playRoom);
+        io.sockets.to(userData.room).emit('defineMove');
       }, 5000);
     } else {
-      playRoom.players[index].takeCards(true);
-      io.sockets.to(room).emit('syncData', playRoom);
-      io.sockets.to(room).emit('defineMove');
+      playRoom.takeCards(true);
+      io.sockets.to(userData.room).emit('syncData', playRoom);
+      io.sockets.to(userData.room).emit('defineMove');
     }
   });
 

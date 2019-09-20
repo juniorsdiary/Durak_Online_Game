@@ -21,7 +21,7 @@ const AvailableRooms = ({ rooms, checkPassword, openSettings }) => {
   const renderRooms = rooms.map((room, i) => <RoomComponent key={i} {...room} checkPassword={checkPassword} />);
   return (
     <Grid item xs={4}>
-      <Grid container direction='column' alignItems='center' className={classes.wrapper}>
+      <Grid container direction='column' alignItems='center' wrap='nowrap' className={classes.wrapper}>
         <Typography align='center' variant='h4'>
           Available Rooms
         </Typography>

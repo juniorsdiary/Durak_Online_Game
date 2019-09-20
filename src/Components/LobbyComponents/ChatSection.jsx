@@ -23,17 +23,14 @@ class ChatSection extends Component {
     socket.on('syncMessages', messages => {
       setMessagesData(messages);
     });
-    socket.on('addMessage', messages => {
-      setMessagesData(messages);
-    });
   }
   handleChange = e => {
     const messageValue = e.target.value;
     this.setState({ messageValue });
   };
-  handleSubmit = msg => {
-    const { socket, nickname } = this.props;
-    socket.emit('sendMessage', { msg, nickname });
+  handleSubmit = message => {
+    const { socket, name } = this.props;
+    socket.emit('sendMessage', { message, name });
   };
   render() {
     const { classes, messages } = this.props;
@@ -54,7 +51,7 @@ class ChatSection extends Component {
 
 ChatSection.propTypes = {
   socket: PropTypes.object,
-  nickname: PropTypes.string,
+  name: PropTypes.string,
   classes: PropTypes.object,
   setMessagesData: PropTypes.func,
   messages: PropTypes.array,
@@ -65,7 +62,7 @@ const StyledReactComponent = withStyles(styles)(ChatSection);
 const ReduxConnected = connect(
   state => ({
     socket: state.authentication.socket,
-    nickname: state.commonData.userData.name,
+    name: state.commonData.userData.user,
     messages: state.commonData.messages,
   }),
   dispatch => ({

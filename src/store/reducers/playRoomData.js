@@ -23,7 +23,7 @@ export default function playRoomData(state = initialState, action) {
         ...state,
         isReady: payload,
       };
-    case types.SET_CLIEN_INDEX:
+    case types.SET_CLIENT_INDEX:
       return {
         ...state,
         clientIndex: payload,
