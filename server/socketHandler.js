@@ -42,11 +42,11 @@ const socketHandler = socket => {
       if (targetRoom.users.length === 0) {
         DataHandler.deleteData('room', userData.room);
       }
+      PlayRoom.checkVacantSpots();
     } else {
       DataHandler.deleteData('user', nickname);
     }
     socket.leave(userData.room);
-
     io.sockets.to('Lobby').emit('displayPlayers', DataHandler.getData('users'));
     io.sockets.to('Lobby').emit('displayRooms', DataHandler.getData('rooms'));
   });
@@ -71,6 +71,7 @@ const socketHandler = socket => {
           io.sockets.to(userData.room).emit('endGame');
           io.sockets.to(userData.room).emit('syncData', PlayRoom);
         }
+        PlayRoom.checkVacantSpots();
         DataHandler.deleteData('user', userData.user);
         if (PlayRoom.users.length === 0) {
           DataHandler.deleteData('room', userData.room);
@@ -136,65 +137,68 @@ const socketHandler = socket => {
   });
 
   socket.on('makeOffenceMove', nickname => {
-    console.log(nickname);
     const userData = DataHandler.getData('users', nickname);
     const PlayRoom = GameManager.getPlayRoom(userData.room);
     PlayRoom.makeOffenceMove();
     io.sockets.to(userData.room).emit('syncData', PlayRoom);
-    if (!PlayRoom.endGame) {
+    if (!PlayRoom.endGame.state) {
       io.sockets.to(userData.room).emit('defineMove');
     } else {
-      PlayRoom.resetSettings();
       io.sockets.to(userData.room).emit('endGame');
-      if (PlayRoom.users.length === PlayRoom.playersNumber) {
-        io.sockets.to(userData.room).emit('readyStage', PlayRoom);
-      }
+      setTimeout(() => {
+        if (PlayRoom.users.length === PlayRoom.playersNumber) {
+          PlayRoom.resetSettings();
+          io.sockets.to(userData.room).emit('readyStage', PlayRoom);
+        }
+      }, 5000);
     }
   });
 
   socket.on('makeDefenceMove', nickname => {
     const userData = DataHandler.getData('users', nickname);
-    const playRoom = GameManager.getPlayRoom(userData.room);
-    playRoom.makeDefenceMove();
-    io.sockets.to(userData.room).emit('syncData', playRoom);
-    if (!playRoom.endGame) {
+    const PlayRoom = GameManager.getPlayRoom(userData.room);
+    PlayRoom.makeDefenceMove();
+    io.sockets.to(userData.room).emit('syncData', PlayRoom);
+    if (!PlayRoom.endGame.state) {
       io.sockets.to(userData.room).emit('defineMove');
     } else {
-      playRoom.resetSettings();
       io.sockets.to(userData.room).emit('endGame');
-      if (playRoom.users.length === playRoom.playersNumber) {
-        io.sockets.to(userData.room).emit('readyStage', playRoom);
-      }
+      setTimeout(() => {
+        if (PlayRoom.users.length === PlayRoom.playersNumber) {
+          PlayRoom.resetSettings();
+          io.sockets.to(userData.room).emit('readyStage', PlayRoom);
+        }
+      }, 5000);
     }
   });
 
   socket.on('takeOrDiscard', (nickname, value) => {
     const userData = DataHandler.getData('users', nickname);
-    const playRoom = GameManager.getPlayRoom(userData.room);
-    playRoom.takeCards(value);
-    io.sockets.to(userData.room).emit('syncData', playRoom);
+    const PlayRoom = GameManager.getPlayRoom(userData.room);
+    PlayRoom.takeCards(value);
+    io.sockets.to(userData.room).emit('syncData', PlayRoom);
     io.sockets.to(userData.room).emit('defineMove');
   });
 
   socket.on('interPhase', nickname => {
     const userData = DataHandler.getData('users', nickname);
-    const playRoom = GameManager.getPlayRoom(userData.room);
-    playRoom.interPhase = true;
-    playRoom.countCardsToTake();
-    if (playRoom.curPlayer.active) {
-      playRoom.defineMove(true, false, 'offence', '');
+    const PlayRoom = GameManager.getPlayRoom(userData.room);
+    PlayRoom.interPhase = true;
+    PlayRoom.countCardsToTake();
+    if (PlayRoom.curPlayer.active) {
+      PlayRoom.defineMove(true, false, 'offence', '');
       io.sockets.to(userData.room).emit('defineMove');
-      io.sockets.to(userData.room).emit('syncData', playRoom);
-      io.sockets.to(userData.room).emit('startTimer', playRoom.curPlayer);
-      io.sockets.to(userData.room).emit('logMessages', playRoom.logMessages);
+      io.sockets.to(userData.room).emit('syncData', PlayRoom);
+      io.sockets.to(userData.room).emit('startTimer', PlayRoom.curPlayer);
+      io.sockets.to(userData.room).emit('logMessages', PlayRoom.logMessages);
       setTimeout(() => {
-        playRoom.takeCards(true);
-        io.sockets.to(userData.room).emit('syncData', playRoom);
+        PlayRoom.takeCards(true);
+        io.sockets.to(userData.room).emit('syncData', PlayRoom);
         io.sockets.to(userData.room).emit('defineMove');
       }, 5000);
     } else {
-      playRoom.takeCards(true);
-      io.sockets.to(userData.room).emit('syncData', playRoom);
+      PlayRoom.takeCards(true);
+      io.sockets.to(userData.room).emit('syncData', PlayRoom);
       io.sockets.to(userData.room).emit('defineMove');
     }
   });

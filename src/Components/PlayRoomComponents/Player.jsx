@@ -14,13 +14,11 @@ const Player = ({ socket, playerInfo, playerNumber, dragEvent }) => {
   const classes = useStyles({ playerNumber });
 
   const renderCards = cards.map((item, index) => {
-    const margin = id === socket.id ? index * 20 : index * distance(cards.length);
-
     return (
       <EachCardComponent
         key={index}
         cardData={item}
-        margin={`0 0 0 ${margin}`}
+        margin={`0 0 0 ${index * distance(cards.length)}`}
         rotated={id === socket.id}
         dragValue={turn}
         dragEvent={dragEvent}

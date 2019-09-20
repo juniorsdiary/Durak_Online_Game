@@ -8,7 +8,9 @@ const ReadyComponent = ({ activeUsers, isFull, isReady, setReadyState }) => {
       <Dialog open={!activeUsers}>
         <DialogTitle>Waiting for players...</DialogTitle>
         {/* <Container>{users.join(' ')}</Container> */}
-        {!isReady && isFull && <Button onClick={setReadyState}>Ready</Button>}
+        <Button variant='contained' color='primary' disabled={isReady || !isFull} onClick={setReadyState}>
+          Ready
+        </Button>
       </Dialog>
     </>
   );

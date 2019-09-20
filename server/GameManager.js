@@ -222,14 +222,12 @@ class PlayRoomManager {
     playerCards.splice(cardIndex, 1);
   }
   isEndGame() {
-    this.endGame = true;
-    this.endGameMsg = { nickName: this.defender.nickname, msgIndex: 9 };
+    this.endGame = { state: true, nickName: this.defender.nickname, msgIndex: 9 };
     this.lastPlayer[0].turn = false;
   }
   resetSettings() {
     this.players.forEach(item => item.resetUser());
     this.usersReady = false;
-    this.isFull = false;
     this.discardPile = [];
     this.initialDeck = deck;
     this.gameDeck = [];
@@ -237,8 +235,7 @@ class PlayRoomManager {
     this.trumpData = [];
     this.gameInProgress = false;
     this.playerHasLeft = false;
-    this.endGameMsg = '';
-    this.endGame = false;
+    this.endGame = { state: false, nickName: '', msgIndex: '' };
     this.logMessages = [];
     this.gameField = {};
 
@@ -276,10 +273,10 @@ class PlayRoomManager {
     let gameFieldValue = +gameFieldCards[length - 1][3];
     if (gameFieldSuit === this.trumpDataSecondary[0]) {
       return cardValue > gameFieldValue && cardSuit === this.trumpDataSecondary[0];
-    } else if (cardSuit === gameFieldSuit) {
+    } else if (cardSuit === gameFieldSuit && cardSuit !== this.trumpDataSecondary[0]) {
       return cardValue > gameFieldValue;
     } else {
-      return cardSuit === this.trumpDataSecondary[0] && gameFieldValue !== card[3];
+      return cardSuit === this.trumpDataSecondary[0];
     }
   }
   transferDefenceCards() {
@@ -399,6 +396,7 @@ class PlayRoom extends PlayRoomManager {
     this.playerHasLeft = false;
     this.curCard = [];
     this.discardPile = [];
+    this.endGame = { state: false, nickName: '', msgIndex: '' };
 
     this.chooseDeckSize();
     this.chooseTrump();

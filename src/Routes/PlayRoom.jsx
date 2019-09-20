@@ -10,6 +10,7 @@ import {
   GameField,
   ControlsComponent,
   ByPlayMessages,
+  EndGameComponent,
 } from 'Components';
 import { setPlayRoomData, setClientIndex, assignPlayersInfo, definePlayersMove, setControlsState } from 'Store';
 import { withStyles } from '@material-ui/styles';
@@ -71,7 +72,6 @@ class PlayRoom extends Component {
   };
 
   dragEvent = cardData => {
-    console.log('TCL: PlayRoom -> cardData', cardData);
     const { socket, nickname } = this.props;
     socket.emit('initCard', nickname, cardData);
   };
@@ -91,7 +91,6 @@ class PlayRoom extends Component {
 
   makeDefenceMove = () => {
     const { socket, turn, nickname } = this.props;
-
     if (turn) {
       socket.emit('makeDefenceMove', nickname);
     }
@@ -99,7 +98,6 @@ class PlayRoom extends Component {
 
   takeCards = () => {
     const { socket, activeTake, setControlsState, nickname } = this.props;
-
     if (activeTake) {
       socket.emit('interPhase', nickname);
       setControlsState({ activeTake: false, activeDiscard: false });
@@ -136,7 +134,7 @@ class PlayRoom extends Component {
       activeTake,
       activeDiscard,
     } = this.props;
-    const { usersReady, users, shuffledDeck, isFull, trumpData, discardPile, gameField, logMessages } = data;
+    const { usersReady, users, shuffledDeck, isFull, trumpData, discardPile, gameField, logMessages, endGame } = data;
     return (
       <>
         <ReadyComponent
@@ -153,7 +151,6 @@ class PlayRoom extends Component {
                 <Deck deck={shuffledDeck} />
                 <Trump trump={trumpData} />
               </Container>
-
               <DiscardPile data={discardPile} />
 
               <Player playerInfo={player0info} playerNumber={0} socket={socket} dragEvent={this.dragEvent} />
@@ -166,21 +163,16 @@ class PlayRoom extends Component {
                 onDragOver={this.dragOverEvent}
                 onDrop={defenceOrOffence === 'offence' ? this.makeOffenceMove : this.makeDefenceMove}
               />
-
               <ControlsComponent
                 takeCards={this.takeCards}
                 discardCards={this.discardCards}
                 activeTake={activeTake}
                 activeDiscard={activeDiscard}
               />
-
               <ByPlayMessages messages={logMessages} />
+              <EndGameComponent data={endGame} />
             </>
           )}
-
-          {/* <div id='gameOver' hidden={endGameVisible}>
-            {PlayRoom.endGameMsg.nickName} {textsData[PlayRoom.endGameMsg.msgIndex]}
-          </div> */}
 
           {/* <div className='forbidMsg' hidden={hidden}>
             {textsData[3]}
