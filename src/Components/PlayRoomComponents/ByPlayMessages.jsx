@@ -23,7 +23,7 @@ const ByPlayMessages = ({ messages }) => {
   const renderLogMessages = messages.map((item, index) => {
     return (
       <div key={index}>
-        {item.nickName} {[item.msgIndex]}
+        {item.nickName} {[item.messageIndex]}
       </div>
     );
   });

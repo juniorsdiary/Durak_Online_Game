@@ -34,7 +34,8 @@ const socketHandler = socket => {
         GameManager.deletePlayerFromRoom(userData);
         PlayRoom.resetSettings();
         PlayRoom.lastPlayer = undefined;
-        io.sockets.to(userData.room).emit('resetEvent', PlayRoom);
+        io.sockets.to(userData.room).emit('endGame');
+        io.sockets.to(userData.room).emit('syncData', PlayRoom);
       }
       if (targetRoom.users.length === 0) {
         DataHandler.deleteData('room', userData.room);
@@ -61,7 +62,8 @@ const socketHandler = socket => {
           GameManager.deletePlayerFromRoom(userData);
           PlayRoom.resetSettings();
           PlayRoom.lastPlayer = undefined;
-          io.sockets.to(userData.room).emit('resetEvent', PlayRoom);
+          io.sockets.to(userData.room).emit('endGame');
+          io.sockets.to(userData.room).emit('syncData', PlayRoom);
         }
         if (PlayRoom.users.length === 0) {
           DataHandler.deleteData('room', userData.room);
@@ -150,10 +152,10 @@ const socketHandler = socket => {
       io.sockets.to(userData.room).emit('defineMove');
     } else {
       playRoom.resetSettings();
+      io.sockets.to(userData.room).emit('endGame');
       if (playRoom.users.length === playRoom.playersNumber) {
         io.sockets.to(userData.room).emit('readyStage', playRoom);
       }
-      io.sockets.to(userData.room).emit('endGame');
     }
   });
 

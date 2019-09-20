@@ -135,24 +135,25 @@ class PlayRoom extends Component {
       activeTake,
       activeDiscard,
     } = this.props;
+    const { usersReady, users, shuffledDeck, isFull, trumpData, discardPile, gameField, logMessages } = data;
     return (
       <>
         <ReadyComponent
-          activeUsers={data.usersReady}
-          users={data.users}
+          activeUsers={usersReady}
+          users={users}
           isReady={isReady}
-          isFull={data.isFull}
+          isFull={isFull}
           setReadyState={this.setReadyValue}
         />
         <div role='presentation' onSelect={() => false} onMouseDown={() => false}>
-          {data.usersReady && data.isFull && (
+          {usersReady && isFull && (
             <>
               <Container className={classes.cards}>
-                <Deck deck={data.shuffledDeck} />
-                <Trump trump={data.trumpData} />
+                <Deck deck={shuffledDeck} />
+                <Trump trump={trumpData} />
               </Container>
 
-              <DiscardPile data={data.discardPile} />
+              <DiscardPile data={discardPile} />
 
               <Player playerInfo={player0info} playerNumber={0} socket={socket} dragEvent={this.dragEvent} />
               <Player playerInfo={player1info} playerNumber={1} socket={socket} dragEvent={this.dragEvent} />
@@ -160,7 +161,7 @@ class PlayRoom extends Component {
               <Player playerInfo={player3info} playerNumber={3} socket={socket} dragEvent={this.dragEvent} />
 
               <GameField
-                gameField={data.gameField}
+                gameField={gameField}
                 onDragOver={this.dragOverEvent}
                 onDrop={defenceOrOffence === 'offence' ? this.makeOffenceMove : this.makeDefenceMove}
               />
@@ -172,7 +173,7 @@ class PlayRoom extends Component {
                 activeDiscard={activeDiscard}
               />
 
-              <ByPlayMessages messages={data.logMessages} />
+              <ByPlayMessages messages={logMessages} />
             </>
           )}
 

@@ -147,7 +147,6 @@ const DataHandler = (() => {
     user: function(user) {
       const userData = Storage.users.find(item => item.user === user);
       let roomData = Storage.rooms.find(item => item.room === userData.room);
-      console.log('TCL: DataHandler -> roomData', roomData);
       roomData.users = roomData.users.filter(item => item !== user);
       Storage.users = Storage.users.filter(item => item.user !== user);
     },
@@ -167,7 +166,7 @@ const DataHandler = (() => {
       if (room) {
         return Storage.rooms.find(item => item.room === room);
       } else {
-        return Storage.rooms.filter(item => item.room !== 'Lobby');
+        return Storage.rooms.filter(item => item.room !== 'Lobby' && item.users.length !== +item.settings.players);
       }
     },
   };

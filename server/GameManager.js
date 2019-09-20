@@ -116,7 +116,8 @@ class PlayRoomManager {
     if (!this.lastPlayer) {
       this.defineFirstMove();
     } else {
-      this.curPlayerIndex = this.players.indexOf(this.lastPlayer[0]) - 1;
+      let loserIndex = this.players.indexOf(this.lastPlayer[0]);
+      this.curPlayerIndex = loserIndex === 0 ? this.playersNumber - 1 : loserIndex - 1;
       this.curPlayer = this.players[this.curPlayerIndex];
       this.defender = this.lastPlayer[0];
       this.defineMove(true, false, 'offence', 'defence');
@@ -228,11 +229,12 @@ class PlayRoomManager {
   resetSettings() {
     this.players.forEach(item => item.resetUser());
     this.usersReady = false;
+    this.isFull = false;
     this.discardPile = [];
     this.initialDeck = deck;
     this.gameDeck = [];
     this.shuffledDeck = [];
-    this.trumpData = undefined;
+    this.trumpData = [];
     this.gameInProgress = false;
     this.playerHasLeft = false;
     this.endGameMsg = '';
@@ -369,10 +371,6 @@ class PlayRoomManager {
   countCardsToTake() {
     this.defender.cardsToTake = this.defender.cardsNumber - this.gameField.offenceCards.length;
   }
-  deletePlayerFromRoom({ user, room }) {
-    this.gameRooms[room].players = this.gameRooms[room].players.filter(item => item.nickname !== user);
-    this.gameRooms[room].users = this.gameRooms[room].users.filter(item => item !== user);
-  }
 }
 
 class PlayRoom extends PlayRoomManager {
@@ -416,6 +414,10 @@ const GameManager = (() => {
     createGameRoom: function(players, cards, room) {
       const NewRoom = new PlayRoom(players, cards, room);
       gameRooms[room] = NewRoom;
+    },
+    deletePlayerFromRoom({ user, room }) {
+      gameRooms[room].players = gameRooms[room].players.filter(item => item.nickname !== user);
+      gameRooms[room].users = gameRooms[room].users.filter(item => item !== user);
     },
   };
 })();
