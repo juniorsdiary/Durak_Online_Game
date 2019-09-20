@@ -23,13 +23,8 @@ export default function playRoomData(state = initialState, action) {
         ...state,
         isReady: payload,
       };
-    case types.SET_CLIENT_INDEX:
-      return {
-        ...state,
-        clientIndex: payload,
-      };
     case types.ASSIGN_PLAYERS_INFO:
-      return { ...state, [`player${payload[1]}`]: state.playRoom.players[payload[0]] };
+      return { ...state, [`player${payload[1]}`]: payload[0] };
     case types.DEFINE_PLAYERS_MOVE:
       return {
         ...state,

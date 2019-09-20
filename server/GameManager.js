@@ -179,13 +179,19 @@ class PlayRoomManager {
     this.logMessages.unshift({ nickName: this.curPlayer.nickname, messageIndex: 0 });
   }
   makeOffenceMove() {
+    console.log('TCL: PlayRoomManager -> makeOffenceMove -> this.curPlayer.curCard', this.curPlayer.curCard);
     if (this.checkConditions()) {
       if (this.gameField.cards.length === 0) this.defender.cardsNumber = this.defender.cards.length;
+      console.log('this.interPhase', this.interPhase);
       if (!this.interPhase) {
         this.transferOffenceCards();
-        this.defineMove(false, true, '', 'defence');
+        this.defineMove(false, true, 'offence', 'defence');
       } else {
         if (this.defender.cardsToTake !== 0) {
+          console.log(
+            'TCL: PlayRoomManager -> makeOffenceMove -> this.defender.cardsToTake',
+            this.defender.cardsToTake
+          );
           this.transferOffenceCards();
           this.defender.cardsToTake--;
         }
@@ -259,7 +265,7 @@ class PlayRoomManager {
       if (this.playerHasLeft) {
         this.takeCards(false);
       } else {
-        this.defineMove(true, false, 'offence', '');
+        this.defineMove(true, false, 'offence', 'defence');
       }
     }
   }

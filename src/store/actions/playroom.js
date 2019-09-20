@@ -4,10 +4,6 @@ export function setPlayRoomData(data) {
   return { type: types.SET_PLAY_ROOM_DATA, payload: data };
 }
 
-export function setClientIndex(index) {
-  return { type: types.SET_CLIENT_INDEX, payload: index };
-}
-
 export function assignPlayersInfo(number, index) {
   return { type: types.ASSIGN_PLAYERS_INFO, payload: [number, index] };
 }
@@ -57,7 +53,6 @@ export function definePlayersMove(curPlayer, defender, id) {
       defenceOrOffence: '',
     };
   }
-
   return {
     type: types.DEFINE_PLAYERS_MOVE,
     payload: value,

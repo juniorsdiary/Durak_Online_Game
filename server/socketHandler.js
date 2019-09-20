@@ -137,6 +137,7 @@ const socketHandler = socket => {
   });
 
   socket.on('makeOffenceMove', nickname => {
+    console.log('TCL: nickname', nickname);
     const userData = DataHandler.getData('users', nickname);
     const PlayRoom = GameManager.getPlayRoom(userData.room);
     PlayRoom.makeOffenceMove();
@@ -185,10 +186,11 @@ const socketHandler = socket => {
     const PlayRoom = GameManager.getPlayRoom(userData.room);
     PlayRoom.interPhase = true;
     PlayRoom.countCardsToTake();
+    console.log(PlayRoom.defender.cardsToTake);
     if (PlayRoom.curPlayer.active) {
-      PlayRoom.defineMove(true, false, 'offence', '');
-      io.sockets.to(userData.room).emit('defineMove');
+      PlayRoom.defineMove(true, false, 'offence', 'defence');
       io.sockets.to(userData.room).emit('syncData', PlayRoom);
+      io.sockets.to(userData.room).emit('defineMove');
       io.sockets.to(userData.room).emit('startTimer', PlayRoom.curPlayer);
       io.sockets.to(userData.room).emit('logMessages', PlayRoom.logMessages);
       setTimeout(() => {

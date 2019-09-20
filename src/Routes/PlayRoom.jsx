@@ -1,21 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import {
-  ReadyComponent,
-  Deck,
-  Trump,
-  DiscardPile,
-  Player,
-  GameField,
-  ControlsComponent,
-  ByPlayMessages,
-  EndGameComponent,
-} from 'Components';
+import { ReadyComponent, Deck, Trump, DiscardPile, Player, SystemMessage } from 'Components';
+import { GameField, ControlsComponent, ByPlayMessages, EndGameComponent } from 'Components';
 import { setPlayRoomData, setClientIndex, assignPlayersInfo, definePlayersMove, setControlsState } from 'Store';
-import { withStyles } from '@material-ui/styles';
-import { Container } from '@material-ui/core';
 import { assignIndexes } from 'Utilities';
+import { Container } from '@material-ui/core';
+import { withStyles } from '@material-ui/styles';
 
 const styles = {
   cards: {
@@ -30,14 +21,17 @@ const styles = {
 };
 
 class PlayRoom extends Component {
+  state = {
+    warning: true,
+  };
   componentDidMount() {
-    const { socket, setPlayRoomData, setClientIndex, definePlayersMove, assignPlayersInfo, setReady } = this.props;
+    const { socket, setPlayRoomData, definePlayersMove, assignPlayersInfo, setReady } = this.props;
 
     socket.on('readyStage', PlayRoomData => {
       let player = PlayRoomData.players.find(item => item.id === socket.id);
       let startIndex = PlayRoomData.players.indexOf(player);
       setPlayRoomData(PlayRoomData);
-      setClientIndex(startIndex);
+      assignIndexes(startIndex, PlayRoomData.playersNumber).forEach(assignPlayersInfo);
     });
 
     socket.on('defineMove', () => {
@@ -46,9 +40,7 @@ class PlayRoom extends Component {
     });
 
     socket.on('syncData', PlayRoomData => {
-      const { clientIndex } = this.props;
       setPlayRoomData(PlayRoomData);
-      assignIndexes(clientIndex, PlayRoomData.playersNumber).forEach(assignPlayersInfo);
     });
 
     socket.on('endGame', () => {
@@ -60,7 +52,7 @@ class PlayRoom extends Component {
       const { turn } = this.props;
       if (curPlayer.id === socket.id && turn) {
         // if only the curPlayer is a client the timer starts and the progress line shows
-        // this.start();
+        this.start();
       }
     });
   }
@@ -86,6 +78,8 @@ class PlayRoom extends Component {
     const { socket, turn, nickname } = this.props;
     if (turn) {
       socket.emit('makeOffenceMove', nickname);
+    } else {
+      this.warnPlayer();
     }
   };
 
@@ -93,6 +87,8 @@ class PlayRoom extends Component {
     const { socket, turn, nickname } = this.props;
     if (turn) {
       socket.emit('makeDefenceMove', nickname);
+    } else {
+      this.warnPlayer();
     }
   };
 
@@ -112,8 +108,11 @@ class PlayRoom extends Component {
     }
   };
 
-  forbidMsg = () => {
-    console.log('forbid');
+  warnPlayer = () => {
+    this.setState({ warning: false });
+    setTimeout(() => {
+      this.setState({ warning: true });
+    }, 1500);
   };
 
   start = () => {
@@ -126,15 +125,27 @@ class PlayRoom extends Component {
       isReady,
       data,
       classes,
-      player0info,
-      player1info,
-      player2info,
-      player3info,
+      player0,
+      player1,
+      player2,
+      player3,
       defenceOrOffence,
       activeTake,
       activeDiscard,
     } = this.props;
-    const { usersReady, users, shuffledDeck, isFull, trumpData, discardPile, gameField, logMessages, endGame } = data;
+    const { warning } = this.state;
+    const {
+      usersReady,
+      users,
+      shuffledDeck,
+      isFull,
+      trumpData,
+      discardPile,
+      gameField,
+      logMessages,
+      endGame,
+      players,
+    } = data;
     return (
       <>
         <ReadyComponent
@@ -153,10 +164,10 @@ class PlayRoom extends Component {
               </Container>
               <DiscardPile data={discardPile} />
 
-              <Player playerInfo={player0info} playerNumber={0} socket={socket} dragEvent={this.dragEvent} />
-              <Player playerInfo={player1info} playerNumber={1} socket={socket} dragEvent={this.dragEvent} />
-              <Player playerInfo={player2info} playerNumber={2} socket={socket} dragEvent={this.dragEvent} />
-              <Player playerInfo={player3info} playerNumber={3} socket={socket} dragEvent={this.dragEvent} />
+              <Player playerInfo={players[player0]} playerNumber={0} socket={socket} dragEvent={this.dragEvent} />
+              <Player playerInfo={players[player1]} playerNumber={1} socket={socket} dragEvent={this.dragEvent} />
+              <Player playerInfo={players[player2]} playerNumber={2} socket={socket} dragEvent={this.dragEvent} />
+              <Player playerInfo={players[player3]} playerNumber={3} socket={socket} dragEvent={this.dragEvent} />
 
               <GameField
                 gameField={gameField}
@@ -171,13 +182,9 @@ class PlayRoom extends Component {
               />
               <ByPlayMessages messages={logMessages} />
               <EndGameComponent data={endGame} />
+              <SystemMessage warning={warning} />
             </>
           )}
-
-          {/* <div className='forbidMsg' hidden={hidden}>
-            {textsData[3]}
-          </div> */}
-
           {/* <Timer timerBlock={timerBlock} widthValue={widthValue} text={textsData[9]} /> */}
         </div>
       </>
@@ -186,12 +193,10 @@ class PlayRoom extends Component {
 }
 
 PlayRoom.propTypes = {
-  clientIndex: PropTypes.number,
   nickname: PropTypes.string,
   defenceOrOffence: PropTypes.string,
   setReady: PropTypes.func,
   resetData: PropTypes.func,
-  setClientIndex: PropTypes.func,
   setPlayRoomData: PropTypes.func,
   setControlsState: PropTypes.func,
   assignPlayersInfo: PropTypes.func,
@@ -199,10 +204,10 @@ PlayRoom.propTypes = {
   data: PropTypes.object,
   socket: PropTypes.object,
   classes: PropTypes.object,
-  player0info: PropTypes.object,
-  player1info: PropTypes.object,
-  player2info: PropTypes.object,
-  player3info: PropTypes.object,
+  player0: PropTypes.number,
+  player1: PropTypes.number,
+  player2: PropTypes.number,
+  player3: PropTypes.number,
   turn: PropTypes.bool,
   isReady: PropTypes.bool,
   activeTake: PropTypes.bool,
@@ -215,12 +220,11 @@ const props = state => ({
   turn: state.playRoomData.turn,
   data: state.playRoomData.playRoom,
   isReady: state.playRoomData.isReady,
-  player0info: state.playRoomData.player0,
-  player1info: state.playRoomData.player1,
-  player2info: state.playRoomData.player2,
-  player3info: state.playRoomData.player3,
+  player0: state.playRoomData.player0,
+  player1: state.playRoomData.player1,
+  player2: state.playRoomData.player2,
+  player3: state.playRoomData.player3,
   activeTake: state.playRoomData.activeTake,
-  clientIndex: state.playRoomData.clientIndex,
   activeDiscard: state.playRoomData.activeDiscard,
   defenceOrOffence: state.playRoomData.defenceOrOffence,
 });
@@ -228,9 +232,6 @@ const props = state => ({
 const dispatch = dispatch => ({
   setPlayRoomData: data => {
     dispatch(setPlayRoomData(data));
-  },
-  setClientIndex: index => {
-    dispatch(setClientIndex(index));
   },
   assignPlayersInfo: (number, index) => {
     dispatch(assignPlayersInfo(number, index));

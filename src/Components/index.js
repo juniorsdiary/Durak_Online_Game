@@ -9,6 +9,7 @@ import EndGameComponent from './PlayRoomComponents/EndGameComponent.jsx';
 import ControlsComponent from './PlayRoomComponents/ControlsComponent.jsx';
 import EachCardComponent from './PlayRoomComponents/EachCardComponent.jsx';
 import GameFieldCardPlace from './PlayRoomComponents/GameFieldCardPlace.jsx';
+import SystemMessage from './PlayRoomComponents/SystemMessage.jsx';
 
 import Header from './LobbyComponents/Header.jsx';
 import UserCard from './LobbyComponents/UserCard.jsx';
@@ -33,6 +34,7 @@ export {
   DiscardPile,
   PlayersData,
   RoomComponent,
+  SystemMessage,
   AvailableRooms,
   ByPlayMessages,
   ReadyComponent,
