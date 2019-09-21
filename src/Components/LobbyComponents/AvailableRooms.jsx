@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { RoomComponent } from 'Components';
-import { Grid, Button, Typography } from '@material-ui/core';
+import { Grid, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles({
@@ -11,25 +11,22 @@ const useStyles = makeStyles({
   },
   content: {
     padding: '0',
-    height: '88%',
+    height: '93%',
     overflow: 'auto',
   },
 });
 
 const AvailableRooms = ({ rooms, checkPassword, openSettings, textData }) => {
   const classes = useStyles();
-  const renderRooms = rooms.map((room, i) => <RoomComponent key={i} {...room} checkPassword={checkPassword} />);
+  const renderRooms = rooms.map((room, i) => <RoomComponent key={i} {...room} checkPassword={checkPassword} textData={textData} />);
   return (
     <Grid item xs={4}>
       <Grid container direction='column' alignItems='center' wrap='nowrap' className={classes.wrapper}>
-        <Typography align='center' variant='h4'>
-          {textData[4]}
-        </Typography>
         <Grid container direction='column' spacing={1} className={classes.content}>
           {renderRooms}
         </Grid>
-        <Button variant='contained' color='primary' margin='normal' onClick={() => openSettings(true)}>
-          {textData[5]}
+        <Button variant='contained' color='secondary' margin='normal' onClick={() => openSettings(true)}>
+          {textData[6]}
         </Button>
       </Grid>
     </Grid>

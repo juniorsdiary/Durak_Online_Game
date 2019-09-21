@@ -34,12 +34,7 @@ const Header = () => {
         </Typography>
         {socket && <ChangeLanguage />}
         {isAuthenticated && (
-          <Button
-            variant='contained'
-            color='secondary'
-            margin='normal'
-            className={classes.button}
-            onClick={handleSignOut}>
+          <Button variant='contained' color='secondary' margin='normal' className={classes.button} onClick={handleSignOut}>
             {lobbyPage[0]}
           </Button>
         )}

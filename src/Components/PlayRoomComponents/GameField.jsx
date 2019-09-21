@@ -22,9 +22,7 @@ const useStyles = makeStyles({
 const GameField = ({ onDrop, onDragOver, gameField }) => {
   const { offenceCards, defenceCards } = gameField;
   const classes = useStyles();
-  let renderCards = offenceCards.map((item, i) => (
-    <GameFieldCardPlace key={i} offenceCardData={offenceCards[i]} defenceCardData={defenceCards[i]} />
-  ));
+  let renderCards = offenceCards.map((item, i) => <GameFieldCardPlace key={i} offenceCardData={offenceCards[i]} defenceCardData={defenceCards[i]} />);
 
   return (
     <div className={classes.gameField} onDrop={onDrop} onDragOver={onDragOver}>

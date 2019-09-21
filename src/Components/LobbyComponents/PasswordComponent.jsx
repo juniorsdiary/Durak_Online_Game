@@ -22,15 +22,7 @@ const PasswordComponent = ({ targetRoom, requiredPassword, onClose, open, joinRo
     <Dialog onClose={onClose} open={open}>
       <DialogTitle>Have password?</DialogTitle>
       <form onSubmit={join}>
-        <TextField
-          error={error}
-          type='password'
-          required
-          id='password'
-          name='password'
-          value={password}
-          onChange={e => setPass(e.target.value)}
-        />
+        <TextField error={error} type='password' required id='password' name='password' value={password} onChange={e => setPass(e.target.value)} />
         <Button type='submit' onClick={join}>
           Join
         </Button>

@@ -17,9 +17,7 @@ const useStyles = makeStyles({
 
 const DiscardPile = ({ data }) => {
   const classes = useStyles();
-  const renderDiscardPile = data.map((item, index) => (
-    <EachCardComponent key={index} cardData={item} margin={`0 0 0 ${index / 3}`} />
-  ));
+  const renderDiscardPile = data.map((item, index) => <EachCardComponent key={index} cardData={item} margin={`0 0 0 ${index / 3}`} />);
   return <Paper className={classes.discardPile}>{renderDiscardPile}</Paper>;
 };
 

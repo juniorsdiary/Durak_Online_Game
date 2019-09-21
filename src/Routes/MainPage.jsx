@@ -40,12 +40,7 @@ class MainPage extends Component {
           <Typography component='h1' variant='h5' align='center'>
             {textData.logInPage[0]}
           </Typography>
-          <CreateNickName
-            buttonText={textData.logInPage[2]}
-            text={textData.logInPage[1]}
-            submit={this.handleSubmit}
-            error={errorMessage}
-          />
+          <CreateNickName buttonText={textData.logInPage[2]} text={textData.logInPage[1]} submit={this.handleSubmit} error={errorMessage} />
         </Grid>
       </Grid>
     );

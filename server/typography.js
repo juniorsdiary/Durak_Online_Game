@@ -14,9 +14,10 @@ let russian = {
   logInPage: ['Придумай псевдоним', 'Крутой псевдоним', 'Войти в лобби'],
   lobbyPage: [
     'Выйти',
-    'Игроков в сети: ',
+    'Игроков в сети:',
     'Общий чат',
-    'напишите что-нибудь',
+    'Отправить',
+    'Сообщение в общий чат',
     'Доступные комнаты',
     'Создать комнату',
     'Настройки игровой комнаты',
@@ -28,8 +29,11 @@ let russian = {
     'Закрытая',
     'установите пароль',
     'Создать',
+    'Название комнаты',
+    'Кол-во карт',
+    'Кол-во игроков',
+    'Присоединится',
   ],
-  warning: 'Ваш текущий браузер не поддерживается. Просим воспользоваться другим.',
 };
 
 let english = {
@@ -50,7 +54,8 @@ let english = {
     'Sign out',
     'Players currently online: ',
     'Global Chat',
-    'type something',
+    'Send',
+    'Message to the chat',
     'Available Rooms',
     'Create Room',
     'Choose Room Settings',
@@ -62,6 +67,10 @@ let english = {
     'Public',
     'set password',
     'Create',
+    'Room name',
+    'Number of Cards',
+    'Players',
+    'Join',
   ],
   warning: 'Your current browser is not supported. Please choose another one',
 };

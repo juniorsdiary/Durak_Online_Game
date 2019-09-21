@@ -120,41 +120,12 @@ class PlayRoom extends Component {
   };
 
   render() {
-    const {
-      socket,
-      isReady,
-      data,
-      classes,
-      player0,
-      player1,
-      player2,
-      player3,
-      defenceOrOffence,
-      activeTake,
-      activeDiscard,
-    } = this.props;
+    const { socket, isReady, data, classes, player0, player1, player2, player3, defenceOrOffence, activeTake, activeDiscard } = this.props;
     const { warning } = this.state;
-    const {
-      usersReady,
-      users,
-      shuffledDeck,
-      isFull,
-      trumpData,
-      discardPile,
-      gameField,
-      logMessages,
-      endGame,
-      players,
-    } = data;
+    const { usersReady, users, shuffledDeck, isFull, trumpData, discardPile, gameField, logMessages, endGame, players } = data;
     return (
       <>
-        <ReadyComponent
-          activeUsers={usersReady}
-          users={users}
-          isReady={isReady}
-          isFull={isFull}
-          setReadyState={this.setReadyValue}
-        />
+        <ReadyComponent activeUsers={usersReady} users={users} isReady={isReady} isFull={isFull} setReadyState={this.setReadyValue} />
         <div role='presentation' onSelect={() => false} onMouseDown={() => false}>
           {usersReady && isFull && (
             <>
@@ -174,12 +145,7 @@ class PlayRoom extends Component {
                 onDragOver={this.dragOverEvent}
                 onDrop={defenceOrOffence === 'offence' ? this.makeOffenceMove : this.makeDefenceMove}
               />
-              <ControlsComponent
-                takeCards={this.takeCards}
-                discardCards={this.discardCards}
-                activeTake={activeTake}
-                activeDiscard={activeDiscard}
-              />
+              <ControlsComponent takeCards={this.takeCards} discardCards={this.discardCards} activeTake={activeTake} activeDiscard={activeDiscard} />
               <ByPlayMessages messages={logMessages} />
               <EndGameComponent data={endGame} />
               <SystemMessage warning={warning} />

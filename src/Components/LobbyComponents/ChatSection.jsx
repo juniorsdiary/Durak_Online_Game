@@ -1,19 +1,21 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Grid, Typography } from '@material-ui/core';
+import { Grid, Paper } from '@material-ui/core';
 import { MessageComponent, SendMessageComponent } from 'Components';
 import { withStyles } from '@material-ui/core/styles';
 
 const styles = {
   wrapper: {
     padding: '0 1em',
-    height: '100%',
+    maxHeight: '100%',
+    border: '1px solid transparent',
   },
   content: {
     padding: '0',
-    height: '83%',
+    height: '85%',
     overflow: 'auto',
+    margin: '0.75rem 0',
   },
 };
 
@@ -33,17 +35,14 @@ class ChatSection extends Component {
     socket.emit('sendMessage', { message, name });
   };
   render() {
-    const { classes, messages, textData } = this.props;
-    const renderMessages = messages.map((msg, i) => <MessageComponent key={i} {...msg} />);
+    const { classes, messages, textData, name } = this.props;
+    const renderMessages = messages.map((msg, i) => <MessageComponent key={i} clientName={name} {...msg} />);
     return (
-      <Grid item xs={4} className={classes.wrapper}>
-        <Typography align='center' variant='h4'>
-          {textData[2]}
-        </Typography>
-        <Grid container direction='column' spacing={1} className={classes.content}>
+      <Grid item xs={5} className={classes.wrapper}>
+        <Grid component={Paper} container direction='column' spacing={2} alignItems='flex-start' wrap='nowrap' className={classes.content}>
           {renderMessages}
         </Grid>
-        <SendMessageComponent text={textData[3]} submit={this.handleSubmit} />
+        <SendMessageComponent textData={textData} submit={this.handleSubmit} />
       </Grid>
     );
   }

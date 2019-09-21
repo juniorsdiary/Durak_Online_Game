@@ -13,7 +13,7 @@ const styles = {
     height: '100%',
   },
   content: {
-    height: '677px',
+    height: '676px',
   },
 };
 
@@ -37,6 +37,8 @@ class Lobby extends Component {
 
   createRoom = settings => {
     const { socket, userData, joinRoom } = this.props;
+    console.log('TCL: Lobby -> userData', userData);
+
     socket.emit('createRoom', { ...settings, nickname: userData.user });
     joinRoom(settings.roomName);
   };
@@ -75,21 +77,11 @@ class Lobby extends Component {
     }
     return (
       <Grid container direction='column' className={classes.main} wrap='nowrap'>
-        <Grid container direction='row' className={classes.content}>
+        <Grid container direction='row' className={classes.content} justify='space-between'>
           <PlayersData users={users} text={textData[1]} />
           <ChatSection socket={socket} textData={textData} />
-          <AvailableRooms
-            textData={textData}
-            rooms={rooms}
-            openSettings={this.handleSettingsModal}
-            checkPassword={this.checkPassword}
-          />
-          <SettingsComponent
-            textData={textData}
-            open={openSettings}
-            onClose={this.handleSettingsModal}
-            createRoom={this.createRoom}
-          />
+          <AvailableRooms textData={textData} rooms={rooms} openSettings={this.handleSettingsModal} checkPassword={this.checkPassword} />
+          <SettingsComponent textData={textData} open={openSettings} onClose={this.handleSettingsModal} createRoom={this.createRoom} />
           <PasswordComponent
             targetRoom={targetRoom}
             requiredPassword={requiredPassword}
@@ -121,6 +113,7 @@ const mapStateToProps = state => ({
   isInRoom: state.authentication.isInRoom,
   users: state.commonData.usersData,
   rooms: state.commonData.roomsData,
+  userData: state.commonData.userData,
   textData: state.commonData.typography.lobbyPage,
 });
 
