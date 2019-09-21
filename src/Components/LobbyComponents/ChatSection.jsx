@@ -33,17 +33,17 @@ class ChatSection extends Component {
     socket.emit('sendMessage', { message, name });
   };
   render() {
-    const { classes, messages } = this.props;
+    const { classes, messages, textData } = this.props;
     const renderMessages = messages.map((msg, i) => <MessageComponent key={i} {...msg} />);
     return (
       <Grid item xs={4} className={classes.wrapper}>
         <Typography align='center' variant='h4'>
-          Chat Section
+          {textData[2]}
         </Typography>
         <Grid container direction='column' spacing={1} className={classes.content}>
           {renderMessages}
         </Grid>
-        <SendMessageComponent submit={this.handleSubmit} />
+        <SendMessageComponent text={textData[3]} submit={this.handleSubmit} />
       </Grid>
     );
   }
@@ -55,6 +55,7 @@ ChatSection.propTypes = {
   classes: PropTypes.object,
   setMessagesData: PropTypes.func,
   messages: PropTypes.array,
+  textData: PropTypes.array,
 };
 
 const StyledReactComponent = withStyles(styles)(ChatSection);

@@ -2,7 +2,7 @@ import * as types from '../types';
 const initialState = {
   isAuthenticated: false,
   isInRoom: '',
-  socket: {},
+  socket: null,
   errorMessage: '',
 };
 export default function authentication(state = initialState, action) {

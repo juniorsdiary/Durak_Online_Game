@@ -4,6 +4,12 @@ const initialState = {
   roomsData: [],
   userData: {},
   messages: [],
+  typography: {
+    inGameMessages: [],
+    logInPage: [],
+    lobbyPage: [],
+    warning: '',
+  },
 };
 export default function commonData(state = initialState, action) {
   const { type, payload } = action;
@@ -21,6 +27,11 @@ export default function commonData(state = initialState, action) {
       return {
         ...state,
         messages: payload,
+      };
+    case types.CHANGE_LANGUAGE:
+      return {
+        ...state,
+        typography: payload,
       };
     default:
       return state;

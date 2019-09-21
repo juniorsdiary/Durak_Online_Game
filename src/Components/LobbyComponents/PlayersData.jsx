@@ -15,14 +15,14 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const PlayersData = ({ users }) => {
+const PlayersData = ({ users, text }) => {
   const classes = useStyles();
   const usersOnline = users.map(user => <UserCard key={user.id} {...user} />);
   return (
     <Grid item xs={4} className={classes.wrapper}>
       <Container className={classes.content}>
         <List>
-          <ListItemText inset primary={`Players currently online: ${users.length}`} />
+          <ListItemText inset primary={`${text} ${users.length}`} />
           {usersOnline}
         </List>
       </Container>
@@ -32,6 +32,7 @@ const PlayersData = ({ users }) => {
 
 PlayersData.propTypes = {
   users: PropTypes.array,
+  text: PropTypes.string,
 };
 
 export default PlayersData;

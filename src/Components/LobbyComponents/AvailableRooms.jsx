@@ -16,20 +16,20 @@ const useStyles = makeStyles({
   },
 });
 
-const AvailableRooms = ({ rooms, checkPassword, openSettings }) => {
+const AvailableRooms = ({ rooms, checkPassword, openSettings, textData }) => {
   const classes = useStyles();
   const renderRooms = rooms.map((room, i) => <RoomComponent key={i} {...room} checkPassword={checkPassword} />);
   return (
     <Grid item xs={4}>
       <Grid container direction='column' alignItems='center' wrap='nowrap' className={classes.wrapper}>
         <Typography align='center' variant='h4'>
-          Available Rooms
+          {textData[4]}
         </Typography>
         <Grid container direction='column' spacing={1} className={classes.content}>
           {renderRooms}
         </Grid>
         <Button variant='contained' color='primary' margin='normal' onClick={() => openSettings(true)}>
-          Create Room
+          {textData[5]}
         </Button>
       </Grid>
     </Grid>
@@ -40,6 +40,7 @@ AvailableRooms.propTypes = {
   openSettings: PropTypes.func,
   rooms: PropTypes.array,
   checkPassword: PropTypes.func,
+  textData: PropTypes.array,
 };
 
 export default AvailableRooms;

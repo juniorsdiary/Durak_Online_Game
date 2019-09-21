@@ -22,7 +22,7 @@ const useStyles = makeStyles({
   },
 });
 
-const SettingsComponent = ({ open, onClose, createRoom }) => {
+const SettingsComponent = ({ open, onClose, createRoom, textData }) => {
   const [values, setValue] = useForm({ roomName: '', players: '2', cards: '36', access: 'Public', password: '' });
   const [error, setError] = useState(false);
   const classes = useStyles();
@@ -48,45 +48,45 @@ const SettingsComponent = ({ open, onClose, createRoom }) => {
 
   return (
     <Dialog onClose={closeDialog} open={open}>
-      <DialogTitle>Choose Room Settings</DialogTitle>
+      <DialogTitle>{textData[6]}</DialogTitle>
       <form onSubmit={create} className={classes.form}>
         <TextField
           error={error}
           required
           id='roomName'
-          label='Create Room Name'
+          label={textData[7]}
           name='roomName'
           value={values.roomName}
           onChange={setValue}
         />
-        <FormLabel>Players</FormLabel>
+        <FormLabel>{textData[8]}</FormLabel>
         <RadioGroup aria-label='players' name='players' value={values.players} onChange={setValue}>
           <FormControlLabel value='2' control={<Radio />} label='2' />
           <FormControlLabel value='3' control={<Radio />} label='3' />
           <FormControlLabel value='4' control={<Radio />} label='4' />
         </RadioGroup>
-        <FormLabel>Number of Cards</FormLabel>
+        <FormLabel>{textData[9]}</FormLabel>
         <RadioGroup aria-label='cards' name='cards' value={values.cards} onChange={setValue}>
           <FormControlLabel value='36' control={<Radio />} label='36' />
           <FormControlLabel value='52' control={<Radio />} label='52' />
         </RadioGroup>
-        <FormLabel>Set access</FormLabel>
+        <FormLabel>{textData[10]}</FormLabel>
         <RadioGroup aria-label='access' name='access' value={values.access} onChange={setValue}>
-          <FormControlLabel value='Public' control={<Radio />} label='Public' />
-          <FormControlLabel value='Private' control={<Radio />} label='Private' />
+          <FormControlLabel value='Public' control={<Radio />} label={textData[11]} />
+          <FormControlLabel value='Private' control={<Radio />} label={textData[12]} />
         </RadioGroup>
         <TextField
           type='password'
           disabled={values.access !== 'Private'}
           required
           id='password'
-          label='Set password'
+          label={textData[13]}
           name='password'
           value={values.password}
           onChange={setValue}
         />
-        <Button type='submit' onClick={create}>
-          Create
+        <Button variant='contained' color='primary' type='submit' onClick={create}>
+          {textData[14]}
         </Button>
       </form>
     </Dialog>
@@ -97,6 +97,7 @@ SettingsComponent.propTypes = {
   open: PropTypes.bool,
   onClose: PropTypes.func,
   createRoom: PropTypes.func,
+  textData: PropTypes.array,
 };
 
 export default SettingsComponent;

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Button, TextField } from '@material-ui/core';
 
-export default function CreateNickName({ submit, error }) {
+export default function CreateNickName({ submit, error, text, buttonText }) {
   const [nickname, setNickname] = useState('');
   return (
     <form
@@ -20,16 +20,25 @@ export default function CreateNickName({ submit, error }) {
         fullWidth
         id='nickname'
         name='nickname'
-        label='Awesome nickname'
+        label={text}
       />
       <Button type='submit' fullWidth variant='contained' color='primary'>
-        Join Lobby
+        {buttonText}
       </Button>
     </form>
   );
 }
 
+CreateNickName.defaultProps = {
+  submit: () => {},
+  error: '',
+  buttonText: 'Default Button',
+  text: 'Default Text',
+};
+
 CreateNickName.propTypes = {
   submit: PropTypes.func,
   error: PropTypes.string,
+  buttonText: PropTypes.string,
+  text: PropTypes.string,
 };

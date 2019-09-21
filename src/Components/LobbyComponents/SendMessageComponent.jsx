@@ -1,8 +1,8 @@
 import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { TextField } from '@material-ui/core';
+import { TextField, Container } from '@material-ui/core';
 
-const SendMessageComponent = ({ submit }) => {
+const SendMessageComponent = ({ submit, text }) => {
   const [value, setValue] = useState('');
   const changeMessage = useCallback(e => {
     setValue(e.target.value);
@@ -16,21 +16,23 @@ const SendMessageComponent = ({ submit }) => {
     [submit, value]
   );
   return (
-    <form onSubmit={submitMessage}>
+    <Container component='form' onSubmit={submitMessage}>
       <TextField
         id='message'
-        label='Type message'
+        label={text}
         value={value}
         onChange={changeMessage}
         margin='normal'
         autoComplete={'off'}
+        fullWidth
       />
-    </form>
+    </Container>
   );
 };
 
 SendMessageComponent.propTypes = {
   submit: PropTypes.func,
+  text: PropTypes.string,
 };
 
 export default SendMessageComponent;

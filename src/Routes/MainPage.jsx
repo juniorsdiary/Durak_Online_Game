@@ -30,7 +30,7 @@ class MainPage extends Component {
   };
 
   render() {
-    const { errorMessage } = this.props;
+    const { errorMessage, textData } = this.props;
     if (this.props.isAuthenticated) {
       return <Redirect to={'/lobby'} />;
     }
@@ -38,9 +38,14 @@ class MainPage extends Component {
       <Grid container direction='column' justify='center' alignItems='center'>
         <Grid item xs={4}>
           <Typography component='h1' variant='h5' align='center'>
-            Create nickname
+            {textData.logInPage[0]}
           </Typography>
-          <CreateNickName submit={this.handleSubmit} error={errorMessage} />
+          <CreateNickName
+            buttonText={textData.logInPage[2]}
+            text={textData.logInPage[1]}
+            submit={this.handleSubmit}
+            error={errorMessage}
+          />
         </Grid>
       </Grid>
     );
@@ -55,12 +60,14 @@ MainPage.propTypes = {
   setUserData: PropTypes.func,
   setErrorMessage: PropTypes.func,
   errorMessage: PropTypes.string,
+  textData: PropTypes.object,
 };
 
 const mapStateToProps = state => ({
   isAuthenticated: state.authentication.isAuthenticated,
   socket: state.authentication.socket,
   errorMessage: state.authentication.errorMessage,
+  textData: state.commonData.typography,
 });
 
 const mapDispatchToProps = dispatch => ({

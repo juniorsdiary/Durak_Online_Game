@@ -3,14 +3,14 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { setUsersData, setRoomsData } from 'Store';
-import { PlayersData, Header, ChatSection, AvailableRooms, PasswordComponent, SettingsComponent } from 'Components';
+import { PlayersData, ChatSection, AvailableRooms, PasswordComponent, SettingsComponent } from 'Components';
 import { Grid } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 
 const styles = {
   main: {
     padding: '0',
-    height: '100vh',
+    height: '100%',
   },
   content: {
     height: '677px',
@@ -59,12 +59,6 @@ class Lobby extends Component {
     joinRoom(roomName);
   };
 
-  signOut = nickname => {
-    const { socket, signout } = this.props;
-    socket.emit('signOut', nickname);
-    signout();
-  };
-
   closePasswordModal = () => {
     this.setState({ openPassword: false });
   };
@@ -74,19 +68,28 @@ class Lobby extends Component {
   };
 
   render() {
-    const { users, socket, classes, rooms, userData, isInRoom } = this.props;
+    const { users, socket, classes, rooms, isInRoom, textData } = this.props;
     const { openSettings, openPassword, requiredPassword, targetRoom } = this.state;
     if (isInRoom) {
       return <Redirect to={`/room/${isInRoom}`} />;
     }
     return (
       <Grid container direction='column' className={classes.main} wrap='nowrap'>
-        <Header userData={userData} signOut={this.signOut} />
         <Grid container direction='row' className={classes.content}>
-          <PlayersData users={users} />
-          <ChatSection socket={socket} />
-          <AvailableRooms rooms={rooms} openSettings={this.handleSettingsModal} checkPassword={this.checkPassword} />
-          <SettingsComponent open={openSettings} onClose={this.handleSettingsModal} createRoom={this.createRoom} />
+          <PlayersData users={users} text={textData[1]} />
+          <ChatSection socket={socket} textData={textData} />
+          <AvailableRooms
+            textData={textData}
+            rooms={rooms}
+            openSettings={this.handleSettingsModal}
+            checkPassword={this.checkPassword}
+          />
+          <SettingsComponent
+            textData={textData}
+            open={openSettings}
+            onClose={this.handleSettingsModal}
+            createRoom={this.createRoom}
+          />
           <PasswordComponent
             targetRoom={targetRoom}
             requiredPassword={requiredPassword}
@@ -102,15 +105,15 @@ class Lobby extends Component {
 
 Lobby.propTypes = {
   socket: PropTypes.object,
-  userData: PropTypes.object,
   setConnectedUsers: PropTypes.func,
   setAvailableRooms: PropTypes.any,
   users: PropTypes.array,
   rooms: PropTypes.array,
   classes: PropTypes.object,
-  signout: PropTypes.func,
   isInRoom: PropTypes.string,
   joinRoom: PropTypes.func,
+  textData: PropTypes.array,
+  userData: PropTypes.object,
 };
 
 const mapStateToProps = state => ({
@@ -118,7 +121,7 @@ const mapStateToProps = state => ({
   isInRoom: state.authentication.isInRoom,
   users: state.commonData.usersData,
   rooms: state.commonData.roomsData,
-  userData: state.commonData.userData,
+  textData: state.commonData.typography.lobbyPage,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -130,9 +133,6 @@ const mapDispatchToProps = dispatch => ({
   },
   joinRoom: roomName => {
     dispatch({ type: 'JOIN_ROOM', payload: roomName });
-  },
-  signout: () => {
-    dispatch({ type: 'SET_AUTH', payload: false });
   },
 });
 

@@ -179,19 +179,13 @@ class PlayRoomManager {
     this.logMessages.unshift({ nickName: this.curPlayer.nickname, messageIndex: 0 });
   }
   makeOffenceMove() {
-    console.log('TCL: PlayRoomManager -> makeOffenceMove -> this.curPlayer.curCard', this.curPlayer.curCard);
     if (this.checkConditions()) {
       if (this.gameField.cards.length === 0) this.defender.cardsNumber = this.defender.cards.length;
-      console.log('this.interPhase', this.interPhase);
       if (!this.interPhase) {
         this.transferOffenceCards();
         this.defineMove(false, true, 'offence', 'defence');
       } else {
         if (this.defender.cardsToTake !== 0) {
-          console.log(
-            'TCL: PlayRoomManager -> makeOffenceMove -> this.defender.cardsToTake',
-            this.defender.cardsToTake
-          );
           this.transferOffenceCards();
           this.defender.cardsToTake--;
         }
@@ -425,14 +419,5 @@ const GameManager = (() => {
     },
   };
 })();
-
-// GameManager.createGameRoom(2, 52, 'firstRoom');
-// const PlayR2oom = GameManager.getPlayRoom('firstRoom');
-// PlayR2oom.addUser('vlad', 0);
-// PlayR2oom.addUser('eva', 1);
-// PlayR2oom.getUser('vlad').activateUser();
-// PlayR2oom.getUser('eva').activateUser();
-// PlayR2oom.checkUsersReady();
-// PlayR2oom.dealCards();
 
 module.exports = GameManager;

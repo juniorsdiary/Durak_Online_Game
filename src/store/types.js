@@ -13,3 +13,4 @@ export const DEFINE_PLAYERS_MOVE = 'DEFINE_PLAYERS_MOVE';
 export const SET_ERROR = 'SET_ERROR';
 export const SET_CONTROLS = 'SET_CONTROLS';
 export const RESET_DATA = 'RESET_DATA';
+export const CHANGE_LANGUAGE = 'CHANGE_LANGUAGE';

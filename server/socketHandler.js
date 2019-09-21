@@ -4,6 +4,7 @@ const emitter = new EventEmitter();
 emitter.setMaxListeners(100);
 const DataHandler = require('./DataHandler');
 const GameManager = require('./GameManager');
+const textData = require('./typography');
 DataHandler.addData('room', 'Lobby', {});
 
 const socketHandler = socket => {
@@ -53,6 +54,7 @@ const socketHandler = socket => {
 
   socket.on('sendMessage', ({ message, name }) => {
     DataHandler.addData('message', message, name);
+    // изменить
     io.sockets.emit('syncMessages', DataHandler.getData('messages'));
   });
 
@@ -61,8 +63,8 @@ const socketHandler = socket => {
     if (userData) {
       if (userData.room !== 'Lobby') {
         const PlayRoom = GameManager.getPlayRoom(userData.room);
-        const player = PlayRoom.players.find(item => item.nickname === userData.user);
-        if (PlayRoom.gameInProgress && !player.active) {
+        const Player = PlayRoom.players.find(item => item.nickname === userData.user);
+        if (PlayRoom.gameInProgress && !Player.active) {
           GameManager.deletePlayerFromRoom(userData);
         } else {
           GameManager.deletePlayerFromRoom(userData);
@@ -137,7 +139,6 @@ const socketHandler = socket => {
   });
 
   socket.on('makeOffenceMove', nickname => {
-    console.log('TCL: nickname', nickname);
     const userData = DataHandler.getData('users', nickname);
     const PlayRoom = GameManager.getPlayRoom(userData.room);
     PlayRoom.makeOffenceMove();
@@ -186,7 +187,6 @@ const socketHandler = socket => {
     const PlayRoom = GameManager.getPlayRoom(userData.room);
     PlayRoom.interPhase = true;
     PlayRoom.countCardsToTake();
-    console.log(PlayRoom.defender.cardsToTake);
     if (PlayRoom.curPlayer.active) {
       PlayRoom.defineMove(true, false, 'offence', 'defence');
       io.sockets.to(userData.room).emit('syncData', PlayRoom);
@@ -205,11 +205,11 @@ const socketHandler = socket => {
     }
   });
 
-  socket.on('changeLng', (lng, cb) => {
-    if (lng === 'RU') {
-      // cb(textsData.russian);
-    } else if (lng === 'EN') {
-      // cb(textsData.english);
+  socket.on('changeLanguage', (lng, cb) => {
+    if (lng) {
+      cb({ type: 'CHANGE_LANGUAGE', payload: textData.english });
+    } else {
+      cb({ type: 'CHANGE_LANGUAGE', payload: textData.russian });
     }
   });
 };

@@ -22,6 +22,7 @@ import MessageComponent from './LobbyComponents/MessageComponent.jsx';
 import PasswordComponent from './LobbyComponents/PasswordComponent.jsx';
 import SettingsComponent from './LobbyComponents/SettingsComponent.jsx';
 import SendMessageComponent from './LobbyComponents/SendMessageComponent.jsx';
+import ChangeLanguage from './LobbyComponents/ChangeLanguage.jsx';
 
 export {
   Deck,
@@ -38,6 +39,7 @@ export {
   AvailableRooms,
   ByPlayMessages,
   ReadyComponent,
+  ChangeLanguage,
   CreateNickName,
   EndGameComponent,
   MessageComponent,

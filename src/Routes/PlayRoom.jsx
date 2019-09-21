@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { ReadyComponent, Deck, Trump, DiscardPile, Player, SystemMessage } from 'Components';
 import { GameField, ControlsComponent, ByPlayMessages, EndGameComponent } from 'Components';
-import { setPlayRoomData, setClientIndex, assignPlayersInfo, definePlayersMove, setControlsState } from 'Store';
+import { setPlayRoomData, assignPlayersInfo, definePlayersMove, setControlsState } from 'Store';
 import { assignIndexes } from 'Utilities';
 import { Container } from '@material-ui/core';
 import { withStyles } from '@material-ui/styles';
