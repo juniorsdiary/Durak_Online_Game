@@ -16,7 +16,7 @@ const App = () => {
   return (
     <>
       <CssBaseline />
-      <Grid container direction='column' className={classes.wrapper}>
+      <Grid container direction='column' className={classes.wrapper} wrap='nowrap'>
         <Header />
         <Routes />
       </Grid>

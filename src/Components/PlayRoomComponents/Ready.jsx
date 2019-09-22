@@ -2,14 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Button, Dialog, DialogTitle } from '@material-ui/core';
 
-const Ready = ({ activeUsers, isFull, isReady, setReadyState }) => {
+const Ready = ({ activeUsers, isFull, isReady, setReadyState, textData }) => {
   return (
     <>
       <Dialog open={!activeUsers}>
-        <DialogTitle>Waiting for players...</DialogTitle>
+        <DialogTitle>{textData[6]}</DialogTitle>
         {/* <Container>{users.join(' ')}</Container> */}
         <Button variant='contained' color='primary' disabled={isReady || !isFull} onClick={setReadyState}>
-          Ready
+          {textData[7]}
         </Button>
       </Dialog>
     </>
@@ -23,6 +23,7 @@ Ready.propTypes = {
   isUsersReady: PropTypes.bool,
   activeUsers: PropTypes.bool,
   isFull: PropTypes.bool,
+  textData: PropTypes.array,
 };
 Ready.defaultProps = {
   users: [],

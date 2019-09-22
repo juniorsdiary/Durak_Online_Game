@@ -6,7 +6,7 @@ import { Paper } from '@material-ui/core';
 
 const useStyles = makeStyles({
   deck: {
-    width: '107px',
+    width: '100px',
     height: '141px',
   },
 });

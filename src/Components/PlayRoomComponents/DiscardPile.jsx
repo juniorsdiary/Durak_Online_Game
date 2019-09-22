@@ -7,10 +7,9 @@ import { EachCard } from 'Components';
 const useStyles = makeStyles({
   discardPile: {
     position: 'absolute',
-    top: '50%',
-    right: '300px',
+    top: '51%',
+    right: '14.8%',
     width: '100px',
-    marginTop: '-68px',
     height: '141px',
   },
 });

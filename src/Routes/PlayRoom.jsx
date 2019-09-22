@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Ready, Deck, Trump, DiscardPile, Player, SystemMessage } from 'Components';
+import { Ready, Deck, Trump, DiscardPile, Player } from 'Components';
 import { GameField, Controls, ByPlayMessages, EndGame } from 'Components';
 import { setPlayRoomData, assignPlayersInfo, definePlayersMove, setControlsState } from 'Store';
 import { assignIndexes } from 'Utilities';
@@ -14,8 +14,8 @@ const styles = {
     display: 'flex',
     justifyContent: 'space-around',
     position: 'absolute',
-    top: '10%',
-    left: '10%',
+    top: '28%',
+    right: '10%',
     padding: '0',
   },
   board: {
@@ -25,9 +25,6 @@ const styles = {
 };
 
 class PlayRoom extends Component {
-  state = {
-    warning: true,
-  };
   componentDidMount() {
     const { socket, setPlayRoomData, definePlayersMove, assignPlayersInfo, setReady } = this.props;
 
@@ -82,8 +79,6 @@ class PlayRoom extends Component {
     const { socket, turn, nickname } = this.props;
     if (turn) {
       socket.emit('makeOffenceMove', nickname, placeIndex);
-    } else {
-      this.warnPlayer();
     }
   };
 
@@ -91,8 +86,6 @@ class PlayRoom extends Component {
     const { socket, turn, nickname } = this.props;
     if (turn) {
       socket.emit('makeDefenceMove', nickname, placeIndex - 1);
-    } else {
-      this.warnPlayer();
     }
   };
 
@@ -112,24 +105,16 @@ class PlayRoom extends Component {
     }
   };
 
-  warnPlayer = () => {
-    this.setState({ warning: false });
-    setTimeout(() => {
-      this.setState({ warning: true });
-    }, 1500);
-  };
-
   start = () => {
     console.log('start');
   };
 
   render() {
-    const { socket, isReady, data, classes, player0, player1, player2, player3, defenceOrOffence, activeTake, activeDiscard } = this.props;
-    const { warning } = this.state;
+    const { socket, isReady, data, classes, player0, player1, player2, player3, defenceOrOffence, activeTake, activeDiscard, textData } = this.props;
     const { usersReady, users, shuffledDeck, isFull, trumpData, discardPile, gameField, logMessages, endGame, players } = data;
     return (
       <div role='presentation' onSelect={() => false} onMouseDown={() => false} className={classes.board}>
-        <Ready activeUsers={usersReady} users={users} isReady={isReady} isFull={isFull} setReadyState={this.setReadyValue} />
+        <Ready activeUsers={usersReady} users={users} isReady={isReady} isFull={isFull} setReadyState={this.setReadyValue} textData={textData} />
 
         {usersReady && isFull && (
           <>
@@ -149,10 +134,15 @@ class PlayRoom extends Component {
               onDragOver={this.dragOverEvent}
               onDrop={defenceOrOffence === 'offence' ? this.makeOffenceMove : this.makeDefenceMove}
             />
-            <Controls takeCards={this.takeCards} discardCards={this.discardCards} activeTake={activeTake} activeDiscard={activeDiscard} />
-            <ByPlayMessages messages={logMessages} />
-            <EndGame data={endGame} />
-            <SystemMessage warning={warning} />
+            <Controls
+              takeCards={this.takeCards}
+              discardCards={this.discardCards}
+              activeTake={activeTake}
+              activeDiscard={activeDiscard}
+              textData={textData}
+            />
+            <ByPlayMessages messages={logMessages} textData={textData} />
+            <EndGame data={endGame} text={textData[8]} />
           </>
         )}
         {/* <Timer timerBlock={timerBlock} widthValue={widthValue} text={textsData[9]} /> */}
@@ -170,6 +160,7 @@ PlayRoom.propTypes = {
   setControlsState: PropTypes.func,
   assignPlayersInfo: PropTypes.func,
   definePlayersMove: PropTypes.func,
+  textData: PropTypes.array,
   data: PropTypes.object,
   socket: PropTypes.object,
   classes: PropTypes.object,
@@ -186,6 +177,7 @@ PlayRoom.propTypes = {
 const props = state => ({
   socket: state.authentication.socket,
   nickname: state.commonData.userData.user,
+  textData: state.commonData.typography.inGameMessages,
   turn: state.playRoomData.turn,
   data: state.playRoomData.playRoom,
   isReady: state.playRoomData.isReady,

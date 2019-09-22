@@ -22,6 +22,7 @@ class GameField {
   }
   clearField() {
     this.offenceCards = Array(6);
+    this.defenceCards = [];
     this.cards = [];
   }
   initField() {

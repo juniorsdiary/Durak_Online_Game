@@ -1,21 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { GameFieldCardPlace } from 'Components';
-import { makeStyles } from '@material-ui/styles';
+import { makeStyles } from '@material-ui/core/styles';
+import { Grid } from '@material-ui/core';
 
 const useStyles = makeStyles({
   gameField: {
     position: 'absolute',
     top: '50%',
     left: '50%',
-    marginTop: '-200px',
-    marginLeft: '-250px',
-    width: '475px',
-    height: '400px',
-    display: 'flex',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-    alignItems: 'center',
+    transform: 'translate(-50%, -50%)',
+    width: '425px',
+    height: '305px',
   },
 });
 
@@ -27,9 +23,15 @@ const GameField = ({ onDrop, onDragOver, gameField }) => {
   ));
   const placeIndex = offenceCards.filter(item => item).length;
   return (
-    <div className={classes.gameField} onDrop={() => onDrop(placeIndex)} onDragOver={onDragOver}>
+    <Grid
+      container
+      justify='space-evenly'
+      alignItems='center'
+      className={classes.gameField}
+      onDrop={() => onDrop(placeIndex)}
+      onDragOver={onDragOver}>
       {renderCards}
-    </div>
+    </Grid>
   );
 };
 

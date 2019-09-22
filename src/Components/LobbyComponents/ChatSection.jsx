@@ -22,8 +22,8 @@ const styles = {
 class ChatSection extends Component {
   componentDidMount() {
     const { socket, setMessagesData } = this.props;
-    socket.on('syncMessages', messages => {
-      setMessagesData(messages);
+    socket.on('addMessage', message => {
+      setMessagesData(message);
     });
   }
   handleChange = e => {
@@ -31,8 +31,8 @@ class ChatSection extends Component {
     this.setState({ messageValue });
   };
   handleSubmit = message => {
-    const { socket, name } = this.props;
-    socket.emit('sendMessage', { message, name });
+    const { socket, userData, setMessagesData } = this.props;
+    socket.emit('sendMessage', { message, name: userData.user }, setMessagesData);
   };
 
   componentDidUpdate() {
@@ -42,8 +42,8 @@ class ChatSection extends Component {
     this.wrapper.scrollTop = this.wrapper.scrollHeight;
   }
   render() {
-    const { classes, messages, textData, name } = this.props;
-    const renderMessages = messages.map((msg, i) => <Message key={i} clientName={name} {...msg} />);
+    const { classes, messages, textData, userData } = this.props;
+    const renderMessages = messages.map((msg, i) => <Message key={i} clientName={userData.user} {...msg} />);
     return (
       <Grid item xs={5} className={classes.wrapper}>
         <Grid
@@ -65,7 +65,7 @@ class ChatSection extends Component {
 
 ChatSection.propTypes = {
   socket: PropTypes.object,
-  name: PropTypes.string,
+  userData: PropTypes.object,
   classes: PropTypes.object,
   setMessagesData: PropTypes.func,
   messages: PropTypes.array,
@@ -77,12 +77,12 @@ const StyledReactComponent = withStyles(styles)(ChatSection);
 const ReduxConnected = connect(
   state => ({
     socket: state.authentication.socket,
-    name: state.commonData.userData.user,
+    userData: state.commonData.userData,
     messages: state.commonData.messages,
   }),
   dispatch => ({
     setMessagesData: data => {
-      dispatch({ type: 'SET_MESSAGES', payload: data });
+      dispatch({ type: 'ADD_MESSAGE', payload: data });
     },
   })
 )(StyledReactComponent);

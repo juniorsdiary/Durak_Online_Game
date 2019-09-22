@@ -3,10 +3,11 @@ import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
 import cardDeck from '../../images/free-vector-card-deck.jpg';
 import cardBack from '../../images/back.jpg';
+import { Fade } from '@material-ui/core';
 
 const useStyles = makeStyles(() => ({
   parent: {
-    margin: props => `${props.margin}px`,
+    left: props => `${props.distance}px`,
     position: 'absolute',
     width: '100px',
     height: '141px',
@@ -32,7 +33,7 @@ const useStyles = makeStyles(() => ({
     backfaceVisibility: 'hidden',
   },
   back: {
-    position: 'relative',
+    position: 'absolute',
     width: 'inherit',
     height: 'inherit',
     borderRadius: '6px',
@@ -42,22 +43,24 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const EachCard = ({ margin, dragValue, dragEvent, rotated, cardData, beaten }) => {
+const EachCard = ({ distance, dragValue, dragEvent, rotated, cardData, beaten }) => {
   const backgroundPosition = `${cardData[1]}px ${cardData[2]}px`;
-  const classes = useStyles({ margin, rotated, backgroundPosition, beaten });
+  const classes = useStyles({ distance, rotated, backgroundPosition, beaten });
 
   return (
-    <div className={classes.parent} draggable={dragValue} onDragStart={() => dragEvent(cardData)}>
-      <div className={classes.card}>
-        <div className={classes.face}></div>
-        <div className={classes.back}></div>
+    <Fade in={true}>
+      <div className={classes.parent} draggable={dragValue} onDragStart={() => dragEvent(cardData)}>
+        <div className={classes.card}>
+          <div className={classes.face}></div>
+          <div className={classes.back}></div>
+        </div>
       </div>
-    </div>
+    </Fade>
   );
 };
 
 EachCard.propTypes = {
-  margin: PropTypes.string,
+  distance: PropTypes.number,
   dragEvent: PropTypes.func,
   rotated: PropTypes.bool,
   dragValue: PropTypes.bool,

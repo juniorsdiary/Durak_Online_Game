@@ -6,6 +6,7 @@ import { Paper } from '@material-ui/core';
 
 const useStyles = makeStyles({
   cardPlace: {
+    position: 'relative',
     width: '99px',
     height: '136px',
     borderRadius: '5px',
@@ -18,7 +19,7 @@ const GameFieldCardPlace = ({ offenceCardData, defenceCardData }) => {
   return (
     <Paper className={classes.cardPlace}>
       {offenceCardData && <EachCard cardData={offenceCardData} rotated />}
-      {defenceCardData && <EachCard cardData={defenceCardData} margin={`20px 0 0 20`} rotated beaten />}
+      {defenceCardData && <EachCard cardData={defenceCardData} distance={`20`} rotated beaten />}
     </Paper>
   );
 };

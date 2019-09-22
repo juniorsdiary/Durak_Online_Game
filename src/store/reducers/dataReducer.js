@@ -23,10 +23,10 @@ export default function commonData(state = initialState, action) {
         ...state,
         userData: payload,
       };
-    case types.SET_MESSAGES:
+    case types.ADD_MESSAGE:
       return {
         ...state,
-        messages: payload,
+        messages: [...state.messages, payload],
       };
     case types.CHANGE_LANGUAGE:
       return {

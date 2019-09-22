@@ -6,7 +6,7 @@ import { makeStyles } from '@material-ui/styles';
 
 const useStyles = makeStyles(() => ({
   trump: {
-    width: '107px',
+    width: '100px',
     height: '141px',
   },
 }));

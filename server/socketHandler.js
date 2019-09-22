@@ -18,7 +18,6 @@ const socketHandler = socket => {
       cb({ error: false, userData, message: `` });
       io.sockets.to('Lobby').emit('displayPlayers', DataHandler.getData('users'));
       io.sockets.to('Lobby').emit('displayRooms', DataHandler.getData('rooms'));
-      io.sockets.emit('syncMessages', DataHandler.getData('messages'));
     } else {
       cb({ error, message });
     }
@@ -52,9 +51,15 @@ const socketHandler = socket => {
     io.sockets.to('Lobby').emit('displayRooms', DataHandler.getData('rooms'));
   });
 
-  socket.on('sendMessage', ({ message, name }) => {
-    DataHandler.addData('message', message, name);
-    io.sockets.emit('syncMessages', DataHandler.getData('messages'));
+  socket.on('sendMessage', ({ message, name }, cb) => {
+    io.of('/')
+      .in('Lobby')
+      .clients((err, clients) => {
+        clients.forEach(id => {
+          socket.to(id).emit('addMessage', { message, name });
+          cb({ message, name });
+        });
+      });
   });
 
   socket.on('disconnect', () => {
