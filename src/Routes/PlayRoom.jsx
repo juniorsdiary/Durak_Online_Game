@@ -18,6 +18,10 @@ const styles = {
     left: '10%',
     padding: '0',
   },
+  board: {
+    position: 'relative',
+    flex: '1',
+  },
 };
 
 class PlayRoom extends Component {
@@ -74,19 +78,19 @@ class PlayRoom extends Component {
     e.dataTransfer.dropEffect = 'copy';
   };
 
-  makeOffenceMove = () => {
+  makeOffenceMove = placeIndex => {
     const { socket, turn, nickname } = this.props;
     if (turn) {
-      socket.emit('makeOffenceMove', nickname);
+      socket.emit('makeOffenceMove', nickname, placeIndex);
     } else {
       this.warnPlayer();
     }
   };
 
-  makeDefenceMove = () => {
+  makeDefenceMove = placeIndex => {
     const { socket, turn, nickname } = this.props;
     if (turn) {
-      socket.emit('makeDefenceMove', nickname);
+      socket.emit('makeDefenceMove', nickname, placeIndex - 1);
     } else {
       this.warnPlayer();
     }
@@ -124,36 +128,35 @@ class PlayRoom extends Component {
     const { warning } = this.state;
     const { usersReady, users, shuffledDeck, isFull, trumpData, discardPile, gameField, logMessages, endGame, players } = data;
     return (
-      <>
+      <div role='presentation' onSelect={() => false} onMouseDown={() => false} className={classes.board}>
         <Ready activeUsers={usersReady} users={users} isReady={isReady} isFull={isFull} setReadyState={this.setReadyValue} />
-        <div role='presentation' onSelect={() => false} onMouseDown={() => false}>
-          {usersReady && isFull && (
-            <>
-              <Container className={classes.cards}>
-                <Deck deck={shuffledDeck} />
-                <Trump trump={trumpData} />
-              </Container>
-              <DiscardPile data={discardPile} />
 
-              <Player playerInfo={players[player0]} playerNumber={0} socket={socket} dragEvent={this.dragEvent} />
-              <Player playerInfo={players[player1]} playerNumber={1} socket={socket} dragEvent={this.dragEvent} />
-              <Player playerInfo={players[player2]} playerNumber={2} socket={socket} dragEvent={this.dragEvent} />
-              <Player playerInfo={players[player3]} playerNumber={3} socket={socket} dragEvent={this.dragEvent} />
+        {usersReady && isFull && (
+          <>
+            <Container className={classes.cards}>
+              <Deck deck={shuffledDeck} />
+              <Trump trump={trumpData} />
+            </Container>
+            <DiscardPile data={discardPile} />
 
-              <GameField
-                gameField={gameField}
-                onDragOver={this.dragOverEvent}
-                onDrop={defenceOrOffence === 'offence' ? this.makeOffenceMove : this.makeDefenceMove}
-              />
-              <Controls takeCards={this.takeCards} discardCards={this.discardCards} activeTake={activeTake} activeDiscard={activeDiscard} />
-              <ByPlayMessages messages={logMessages} />
-              <EndGame data={endGame} />
-              <SystemMessage warning={warning} />
-            </>
-          )}
-          {/* <Timer timerBlock={timerBlock} widthValue={widthValue} text={textsData[9]} /> */}
-        </div>
-      </>
+            <Player playerInfo={players[player0]} playerNumber={0} socket={socket} dragEvent={this.dragEvent} />
+            <Player playerInfo={players[player1]} playerNumber={1} socket={socket} dragEvent={this.dragEvent} />
+            <Player playerInfo={players[player2]} playerNumber={2} socket={socket} dragEvent={this.dragEvent} />
+            <Player playerInfo={players[player3]} playerNumber={3} socket={socket} dragEvent={this.dragEvent} />
+
+            <GameField
+              gameField={gameField}
+              onDragOver={this.dragOverEvent}
+              onDrop={defenceOrOffence === 'offence' ? this.makeOffenceMove : this.makeDefenceMove}
+            />
+            <Controls takeCards={this.takeCards} discardCards={this.discardCards} activeTake={activeTake} activeDiscard={activeDiscard} />
+            <ByPlayMessages messages={logMessages} />
+            <EndGame data={endGame} />
+            <SystemMessage warning={warning} />
+          </>
+        )}
+        {/* <Timer timerBlock={timerBlock} widthValue={widthValue} text={textsData[9]} /> */}
+      </div>
     );
   }
 }

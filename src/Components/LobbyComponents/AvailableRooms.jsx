@@ -36,7 +36,7 @@ const AvailableRooms = ({ rooms, checkAccess, openSettings, textData }) => {
 AvailableRooms.propTypes = {
   openSettings: PropTypes.func,
   rooms: PropTypes.array,
-  checkPassword: PropTypes.func,
+  checkAccess: PropTypes.func,
   textData: PropTypes.array,
 };
 

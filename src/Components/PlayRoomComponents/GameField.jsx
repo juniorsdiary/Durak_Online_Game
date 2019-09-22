@@ -22,10 +22,12 @@ const useStyles = makeStyles({
 const GameField = ({ onDrop, onDragOver, gameField }) => {
   const { offenceCards, defenceCards } = gameField;
   const classes = useStyles();
-  let renderCards = offenceCards.map((item, i) => <GameFieldCardPlace key={i} offenceCardData={offenceCards[i]} defenceCardData={defenceCards[i]} />);
-
+  let renderCards = offenceCards.map((cardData, i) => (
+    <GameFieldCardPlace key={i} offenceCardData={cardData} defenceCardData={defenceCards[i]} placeIndex={i} />
+  ));
+  const placeIndex = offenceCards.filter(item => item).length;
   return (
-    <div className={classes.gameField} onDrop={onDrop} onDragOver={onDragOver}>
+    <div className={classes.gameField} onDrop={() => onDrop(placeIndex)} onDragOver={onDragOver}>
       {renderCards}
     </div>
   );

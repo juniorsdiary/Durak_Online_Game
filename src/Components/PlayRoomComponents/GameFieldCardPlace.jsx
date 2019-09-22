@@ -17,8 +17,8 @@ const GameFieldCardPlace = ({ offenceCardData, defenceCardData }) => {
   const classes = useStyles();
   return (
     <Paper className={classes.cardPlace}>
-      <EachCard cardData={offenceCardData} rotated />
-      {defenceCardData.length && <EachCard cardData={defenceCardData} margin={`20px 0 0 20`} rotated beaten />}
+      {offenceCardData && <EachCard cardData={offenceCardData} rotated />}
+      {defenceCardData && <EachCard cardData={defenceCardData} margin={`20px 0 0 20`} rotated beaten />}
     </Paper>
   );
 };
@@ -26,11 +26,7 @@ const GameFieldCardPlace = ({ offenceCardData, defenceCardData }) => {
 GameFieldCardPlace.propTypes = {
   offenceCardData: PropTypes.array,
   defenceCardData: PropTypes.array,
-};
-
-GameFieldCardPlace.defaultProps = {
-  offenceCardData: [],
-  defenceCardData: [],
+  placeIndex: PropTypes.number,
 };
 
 export default GameFieldCardPlace;

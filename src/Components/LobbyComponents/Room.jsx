@@ -54,7 +54,7 @@ Room.propTypes = {
   room: PropTypes.string,
   settings: PropTypes.object,
   users: PropTypes.array,
-  checkPassword: PropTypes.func,
+  checkAccess: PropTypes.func,
   textData: PropTypes.array,
 };
 

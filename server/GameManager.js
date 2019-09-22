@@ -14,16 +14,19 @@ function sortCards(arr) {
 
 class GameField {
   constructor() {
-    this.offenceCards = [[], [], [], [], [], []];
+    this.offenceCards = [];
     this.defenceCards = [];
     this.cards = [];
     this.curCard = [];
     this.curPlaceIndex = 0;
   }
   clearField() {
-    this.offenceCards = [];
-    this.defenceCards = [];
+    this.offenceCards = Array(6);
     this.cards = [];
+  }
+  initField() {
+    this.offenceCards = Array(6);
+    this.defenceCards = [];
   }
 }
 
@@ -112,7 +115,9 @@ class PlayRoomManager {
       }
     });
     this.gameField = new GameField();
+    this.gameField.initField();
     this.gameInProgress = true;
+
     if (!this.lastPlayer) {
       this.defineFirstMove();
     } else {
@@ -178,11 +183,11 @@ class PlayRoomManager {
   logNextTurn() {
     this.logMessages.unshift({ nickName: this.curPlayer.nickname, messageIndex: 0 });
   }
-  makeOffenceMove() {
+  makeOffenceMove(placeIndex) {
     if (this.checkConditions()) {
       if (this.gameField.cards.length === 0) this.defender.cardsNumber = this.defender.cards.length;
       if (!this.interPhase) {
-        this.transferOffenceCards();
+        this.transferOffenceCards(placeIndex);
         this.defineMove(false, true, 'offence', 'defence');
       } else {
         if (this.defender.cardsToTake !== 0) {
@@ -215,7 +220,7 @@ class PlayRoomManager {
         cardIndex = index;
       }
     });
-    this.gameField.offenceCards.push(card);
+    this.gameField.offenceCards[this.placeIndex] = card;
     this.gameField.cards.push(card);
     playerCards.splice(cardIndex, 1);
   }
@@ -227,8 +232,6 @@ class PlayRoomManager {
     this.players.forEach(item => item.resetUser());
     this.usersReady = false;
     this.discardPile = [];
-    this.initialDeck = deck;
-    this.gameDeck = [];
     this.shuffledDeck = [];
     this.trumpData = [];
     this.gameInProgress = false;
@@ -264,11 +267,10 @@ class PlayRoomManager {
   checkDefCard() {
     let card = this.defender.curCard;
     let gameFieldCards = this.gameField.offenceCards;
-    let length = gameFieldCards.length;
     let cardSuit = card[0];
-    let gameFieldSuit = gameFieldCards[length - 1][0];
+    let gameFieldSuit = gameFieldCards[this.placeIndex][0];
     let cardValue = +card[3];
-    let gameFieldValue = +gameFieldCards[length - 1][3];
+    let gameFieldValue = +gameFieldCards[this.placeIndex][3];
     if (gameFieldSuit === this.trumpDataSecondary[0]) {
       return cardValue > gameFieldValue && cardSuit === this.trumpDataSecondary[0];
     } else if (cardSuit === gameFieldSuit && cardSuit !== this.trumpDataSecondary[0]) {

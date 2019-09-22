@@ -137,9 +137,10 @@ const socketHandler = socket => {
     GameManager.getPlayRoom(userData.room).getUser(nickname).curCard = cardData;
   });
 
-  socket.on('makeOffenceMove', nickname => {
+  socket.on('makeOffenceMove', (nickname, placeIndex) => {
     const userData = DataHandler.getData('users', nickname);
     const PlayRoom = GameManager.getPlayRoom(userData.room);
+    PlayRoom.placeIndex = placeIndex;
     PlayRoom.makeOffenceMove();
     io.sockets.to(userData.room).emit('syncData', PlayRoom);
     if (!PlayRoom.endGame.state) {
@@ -155,9 +156,10 @@ const socketHandler = socket => {
     }
   });
 
-  socket.on('makeDefenceMove', nickname => {
+  socket.on('makeDefenceMove', (nickname, placeIndex) => {
     const userData = DataHandler.getData('users', nickname);
     const PlayRoom = GameManager.getPlayRoom(userData.room);
+    PlayRoom.placeIndex = placeIndex;
     PlayRoom.makeDefenceMove();
     io.sockets.to(userData.room).emit('syncData', PlayRoom);
     if (!PlayRoom.endGame.state) {

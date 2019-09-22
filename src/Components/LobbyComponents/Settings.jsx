@@ -7,6 +7,9 @@ import { useForm } from 'Utilities';
 const useStyles = makeStyles(theme => ({
   title: {
     padding: theme.spacing(0, 2),
+    '& h2': {
+      fontWeight: 'bold',
+    },
   },
   form: {
     display: 'flex',
