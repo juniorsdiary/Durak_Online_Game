@@ -10,6 +10,9 @@ app.get('/', function(req, res) {
 app.get('/lobby', function(req, res) {
   res.sendFile('index.html');
 });
+app.get('/login', function(req, res) {
+  res.sendFile('index.html');
+});
 const server = app.listen(PORT, () => {
   console.log(`Connected to port ${PORT}`);
 });

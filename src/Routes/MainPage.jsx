@@ -5,14 +5,12 @@ import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { CreateNickName } from 'Components';
 
-const port = 'http://localhost:8080';
-
 class MainPage extends Component {
   componentDidMount() {
     this.initSocket();
   }
   initSocket = () => {
-    const socket = io(port);
+    const socket = io();
     this.props.setSocket(socket);
   };
   setUser = ({ error, userData, message }) => {
