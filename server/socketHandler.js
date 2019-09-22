@@ -54,7 +54,6 @@ const socketHandler = socket => {
 
   socket.on('sendMessage', ({ message, name }) => {
     DataHandler.addData('message', message, name);
-    // изменить
     io.sockets.emit('syncMessages', DataHandler.getData('messages'));
   });
 

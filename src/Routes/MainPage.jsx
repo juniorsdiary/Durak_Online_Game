@@ -13,7 +13,7 @@ class MainPage extends Component {
     this.initSocket();
   }
   initSocket = () => {
-    const socket = io();
+    const socket = io(port);
     this.props.setSocket(socket);
   };
   setUser = ({ error, userData, message }) => {

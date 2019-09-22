@@ -1,10 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Grid, Typography, Paper } from '@material-ui/core';
+import { Grid, Typography, Paper, Grow } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(theme => {
-  console.log(theme);
   const primary = theme.palette.primary;
   const secondary = theme.palette.secondary;
   return {
@@ -28,12 +27,14 @@ const useStyles = makeStyles(theme => {
 const MessageComponent = ({ clientName, nickname, message }) => {
   const classes = useStyles({ client: nickname === clientName });
   return (
-    <Grid item className={classes.container}>
-      <Typography display='inline' className={classes.nickname}>
-        {`${nickname}:`}
-      </Typography>
-      <Paper className={classes.message}>{message}</Paper>
-    </Grid>
+    <Grow in={true}>
+      <Grid item className={classes.container}>
+        <Typography display='inline' className={classes.nickname}>
+          {`${nickname}:`}
+        </Typography>
+        <Paper className={classes.message}>{message}</Paper>
+      </Grid>
+    </Grow>
   );
 };
 

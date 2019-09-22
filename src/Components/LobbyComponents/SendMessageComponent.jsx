@@ -18,7 +18,7 @@ const SendMessageComponent = ({ submit, textData }) => {
   return (
     <Grid container alignItems='flex-end' justify='space-between' component='form' onSubmit={submitMessage}>
       <TextField id='message' label={textData[4]} value={value} onChange={changeMessage} autoComplete={'off'} />
-      <Button variant='contained' color='secondary'>
+      <Button variant='contained' color='secondary' type='submit'>
         {textData[3]}
       </Button>
     </Grid>

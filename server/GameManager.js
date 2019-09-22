@@ -14,7 +14,7 @@ function sortCards(arr) {
 
 class GameField {
   constructor() {
-    this.offenceCards = [];
+    this.offenceCards = [[], [], [], [], [], []];
     this.defenceCards = [];
     this.cards = [];
     this.curCard = [];
@@ -204,9 +204,7 @@ class PlayRoomManager {
     }
   }
   checkConditions() {
-    return (
-      this.gameField.cards.length === 0 || this.gameField.cards.some(item => this.curPlayer.curCard[3] === item[3])
-    );
+    return this.gameField.cards.length === 0 || this.gameField.cards.some(item => this.curPlayer.curCard[3] === item[3]);
   }
   transferOffenceCards() {
     let card = this.curPlayer.curCard;
