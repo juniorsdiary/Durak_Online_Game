@@ -42,7 +42,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export default function EachCardComponent({ margin, dragValue, dragEvent, rotated, cardData, beaten }) {
+const EachCard = ({ margin, dragValue, dragEvent, rotated, cardData, beaten }) => {
   const backgroundPosition = `${cardData[1]}px ${cardData[2]}px`;
   const classes = useStyles({ margin, rotated, backgroundPosition, beaten });
 
@@ -54,9 +54,9 @@ export default function EachCardComponent({ margin, dragValue, dragEvent, rotate
       </div>
     </div>
   );
-}
+};
 
-EachCardComponent.propTypes = {
+EachCard.propTypes = {
   margin: PropTypes.string,
   dragEvent: PropTypes.func,
   rotated: PropTypes.bool,
@@ -65,6 +65,8 @@ EachCardComponent.propTypes = {
   beaten: PropTypes.bool,
 };
 
-EachCardComponent.defaultProps = {
+EachCard.defaultProps = {
   cardData: [],
 };
+
+export default EachCard;

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Grid, Paper } from '@material-ui/core';
-import { MessageComponent, SendMessageComponent } from 'Components';
+import { Message, SendMessage } from 'Components';
 import { withStyles } from '@material-ui/core/styles';
 
 const styles = {
@@ -36,13 +36,13 @@ class ChatSection extends Component {
   };
   render() {
     const { classes, messages, textData, name } = this.props;
-    const renderMessages = messages.map((msg, i) => <MessageComponent key={i} clientName={name} {...msg} />);
+    const renderMessages = messages.map((msg, i) => <Message key={i} clientName={name} {...msg} />);
     return (
       <Grid item xs={5} className={classes.wrapper}>
         <Grid component={Paper} container direction='column' spacing={2} alignItems='flex-start' wrap='nowrap' className={classes.content}>
           {renderMessages}
         </Grid>
-        <SendMessageComponent textData={textData} submit={this.handleSubmit} />
+        <SendMessage textData={textData} submit={this.handleSubmit} />
       </Grid>
     );
   }

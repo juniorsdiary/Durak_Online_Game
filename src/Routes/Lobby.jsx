@@ -3,17 +3,18 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { setUsersData, setRoomsData } from 'Store';
-import { PlayersData, ChatSection, AvailableRooms, PasswordComponent, SettingsComponent } from 'Components';
+import { PlayersData, ChatSection, AvailableRooms, Password, Settings } from 'Components';
 import { Grid } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 
 const styles = {
   main: {
     padding: '0',
-    height: '100%',
+    flex: '1',
+    overflow: 'hidden',
   },
   content: {
-    height: '676px',
+    height: '100%',
   },
 };
 
@@ -37,8 +38,6 @@ class Lobby extends Component {
 
   createRoom = settings => {
     const { socket, userData, joinRoom } = this.props;
-    console.log('TCL: Lobby -> userData', userData);
-
     socket.emit('createRoom', { ...settings, nickname: userData.user });
     joinRoom(settings.roomName);
   };
@@ -81,8 +80,8 @@ class Lobby extends Component {
           <PlayersData users={users} text={textData[1]} />
           <ChatSection socket={socket} textData={textData} />
           <AvailableRooms textData={textData} rooms={rooms} openSettings={this.handleSettingsModal} checkPassword={this.checkPassword} />
-          <SettingsComponent textData={textData} open={openSettings} onClose={this.handleSettingsModal} createRoom={this.createRoom} />
-          <PasswordComponent
+          <Settings textData={textData} open={openSettings} onClose={this.handleSettingsModal} createRoom={this.createRoom} />
+          <Password
             targetRoom={targetRoom}
             requiredPassword={requiredPassword}
             open={openPassword}

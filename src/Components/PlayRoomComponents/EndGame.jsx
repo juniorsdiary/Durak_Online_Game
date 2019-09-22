@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Dialog, DialogTitle, Typography } from '@material-ui/core';
-const EndGameComponent = ({ data }) => {
+const EndGame = ({ data }) => {
   return (
     <Dialog open={data.state}>
       <DialogTitle>Game Over</DialogTitle>
@@ -12,12 +12,12 @@ const EndGameComponent = ({ data }) => {
   );
 };
 
-EndGameComponent.propTypes = {
+EndGame.propTypes = {
   data: PropTypes.object,
 };
 
-EndGameComponent.defaultProps = {
+EndGame.defaultProps = {
   data: {},
 };
 
-export default EndGameComponent;
+export default EndGame;

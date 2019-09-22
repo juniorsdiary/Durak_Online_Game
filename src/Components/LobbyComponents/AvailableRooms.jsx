@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { RoomComponent } from 'Components';
+import { Room } from 'Components';
 import { Grid, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -18,7 +18,7 @@ const useStyles = makeStyles({
 
 const AvailableRooms = ({ rooms, checkPassword, openSettings, textData }) => {
   const classes = useStyles();
-  const renderRooms = rooms.map((room, i) => <RoomComponent key={i} {...room} checkPassword={checkPassword} textData={textData} />);
+  const renderRooms = rooms.map((room, i) => <Room key={i} {...room} checkPassword={checkPassword} textData={textData} />);
   return (
     <Grid item xs={4}>
       <Grid container direction='column' alignItems='center' wrap='nowrap' className={classes.wrapper}>

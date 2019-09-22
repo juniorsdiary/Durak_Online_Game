@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { EachCardComponent } from 'Components';
+import { EachCard } from 'Components';
 import { makeStyles } from '@material-ui/styles';
 import { Paper } from '@material-ui/core';
 
@@ -15,7 +15,7 @@ function Deck({ deck }) {
   const classes = useStyles();
 
   let renderCards = deck.map((item, index) => {
-    return <EachCardComponent margin={`0 0 0 ${index / 3}`} key={index} cardData={item} />;
+    return <EachCard margin={`0 0 0 ${index / 3}`} key={index} cardData={item} />;
   });
 
   return <Paper className={classes.deck}>{renderCards}</Paper>;

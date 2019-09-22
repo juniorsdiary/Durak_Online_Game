@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Button, Dialog, DialogTitle } from '@material-ui/core';
 
-const ReadyComponent = ({ activeUsers, isFull, isReady, setReadyState }) => {
+const Ready = ({ activeUsers, isFull, isReady, setReadyState }) => {
   return (
     <>
       <Dialog open={!activeUsers}>
@@ -16,7 +16,7 @@ const ReadyComponent = ({ activeUsers, isFull, isReady, setReadyState }) => {
   );
 };
 
-ReadyComponent.propTypes = {
+Ready.propTypes = {
   isReady: PropTypes.bool,
   setReadyState: PropTypes.func,
   users: PropTypes.array,
@@ -24,9 +24,9 @@ ReadyComponent.propTypes = {
   activeUsers: PropTypes.bool,
   isFull: PropTypes.bool,
 };
-ReadyComponent.defaultProps = {
+Ready.defaultProps = {
   users: [],
   activeUsers: false,
 };
 
-export default ReadyComponent;
+export default Ready;

@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { TextField, Grid, Button } from '@material-ui/core';
 
-const SendMessageComponent = ({ submit, textData }) => {
+const SendMessage = ({ submit, textData }) => {
   const [value, setValue] = useState('');
   const changeMessage = useCallback(e => {
     setValue(e.target.value);
@@ -25,9 +25,9 @@ const SendMessageComponent = ({ submit, textData }) => {
   );
 };
 
-SendMessageComponent.propTypes = {
+SendMessage.propTypes = {
   submit: PropTypes.func,
   textData: PropTypes.array,
 };
 
-export default SendMessageComponent;
+export default SendMessage;

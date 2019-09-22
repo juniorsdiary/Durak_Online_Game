@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { ReadyComponent, Deck, Trump, DiscardPile, Player, SystemMessage } from 'Components';
-import { GameField, ControlsComponent, ByPlayMessages, EndGameComponent } from 'Components';
+import { Ready, Deck, Trump, DiscardPile, Player, SystemMessage } from 'Components';
+import { GameField, Controls, ByPlayMessages, EndGame } from 'Components';
 import { setPlayRoomData, assignPlayersInfo, definePlayersMove, setControlsState } from 'Store';
 import { assignIndexes } from 'Utilities';
 import { Container } from '@material-ui/core';
@@ -125,7 +125,7 @@ class PlayRoom extends Component {
     const { usersReady, users, shuffledDeck, isFull, trumpData, discardPile, gameField, logMessages, endGame, players } = data;
     return (
       <>
-        <ReadyComponent activeUsers={usersReady} users={users} isReady={isReady} isFull={isFull} setReadyState={this.setReadyValue} />
+        <Ready activeUsers={usersReady} users={users} isReady={isReady} isFull={isFull} setReadyState={this.setReadyValue} />
         <div role='presentation' onSelect={() => false} onMouseDown={() => false}>
           {usersReady && isFull && (
             <>
@@ -145,9 +145,9 @@ class PlayRoom extends Component {
                 onDragOver={this.dragOverEvent}
                 onDrop={defenceOrOffence === 'offence' ? this.makeOffenceMove : this.makeDefenceMove}
               />
-              <ControlsComponent takeCards={this.takeCards} discardCards={this.discardCards} activeTake={activeTake} activeDiscard={activeDiscard} />
+              <Controls takeCards={this.takeCards} discardCards={this.discardCards} activeTake={activeTake} activeDiscard={activeDiscard} />
               <ByPlayMessages messages={logMessages} />
-              <EndGameComponent data={endGame} />
+              <EndGame data={endGame} />
               <SystemMessage warning={warning} />
             </>
           )}

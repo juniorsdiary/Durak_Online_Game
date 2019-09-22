@@ -23,7 +23,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const SettingsComponent = ({ open, onClose, createRoom, textData }) => {
+const Settings = ({ open, onClose, createRoom, textData }) => {
   const [values, setValue] = useForm({
     roomName: '',
     players: '2',
@@ -93,11 +93,11 @@ const SettingsComponent = ({ open, onClose, createRoom, textData }) => {
   );
 };
 
-SettingsComponent.propTypes = {
+Settings.propTypes = {
   open: PropTypes.bool,
   onClose: PropTypes.func,
   createRoom: PropTypes.func,
   textData: PropTypes.array,
 };
 
-export default SettingsComponent;
+export default Settings;

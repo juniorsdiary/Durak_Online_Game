@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { EachCardComponent } from 'Components';
+import { EachCard } from 'Components';
 import { makeStyles } from '@material-ui/styles';
 import { Paper } from '@material-ui/core';
 
@@ -17,8 +17,8 @@ const GameFieldCardPlace = ({ offenceCardData, defenceCardData }) => {
   const classes = useStyles();
   return (
     <Paper className={classes.cardPlace}>
-      <EachCardComponent cardData={offenceCardData} rotated />
-      {defenceCardData.length && <EachCardComponent cardData={defenceCardData} margin={`20px 0 0 20`} rotated beaten />}
+      <EachCard cardData={offenceCardData} rotated />
+      {defenceCardData.length && <EachCard cardData={defenceCardData} margin={`20px 0 0 20`} rotated beaten />}
     </Paper>
   );
 };

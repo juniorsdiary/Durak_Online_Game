@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import io from 'socket.io-client';
 import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Grid, Typography } from '@material-ui/core';
 import { CreateNickName } from 'Components';
 
 const port = 'http://localhost:8080';
@@ -31,18 +30,10 @@ class MainPage extends Component {
 
   render() {
     const { errorMessage, textData } = this.props;
-    if (this.props.isAuthenticated) {
-      return <Redirect to={'/lobby'} />;
-    }
-    return (
-      <Grid container direction='column' justify='center' alignItems='center'>
-        <Grid item xs={4}>
-          <Typography component='h1' variant='h5' align='center'>
-            {textData.logInPage[0]}
-          </Typography>
-          <CreateNickName buttonText={textData.logInPage[2]} text={textData.logInPage[1]} submit={this.handleSubmit} error={errorMessage} />
-        </Grid>
-      </Grid>
+    return this.props.isAuthenticated ? (
+      <Redirect to={'/lobby'} />
+    ) : (
+      <CreateNickName buttonText={textData.logInPage[2]} text={textData.logInPage[1]} submit={this.handleSubmit} error={errorMessage} />
     );
   }
 }
@@ -56,6 +47,7 @@ MainPage.propTypes = {
   setErrorMessage: PropTypes.func,
   errorMessage: PropTypes.string,
   textData: PropTypes.object,
+  classes: PropTypes.object,
 };
 
 const mapStateToProps = state => ({

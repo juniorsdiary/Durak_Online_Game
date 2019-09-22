@@ -11,7 +11,7 @@ const useStyles = makeStyles({
   },
 });
 
-const ControlsComponent = ({ takeCards, discardCards, activeTake, activeDiscard }) => {
+const Controls = ({ takeCards, discardCards, activeTake, activeDiscard }) => {
   const classes = useStyles();
   return (
     <div className={classes.controls}>
@@ -25,11 +25,11 @@ const ControlsComponent = ({ takeCards, discardCards, activeTake, activeDiscard 
   );
 };
 
-ControlsComponent.propTypes = {
+Controls.propTypes = {
   discardCards: PropTypes.func,
   takeCards: PropTypes.func,
   activeTake: PropTypes.bool,
   activeDiscard: PropTypes.bool,
 };
 
-export default ControlsComponent;
+export default Controls;

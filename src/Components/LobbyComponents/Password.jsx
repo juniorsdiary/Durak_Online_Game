@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { Dialog, DialogTitle, Button, TextField } from '@material-ui/core';
 
-const PasswordComponent = ({ targetRoom, requiredPassword, onClose, open, joinRoom }) => {
+const Password = ({ targetRoom, requiredPassword, onClose, open, joinRoom }) => {
   const [password, setPass] = useState('');
   const [error, setError] = useState(false);
   const join = useCallback(
@@ -31,7 +31,7 @@ const PasswordComponent = ({ targetRoom, requiredPassword, onClose, open, joinRo
   );
 };
 
-PasswordComponent.propTypes = {
+Password.propTypes = {
   onClose: PropTypes.func,
   open: PropTypes.bool,
   joinRoom: PropTypes.func,
@@ -39,4 +39,4 @@ PasswordComponent.propTypes = {
   targetRoom: PropTypes.string,
 };
 
-export default PasswordComponent;
+export default Password;

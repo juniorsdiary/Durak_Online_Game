@@ -24,7 +24,7 @@ const useStyles = makeStyles(theme => {
   };
 });
 
-const MessageComponent = ({ clientName, nickname, message }) => {
+const Message = ({ clientName, nickname, message }) => {
   const classes = useStyles({ client: nickname === clientName });
   return (
     <Grow in={true}>
@@ -38,10 +38,10 @@ const MessageComponent = ({ clientName, nickname, message }) => {
   );
 };
 
-MessageComponent.propTypes = {
+Message.propTypes = {
   message: PropTypes.string,
   nickname: PropTypes.string,
   clientName: PropTypes.string,
 };
 
-export default MessageComponent;
+export default Message;

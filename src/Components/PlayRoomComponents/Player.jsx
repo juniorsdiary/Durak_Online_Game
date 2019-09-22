@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { EachCardComponent } from 'Components';
+import { EachCard } from 'Components';
 import { makeStyles } from '@material-ui/styles';
 import { definePlayerTitleStyle, definePlayerStyle, distance } from 'Utilities';
 
@@ -15,7 +15,7 @@ const Player = ({ socket, playerInfo, playerNumber, dragEvent }) => {
 
   const renderCards = cards.map((item, index) => {
     return (
-      <EachCardComponent
+      <EachCard
         key={index}
         cardData={item}
         margin={`0 0 0 ${index * distance(cards.length)}`}

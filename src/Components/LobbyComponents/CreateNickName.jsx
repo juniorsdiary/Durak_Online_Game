@@ -1,11 +1,21 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Button, TextField } from '@material-ui/core';
+import { Button, TextField, Grid } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 
-export default function CreateNickName({ submit, error, text, buttonText }) {
+const useStyles = makeStyles({
+  form: {
+    margin: 'auto',
+  },
+});
+
+const CreateNickName = ({ submit, error, text, buttonText }) => {
   const [nickname, setNickname] = useState('');
+  const classes = useStyles();
   return (
-    <form
+    <Grid
+      component='form'
+      className={classes.form}
       onSubmit={e => {
         e.preventDefault();
         submit(nickname);
@@ -21,13 +31,20 @@ export default function CreateNickName({ submit, error, text, buttonText }) {
         id='nickname'
         name='nickname'
         label={text}
+        autoComplete='off'
       />
       <Button type='submit' fullWidth variant='contained' color='primary'>
         {buttonText}
       </Button>
-    </form>
+    </Grid>
   );
-}
+};
+CreateNickName.propTypes = {
+  submit: PropTypes.func,
+  error: PropTypes.string,
+  buttonText: PropTypes.string,
+  text: PropTypes.string,
+};
 
 CreateNickName.defaultProps = {
   submit: () => {},
@@ -36,9 +53,4 @@ CreateNickName.defaultProps = {
   text: 'Default Text',
 };
 
-CreateNickName.propTypes = {
-  submit: PropTypes.func,
-  error: PropTypes.string,
-  buttonText: PropTypes.string,
-  text: PropTypes.string,
-};
+export default CreateNickName;
