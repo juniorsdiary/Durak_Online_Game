@@ -17,7 +17,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const Room = ({ room, settings, users, checkPassword, textData }) => {
+const Room = ({ room, settings, users, checkAccess, textData }) => {
   const classes = useStyles();
   return (
     <Grow in={true}>
@@ -42,7 +42,7 @@ const Room = ({ room, settings, users, checkPassword, textData }) => {
             {users.length}/{settings.players}
           </Typography>
         </Container>
-        <Button variant='contained' color='primary' size='small' onClick={() => checkPassword(room, settings.password)}>
+        <Button variant='contained' color='primary' size='small' onClick={() => checkAccess(room, settings.password, settings.access)}>
           {`${textData[19]}`}
         </Button>
       </Grid>

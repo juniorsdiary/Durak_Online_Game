@@ -42,8 +42,8 @@ class Lobby extends Component {
     joinRoom(settings.roomName);
   };
 
-  checkPassword = (roomName, password) => {
-    if (password) {
+  checkAccess = (roomName, password, access) => {
+    if (access === 'Private') {
       this.setState({
         openPassword: true,
         requiredPassword: password,
@@ -79,7 +79,7 @@ class Lobby extends Component {
         <Grid container direction='row' className={classes.content} justify='space-between'>
           <PlayersData users={users} text={textData[1]} />
           <ChatSection socket={socket} textData={textData} />
-          <AvailableRooms textData={textData} rooms={rooms} openSettings={this.handleSettingsModal} checkPassword={this.checkPassword} />
+          <AvailableRooms textData={textData} rooms={rooms} openSettings={this.handleSettingsModal} checkAccess={this.checkAccess} />
           <Settings textData={textData} open={openSettings} onClose={this.handleSettingsModal} createRoom={this.createRoom} />
           <Password
             targetRoom={targetRoom}

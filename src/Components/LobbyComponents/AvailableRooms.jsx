@@ -16,9 +16,9 @@ const useStyles = makeStyles({
   },
 });
 
-const AvailableRooms = ({ rooms, checkPassword, openSettings, textData }) => {
+const AvailableRooms = ({ rooms, checkAccess, openSettings, textData }) => {
   const classes = useStyles();
-  const renderRooms = rooms.map((room, i) => <Room key={i} {...room} checkPassword={checkPassword} textData={textData} />);
+  const renderRooms = rooms.map((room, i) => <Room key={i} {...room} checkAccess={checkAccess} textData={textData} />);
   return (
     <Grid item xs={4}>
       <Grid container direction='column' alignItems='center' wrap='nowrap' className={classes.wrapper}>

@@ -15,7 +15,7 @@ const useStyles = makeStyles(theme => ({
     alignItems: 'center',
     margin: theme.spacing(0, 2),
   },
-  marged: {
+  margin: {
     margin: theme.spacing(1),
   },
   radioWrapper: {
@@ -58,18 +58,18 @@ const Settings = ({ open, onClose, createRoom, textData }) => {
       <DialogTitle className={classes.title}>{textData[7]}</DialogTitle>
       <form onSubmit={create} className={classes.form}>
         <TextField error={error} required id='roomName' label={textData[8]} name='roomName' value={values.roomName} onChange={setValue} />
-        <FormLabel className={classes.marged}>{textData[9]}</FormLabel>
+        <FormLabel className={classes.margin}>{textData[9]}</FormLabel>
         <RadioGroup className={classes.radioWrapper} aria-label='players' name='players' value={values.players} onChange={setValue}>
           <FormControlLabel value='2' control={<Radio />} label='2' />
           <FormControlLabel value='3' control={<Radio />} label='3' />
           <FormControlLabel value='4' control={<Radio />} label='4' />
         </RadioGroup>
-        <FormLabel className={classes.marged}>{textData[10]}</FormLabel>
+        <FormLabel className={classes.margin}>{textData[10]}</FormLabel>
         <RadioGroup className={classes.radioWrapper} aria-label='cards' name='cards' value={values.cards} onChange={setValue}>
           <FormControlLabel value='36' control={<Radio />} label='36' />
           <FormControlLabel value='52' control={<Radio />} label='52' />
         </RadioGroup>
-        <FormLabel className={classes.marged}>{textData[11]}</FormLabel>
+        <FormLabel className={classes.margin}>{textData[11]}</FormLabel>
         <RadioGroup className={classes.radioWrapper} aria-label='access' name='access' value={values.access} onChange={setValue}>
           <FormControlLabel value='Public' control={<Radio />} label={textData[13]} />
           <FormControlLabel value='Private' control={<Radio />} label={textData[12]} />
@@ -85,7 +85,7 @@ const Settings = ({ open, onClose, createRoom, textData }) => {
           onChange={setValue}
           margin='normal'
         />
-        <Button variant='contained' color='secondary' type='submit' className={classes.marged} onClick={create}>
+        <Button variant='contained' color='secondary' type='submit' className={classes.margin} onClick={create}>
           {textData[15]}
         </Button>
       </form>

@@ -34,12 +34,27 @@ class ChatSection extends Component {
     const { socket, name } = this.props;
     socket.emit('sendMessage', { message, name });
   };
+
+  componentDidUpdate() {
+    this.updateScroll();
+  }
+  updateScroll() {
+    this.wrapper.scrollTop = this.wrapper.scrollHeight;
+  }
   render() {
     const { classes, messages, textData, name } = this.props;
     const renderMessages = messages.map((msg, i) => <Message key={i} clientName={name} {...msg} />);
     return (
       <Grid item xs={5} className={classes.wrapper}>
-        <Grid component={Paper} container direction='column' spacing={2} alignItems='flex-start' wrap='nowrap' className={classes.content}>
+        <Grid
+          component={Paper}
+          container
+          direction='column'
+          spacing={2}
+          alignItems='flex-start'
+          wrap='nowrap'
+          className={classes.content}
+          ref={node => (this.wrapper = node)}>
           {renderMessages}
         </Grid>
         <SendMessage textData={textData} submit={this.handleSubmit} />
