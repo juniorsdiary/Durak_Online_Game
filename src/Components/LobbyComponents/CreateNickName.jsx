@@ -30,7 +30,7 @@ const CreateNickName = ({ submit, error }) => {
         <TextField
           id='nickname'
           name='nickname'
-          label={textData[1]}
+          label={textData[1] || 'Awesome nickname'}
           required
           autoComplete='off'
           error={!!error}
@@ -40,7 +40,7 @@ const CreateNickName = ({ submit, error }) => {
           margin='normal'
         />
         <Button type='submit' variant='contained' color='primary'>
-          {textData[2]}
+          {textData[2] || 'Join Lobby'}
         </Button>
       </Grid>
     </>

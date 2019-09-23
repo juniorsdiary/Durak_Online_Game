@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import io from 'socket.io-client';
 import { hot } from 'react-hot-loader/root';
-import Routes from './routes.jsx';
 import { CssBaseline, Grid } from '@material-ui/core';
-import { Header, ErrorHandler } from 'Components';
 import { makeStyles } from '@material-ui/core/styles';
+import { Header, ErrorHandler } from 'Components';
+import Routes from './routes.jsx';
+
+const port = 'http://localhost:8080';
 
 const useStyles = makeStyles({
   wrapper: {
@@ -13,15 +17,26 @@ const useStyles = makeStyles({
 
 const App = () => {
   const classes = useStyles();
+  const dispatch = useDispatch();
+  const socket = useSelector(state => state.authentication.socket);
+
+  useEffect(() => {
+    const socket = io(port);
+    dispatch({ type: 'SET_SOCKET', payload: socket });
+  }, [dispatch]);
+
   return (
     <>
       <CssBaseline />
-      <Grid container direction='column' className={classes.wrapper} wrap='nowrap' alignItems='center'>
-        <ErrorHandler />
-        <Header />
-        <Routes />
-      </Grid>
+      {socket && (
+        <Grid container direction='column' className={classes.wrapper} wrap='nowrap' alignItems='center'>
+          <ErrorHandler />
+          <Header />
+          <Routes />
+        </Grid>
+      )}
     </>
   );
 };
+
 export default hot(App);

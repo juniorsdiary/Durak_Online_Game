@@ -1,20 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import io from 'socket.io-client';
 import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { CreateNickName } from 'Components';
 
-const port = 'http://localhost:8080';
-
 class MainPage extends Component {
-  componentDidMount() {
-    this.initSocket();
-  }
-  initSocket = () => {
-    const socket = io(port);
-    this.props.setSocket(socket);
-  };
   setUser = ({ error, userData, messageIndex }) => {
     const { setAuth, setUserData, setError } = this.props;
     setError({ error, messageIndex });
