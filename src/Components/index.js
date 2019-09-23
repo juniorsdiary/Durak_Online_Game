@@ -22,6 +22,7 @@ import ChatSection from './LobbyComponents/ChatSection.jsx';
 import AvailableRooms from './LobbyComponents/AvailableRooms.jsx';
 import CreateNickName from './LobbyComponents/CreateNickName.jsx';
 import ChangeLanguage from './LobbyComponents/ChangeLanguage.jsx';
+import ErrorHandler from './LobbyComponents/ErrorHandler.jsx';
 
 export {
   Deck,
@@ -42,6 +43,7 @@ export {
   PlayersData,
   SendMessage,
   ChatSection,
+  ErrorHandler,
   AvailableRooms,
   CreateNickName,
   ByPlayMessages,

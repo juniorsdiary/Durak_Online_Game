@@ -42,7 +42,7 @@ const Room = ({ room, settings, users, checkAccess, textData }) => {
             {users.length}/{settings.players}
           </Typography>
         </Container>
-        <Button variant='contained' color='primary' size='small' onClick={() => checkAccess(room, settings.password, settings.access)}>
+        <Button variant='contained' color='primary' size='small' onClick={() => checkAccess(room, settings.access)}>
           {`${textData[19]}`}
         </Button>
       </Grid>

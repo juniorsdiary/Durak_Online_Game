@@ -5,17 +5,20 @@ import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { CreateNickName } from 'Components';
 
+const port = 'http://localhost:8080';
+
 class MainPage extends Component {
   componentDidMount() {
     this.initSocket();
   }
   initSocket = () => {
-    const socket = io();
+    const socket = io(port);
     this.props.setSocket(socket);
   };
-  setUser = ({ error, userData, message }) => {
-    const { setAuth, setUserData, setErrorMessage } = this.props;
-    setErrorMessage(message);
+  setUser = ({ error, userData, messageIndex }) => {
+    const { setAuth, setUserData, setError } = this.props;
+    setError({ error, messageIndex });
+
     if (!error) {
       setAuth(!error);
       setUserData(userData);
@@ -27,32 +30,24 @@ class MainPage extends Component {
   };
 
   render() {
-    const { errorMessage, textData } = this.props;
-    return this.props.isAuthenticated ? (
-      <Redirect to={'/lobby'} />
-    ) : (
-      <CreateNickName buttonText={textData.logInPage[2]} text={textData.logInPage[1]} submit={this.handleSubmit} error={errorMessage} />
-    );
+    const { isAuthenticated } = this.props;
+    return isAuthenticated ? <Redirect to={'/lobby'} /> : <CreateNickName submit={this.handleSubmit} />;
   }
 }
 
 MainPage.propTypes = {
   isAuthenticated: PropTypes.bool,
-  setAuth: PropTypes.func,
   socket: PropTypes.object,
+  classes: PropTypes.object,
   setSocket: PropTypes.func,
   setUserData: PropTypes.func,
-  setErrorMessage: PropTypes.func,
-  errorMessage: PropTypes.string,
-  textData: PropTypes.object,
-  classes: PropTypes.object,
+  setError: PropTypes.func,
+  setAuth: PropTypes.func,
 };
 
 const mapStateToProps = state => ({
   isAuthenticated: state.authentication.isAuthenticated,
   socket: state.authentication.socket,
-  errorMessage: state.authentication.errorMessage,
-  textData: state.commonData.typography,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -62,7 +57,7 @@ const mapDispatchToProps = dispatch => ({
   setUserData: data => {
     dispatch({ type: 'SET_USER_DATA', payload: data });
   },
-  setErrorMessage: message => {
+  setError: message => {
     dispatch({ type: 'SET_ERROR', payload: message });
   },
   setSocket: socket => {

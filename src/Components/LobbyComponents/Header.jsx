@@ -20,10 +20,10 @@ const Header = () => {
   const { lobbyPage } = useSelector(state => state.commonData.typography);
   const dispatch = useDispatch();
   const classes = useStyles();
-  // logInPage
   const handleSignOut = useCallback(() => {
     socket.emit('signOut', userData.user);
     dispatch({ type: 'SET_AUTH', payload: false });
+    dispatch({ type: 'SET_ROOM_NAME', payload: '' });
   }, [dispatch, socket, userData.user]);
 
   return (

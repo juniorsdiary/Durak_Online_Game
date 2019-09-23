@@ -79,6 +79,7 @@ const ReduxConnected = connect(
     socket: state.authentication.socket,
     userData: state.commonData.userData,
     messages: state.commonData.messages,
+    textData: state.commonData.typography.lobbyPage,
   }),
   dispatch => ({
     setMessagesData: data => {

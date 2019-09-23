@@ -12,20 +12,15 @@ const styles = {
     padding: '0',
     flex: '1',
     overflow: 'hidden',
+    wrap: 'nowrap',
   },
   content: {
     height: '100%',
+    justifyContent: 'space-between',
   },
 };
 
 class Lobby extends Component {
-  state = {
-    openPassword: false,
-    openSettings: false,
-    requiredPassword: '',
-    targetRoom: '',
-  };
-
   componentDidMount() {
     const { socket, setConnectedUsers, setAvailableRooms } = this.props;
     socket.on('displayPlayers', connectedUsers => {
@@ -36,22 +31,36 @@ class Lobby extends Component {
     });
   }
 
-  createRoom = settings => {
-    const { socket, userData, joinRoom } = this.props;
-    socket.emit('createRoom', { ...settings, nickname: userData.user });
-    joinRoom(settings.roomName);
+  handleResult = ({ error, roomName, messageIndex }) => {
+    const { setError, handleSettingsModal, handlePasswordModal } = this.props;
+    if (error) {
+      setError({ error, messageIndex });
+    } else {
+      setError({ error: false });
+      handleSettingsModal(false);
+      handlePasswordModal(false);
+      this.joinRoom(roomName);
+    }
   };
 
-  checkAccess = (roomName, password, access) => {
+  checkRoomsData = settings => {
+    const { socket } = this.props;
+    socket.emit('createRoom', settings, this.handleResult);
+  };
+
+  checkAccess = (roomName, access) => {
+    const { handlePasswordModal, setAccessRoom } = this.props;
     if (access === 'Private') {
-      this.setState({
-        openPassword: true,
-        requiredPassword: password,
-        targetRoom: roomName,
-      });
+      handlePasswordModal(true);
+      setAccessRoom(roomName);
     } else {
       this.joinRoom(roomName);
     }
+  };
+
+  checkPass = pass => {
+    const { socket, accessRoom } = this.props;
+    socket.emit('checkPassWord', accessRoom, pass, this.handleResult);
   };
 
   joinRoom = roomName => {
@@ -60,34 +69,19 @@ class Lobby extends Component {
     joinRoom(roomName);
   };
 
-  closePasswordModal = () => {
-    this.setState({ openPassword: false });
-  };
-
-  handleSettingsModal = value => {
-    this.setState({ openSettings: value });
-  };
-
   render() {
-    const { users, socket, classes, rooms, isInRoom, textData } = this.props;
-    const { openSettings, openPassword, requiredPassword, targetRoom } = this.state;
+    const { users, socket, classes, rooms, isInRoom, handleSettingsModal, handlePasswordModal, settingsModal, passwordModal } = this.props;
     if (isInRoom) {
       return <Redirect to={`/room/${isInRoom}`} />;
     }
     return (
-      <Grid container direction='column' className={classes.main} wrap='nowrap'>
-        <Grid container direction='row' className={classes.content} justify='space-between'>
-          <PlayersData users={users} text={textData[1]} />
-          <ChatSection socket={socket} textData={textData} />
-          <AvailableRooms textData={textData} rooms={rooms} openSettings={this.handleSettingsModal} checkAccess={this.checkAccess} />
-          <Settings textData={textData} open={openSettings} onClose={this.handleSettingsModal} createRoom={this.createRoom} />
-          <Password
-            targetRoom={targetRoom}
-            requiredPassword={requiredPassword}
-            open={openPassword}
-            onClose={this.closePasswordModal}
-            joinRoom={this.joinRoom}
-          />
+      <Grid container direction='column' className={classes.main}>
+        <Grid container direction='row' className={classes.content}>
+          <PlayersData users={users} />
+          <ChatSection socket={socket} />
+          <AvailableRooms rooms={rooms} openSettings={handleSettingsModal} checkAccess={this.checkAccess} />
+          <Settings open={settingsModal} handleSettingsModal={handleSettingsModal} checkRoomsData={this.checkRoomsData} />
+          <Password open={passwordModal} onClose={handlePasswordModal} checkPass={this.checkPass} />
         </Grid>
       </Grid>
     );
@@ -95,16 +89,22 @@ class Lobby extends Component {
 }
 
 Lobby.propTypes = {
-  socket: PropTypes.object,
-  setConnectedUsers: PropTypes.func,
-  setAvailableRooms: PropTypes.any,
+  isInRoom: PropTypes.string,
+  accessRoom: PropTypes.string,
+  settingsModal: PropTypes.bool,
+  passwordModal: PropTypes.bool,
   users: PropTypes.array,
   rooms: PropTypes.array,
+  socket: PropTypes.object,
   classes: PropTypes.object,
-  isInRoom: PropTypes.string,
-  joinRoom: PropTypes.func,
-  textData: PropTypes.array,
   userData: PropTypes.object,
+  setError: PropTypes.func,
+  joinRoom: PropTypes.func,
+  setAccessRoom: PropTypes.func,
+  setAvailableRooms: PropTypes.func,
+  setConnectedUsers: PropTypes.func,
+  handleSettingsModal: PropTypes.func,
+  handlePasswordModal: PropTypes.func,
 };
 
 const mapStateToProps = state => ({
@@ -113,7 +113,9 @@ const mapStateToProps = state => ({
   users: state.commonData.usersData,
   rooms: state.commonData.roomsData,
   userData: state.commonData.userData,
-  textData: state.commonData.typography.lobbyPage,
+  settingsModal: state.commonData.settingsModal,
+  passwordModal: state.commonData.passwordModal,
+  accessRoom: state.commonData.accessRoom,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -124,7 +126,19 @@ const mapDispatchToProps = dispatch => ({
     dispatch(setRoomsData(data));
   },
   joinRoom: roomName => {
-    dispatch({ type: 'JOIN_ROOM', payload: roomName });
+    dispatch({ type: 'SET_ROOM_NAME', payload: roomName });
+  },
+  setError: data => {
+    dispatch({ type: 'SET_ERROR', payload: data });
+  },
+  handlePasswordModal: value => {
+    dispatch({ type: 'SET_PASSWORD_MODAL', payload: value });
+  },
+  handleSettingsModal: value => {
+    dispatch({ type: 'SET_SETTINGS_MODAL', payload: value });
+  },
+  setAccessRoom: roomName => {
+    dispatch({ type: 'SET_ACCESS_ROOM', payload: roomName });
   },
 });
 

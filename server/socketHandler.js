@@ -9,17 +9,17 @@ DataHandler.addData('room', 'Lobby', {});
 
 const socketHandler = socket => {
   socket.on('authenticate', (nickname, cb) => {
-    const { error, message } = DataHandler.addData('user', nickname, socket.id);
+    const { error, messageIndex } = DataHandler.addData('user', nickname, socket.id);
     if (!error) {
       socket.join('Lobby');
       DataHandler.updateData('room', 'Lobby', nickname);
       DataHandler.updateData('user', nickname, 'Lobby');
       const userData = DataHandler.getData('users', nickname);
-      cb({ error: false, userData, message: `` });
+      cb({ error, userData, messageIndex });
       io.sockets.to('Lobby').emit('displayPlayers', DataHandler.getData('users'));
       io.sockets.to('Lobby').emit('displayRooms', DataHandler.getData('rooms'));
     } else {
-      cb({ error, message });
+      cb({ error, messageIndex });
     }
   });
 
@@ -27,7 +27,7 @@ const socketHandler = socket => {
     const userData = DataHandler.getData('users', nickname);
     if (userData.room !== 'Lobby') {
       const PlayRoom = GameManager.getPlayRoom(userData.room);
-      const player = PlayRoom.players.find(item => item.nickname === userData.name);
+      const player = PlayRoom.players.find(item => item.nickname === userData.user);
       const targetRoom = DataHandler.getData('rooms', userData.room);
       if (PlayRoom.gameInProgress && !player.active) {
         GameManager.deletePlayerFromRoom(userData);
@@ -35,6 +35,7 @@ const socketHandler = socket => {
         GameManager.deletePlayerFromRoom(userData);
         PlayRoom.resetSettings();
         PlayRoom.lastPlayer = undefined;
+        PlayRoom.checkVacantSpots();
         io.sockets.to(userData.room).emit('endGame');
         io.sockets.to(userData.room).emit('syncData', PlayRoom);
       }
@@ -42,7 +43,6 @@ const socketHandler = socket => {
       if (targetRoom.users.length === 0) {
         DataHandler.deleteData('room', userData.room);
       }
-      PlayRoom.checkVacantSpots();
     } else {
       DataHandler.deleteData('user', nickname);
     }
@@ -74,10 +74,10 @@ const socketHandler = socket => {
           GameManager.deletePlayerFromRoom(userData);
           PlayRoom.resetSettings();
           PlayRoom.lastPlayer = undefined;
+          PlayRoom.checkVacantSpots();
           io.sockets.to(userData.room).emit('endGame');
           io.sockets.to(userData.room).emit('syncData', PlayRoom);
         }
-        PlayRoom.checkVacantSpots();
         DataHandler.deleteData('user', userData.user);
         if (PlayRoom.users.length === 0) {
           DataHandler.deleteData('room', userData.room);
@@ -91,19 +91,14 @@ const socketHandler = socket => {
     }
   });
 
-  socket.on('createRoom', ({ roomName, nickname, password, access, players, cards }) => {
-    const userData = DataHandler.getData('users', nickname);
-    socket.leave(userData.room);
-    const room = DataHandler.getData('rooms', userData.room);
-    room.users = room.users.filter(item => item !== nickname);
-    socket.join(roomName);
-    DataHandler.addData('room', roomName, { password, access, players, cards });
-    DataHandler.updateData('room', roomName, nickname);
-    DataHandler.updateData('user', nickname, roomName);
-    GameManager.createGameRoom(Number(players), Number(cards), roomName);
-    GameManager.getPlayRoom(roomName).addUser(nickname, socket.id);
-    io.sockets.to('Lobby').emit('displayPlayers', DataHandler.getData('users'));
-    io.sockets.to('Lobby').emit('displayRooms', DataHandler.getData('rooms'));
+  socket.on('createRoom', ({ roomName, password, access, players, cards }, cb) => {
+    const { error, messageIndex } = DataHandler.addData('room', roomName, { password, access, players, cards });
+    if (error) {
+      cb({ error, messageIndex });
+    } else {
+      GameManager.createGameRoom(Number(players), Number(cards), roomName);
+      cb({ error, messageIndex, roomName });
+    }
   });
 
   socket.on('joinRoom', (roomName, nickname) => {
@@ -121,6 +116,15 @@ const socketHandler = socket => {
     PlayRoom.checkVacantSpots();
     if (PlayRoom.isFull) {
       io.sockets.to(roomName).emit('readyStage', PlayRoom);
+    }
+  });
+
+  socket.on('checkPassWord', (roomName, pass, cb) => {
+    const roomData = DataHandler.getData('rooms', roomName);
+    if (roomData.settings.password === pass) {
+      cb({ error: false, roomName, messageIndex: 0 });
+    } else {
+      cb({ error: true, roomName, messageIndex: 7 });
     }
   });
 

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Grid, List, Paper, ListItemText } from '@material-ui/core';
 import { UserCard } from 'Components';
@@ -18,14 +19,15 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const PlayersData = ({ users, text }) => {
+const PlayersData = ({ users }) => {
   const classes = useStyles();
+  const title = useSelector(state => state.commonData.typography.lobbyPage[1]);
   const usersOnline = users.map(user => <UserCard key={user.id} {...user} />);
   return (
     <Grid item xs={2} className={classes.wrapper}>
       <Paper className={classes.content}>
         <List>
-          <ListItemText className={classes.listTitle} primary={`${text} ${users.length}`} />
+          <ListItemText className={classes.listTitle} primary={`${title} ${users.length}`} />
           {usersOnline}
         </List>
       </Paper>
@@ -35,7 +37,6 @@ const PlayersData = ({ users, text }) => {
 
 PlayersData.propTypes = {
   users: PropTypes.array,
-  text: PropTypes.string,
 };
 
 export default PlayersData;

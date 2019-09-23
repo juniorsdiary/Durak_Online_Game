@@ -25,15 +25,17 @@ let russian = {
     'Количество игроков',
     'Количество карт',
     'Доступ',
-    'Открытая',
     'Закрытая',
+    'Открытая',
     'установите пароль',
     'Создать',
     'Название комнаты',
     'Кол-во карт',
     'Кол-во игроков',
     'Присоединится',
+    'Введите пароль',
   ],
+  errors: [],
 };
 
 let english = {
@@ -71,8 +73,18 @@ let english = {
     'Number of Cards',
     'Players',
     'Join',
+    'Have a password?',
   ],
-  warning: 'Your current browser is not supported. Please choose another one',
+  errors: [
+    '',
+    'Nickname can not be empty',
+    'Nickname can not contain white spaces in the beginning',
+    'This nickname already in use',
+    'Room name can not be empty',
+    'Room name can not contain white spaces in the beginning',
+    'This room name is already in use',
+    'Invalid Password',
+  ],
 };
 
 module.exports = { russian, english };

@@ -36,25 +36,30 @@ const DataHandler = (() => {
     },
     room: function(room, settings) {
       const used = Storage.checkRooms(room);
-      if (used) {
-        return { error: true, message: `Room name ${room} is used` };
+      const tested = /^\s+/.test(room);
+      if (!room) {
+        return { error: true, messageIndex: 4 };
+      } else if (tested) {
+        return { error: true, messageIndex: 5 };
+      } else if (used) {
+        return { error: true, messageIndex: 6 };
       } else {
         Storage.addRoom(room, settings);
-        return { error: false, message: '' };
+        return { error: false, messageIndex: 0 };
       }
     },
     user: function(user, id) {
       const used = Storage.checkNickname(user);
       const tested = /^\s+/.test(user);
       if (!user) {
-        return { error: true, message: `Nickname can not be empty` };
+        return { error: true, messageIndex: 1 };
       } else if (tested) {
-        return { error: true, message: `Nickname can not contain white spaces in the beginning` };
+        return { error: true, messageIndex: 2 };
       } else if (used) {
-        return { error: true, message: `Nickname ${user} is used` };
+        return { error: true, messageIndex: 3 };
       } else {
         Storage.addUser(user, id);
-        return { error: false, message: '' };
+        return { error: false, messageIndex: 0 };
       }
     },
   };

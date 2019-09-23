@@ -1,30 +1,25 @@
 import React, { useState, useCallback } from 'react';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Dialog, DialogTitle, Button, TextField } from '@material-ui/core';
 
-const Password = ({ targetRoom, requiredPassword, onClose, open, joinRoom }) => {
+const Password = ({ onClose, open, checkPass }) => {
   const [password, setPass] = useState('');
-  const [error, setError] = useState(false);
+  const textData = useSelector(state => state.commonData.typography.lobbyPage);
   const join = useCallback(
     e => {
       e.preventDefault();
-      if (password !== requiredPassword) {
-        setError(true);
-      } else {
-        setError(false);
-        joinRoom(targetRoom);
-        onClose(false);
-      }
+      checkPass(password);
     },
-    [joinRoom, onClose, password, requiredPassword, targetRoom]
+    [checkPass, password]
   );
   return (
-    <Dialog onClose={onClose} open={open}>
-      <DialogTitle>Have password?</DialogTitle>
+    <Dialog onClose={() => onClose(false)} open={open}>
+      <DialogTitle>{textData[20]}</DialogTitle>
       <form onSubmit={join}>
-        <TextField error={error} type='password' required id='password' name='password' value={password} onChange={e => setPass(e.target.value)} />
-        <Button type='submit' onClick={join}>
-          Join
+        <TextField type='password' required id='password' name='password' value={password} onChange={e => setPass(e.target.value)} />
+        <Button variant='contained' color='primary' type='submit'>
+          {textData[19]}
         </Button>
       </form>
     </Dialog>
@@ -34,9 +29,7 @@ const Password = ({ targetRoom, requiredPassword, onClose, open, joinRoom }) => 
 Password.propTypes = {
   onClose: PropTypes.func,
   open: PropTypes.bool,
-  joinRoom: PropTypes.func,
-  requiredPassword: PropTypes.string,
-  targetRoom: PropTypes.string,
+  checkPass: PropTypes.func,
 };
 
 export default Password;

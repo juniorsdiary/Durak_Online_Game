@@ -26,7 +26,6 @@ Ready.propTypes = {
   textData: PropTypes.array,
 };
 Ready.defaultProps = {
-  users: [],
   activeUsers: false,
 };
 

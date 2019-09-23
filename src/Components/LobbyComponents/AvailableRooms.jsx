@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Room } from 'Components';
 import { Grid, Button } from '@material-ui/core';
@@ -16,8 +17,9 @@ const useStyles = makeStyles({
   },
 });
 
-const AvailableRooms = ({ rooms, checkAccess, openSettings, textData }) => {
+const AvailableRooms = ({ rooms, checkAccess, openSettings }) => {
   const classes = useStyles();
+  const textData = useSelector(state => state.commonData.typography.lobbyPage);
   const renderRooms = rooms.map((room, i) => <Room key={i} {...room} checkAccess={checkAccess} textData={textData} />);
   return (
     <Grid item xs={4}>
@@ -37,7 +39,6 @@ AvailableRooms.propTypes = {
   openSettings: PropTypes.func,
   rooms: PropTypes.array,
   checkAccess: PropTypes.func,
-  textData: PropTypes.array,
 };
 
 export default AvailableRooms;

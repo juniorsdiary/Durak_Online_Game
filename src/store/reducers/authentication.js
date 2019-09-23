@@ -7,6 +7,7 @@ const initialState = {
 };
 export default function authentication(state = initialState, action) {
   const { type, payload } = action;
+
   switch (type) {
     case types.SET_AUTH:
       return {
@@ -18,12 +19,12 @@ export default function authentication(state = initialState, action) {
         ...state,
         socket: payload,
       };
-    case types.JOIN_ROOM:
+    case types.SET_ROOM_NAME:
       return {
         ...state,
         isInRoom: payload,
       };
-    case types.SET_ERROR:
+    case types.SET_NAME_ERROR:
       return {
         ...state,
         errorMessage: payload,

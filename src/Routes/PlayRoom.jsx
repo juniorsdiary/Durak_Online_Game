@@ -113,9 +113,8 @@ class PlayRoom extends Component {
     const { socket, isReady, data, classes, player0, player1, player2, player3, defenceOrOffence, activeTake, activeDiscard, textData } = this.props;
     const { usersReady, users, shuffledDeck, isFull, trumpData, discardPile, gameField, logMessages, endGame, players } = data;
     return (
-      <div role='presentation' onSelect={() => false} onMouseDown={() => false} className={classes.board}>
+      <Container onSelect={() => false} onMouseDown={() => false} className={classes.board} maxWidth='xl'>
         <Ready activeUsers={usersReady} users={users} isReady={isReady} isFull={isFull} setReadyState={this.setReadyValue} textData={textData} />
-
         {usersReady && isFull && (
           <>
             <Container className={classes.cards}>
@@ -146,7 +145,7 @@ class PlayRoom extends Component {
           </>
         )}
         {/* <Timer timerBlock={timerBlock} widthValue={widthValue} text={textsData[9]} /> */}
-      </div>
+      </Container>
     );
   }
 }
