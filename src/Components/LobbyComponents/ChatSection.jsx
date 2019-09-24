@@ -32,7 +32,7 @@ class ChatSection extends Component {
   };
   handleSubmit = message => {
     const { socket, userData, setMessagesData } = this.props;
-    socket.emit('sendMessage', { message, name: userData.user }, setMessagesData);
+    socket.emit('sendMessage', { message, nickname: userData.nickname }, setMessagesData);
   };
 
   componentDidUpdate() {
@@ -43,7 +43,7 @@ class ChatSection extends Component {
   }
   render() {
     const { classes, messages, textData, userData } = this.props;
-    const renderMessages = messages.map((msg, i) => <Message key={i} clientName={userData.user} {...msg} />);
+    const renderMessages = messages.map((msg, i) => <Message key={i} clientName={userData.nickname} {...msg} />);
     return (
       <Grid item xs={5} className={classes.wrapper}>
         <Grid

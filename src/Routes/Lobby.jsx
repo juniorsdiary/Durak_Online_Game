@@ -65,7 +65,7 @@ class Lobby extends Component {
 
   joinRoom = roomName => {
     const { joinRoom, socket, userData } = this.props;
-    socket.emit('joinRoom', roomName, userData.user);
+    socket.emit('joinRoom', roomName, userData.nickname);
     joinRoom(roomName);
   };
 

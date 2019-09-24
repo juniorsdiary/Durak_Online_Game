@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { AppBar, Typography, Button, Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { ChangeLanguage, LeaveRoom } from 'Components';
+import { ChangeLanguage } from 'Components';
 
 const useStyles = makeStyles(theme => ({
   button: {
@@ -15,16 +15,16 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Header = () => {
-  const { socket, isAuthenticated, isInRoom } = useSelector(state => state.authentication);
+  const { socket, isAuthenticated } = useSelector(state => state.authentication);
   const userData = useSelector(state => state.commonData.userData);
   const { lobbyPage } = useSelector(state => state.commonData.typography);
   const dispatch = useDispatch();
   const classes = useStyles();
   const handleSignOut = useCallback(() => {
-    socket.emit('signOut', userData.user);
+    socket.emit('signOut', userData.nickname);
     dispatch({ type: 'SET_AUTH', payload: false });
     dispatch({ type: 'SET_ROOM_NAME', payload: '' });
-  }, [dispatch, socket, userData.user]);
+  }, [dispatch, socket, userData.nickname]);
 
   return (
     <AppBar position='relative'>

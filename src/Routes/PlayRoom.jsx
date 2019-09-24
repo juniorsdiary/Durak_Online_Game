@@ -83,15 +83,13 @@ class PlayRoom extends Component {
 
   takeCards = () => {
     const { socket, setControlsState, nickname } = this.props;
-    // if (activeTake) {
-      socket.emit('takeCards', nickname);
-      setControlsState({ activeTake: false, activeDiscard: false });
-    // }
+    socket.emit('takeCards', nickname);
+    setControlsState({ activeTake: false, activeDiscard: false });
   };
 
   discardCards = () => {
     const { socket, nickname } = this.props;
-      socket.emit('discardCards', nickname);
+    socket.emit('discardCards', nickname);
   };
 
   render() {
@@ -159,7 +157,7 @@ PlayRoom.propTypes = {
 
 const props = state => ({
   socket: state.authentication.socket,
-  nickname: state.commonData.userData.user,
+  nickname: state.commonData.userData.nickname,
   textData: state.commonData.typography.inGameMessages,
   turn: state.playRoomData.turn,
   data: state.playRoomData.playRoom,

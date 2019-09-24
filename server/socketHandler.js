@@ -23,13 +23,13 @@ const socketHandler = socket => {
     }
   });
 
-  socket.on('sendMessage', ({ message, name }, cb) => {
+  socket.on('sendMessage', ({ message, nickname }, cb) => {
     io.of('/')
       .in('Lobby')
       .clients((err, clients) => {
         clients.forEach(id => {
-          socket.to(id).emit('addMessage', { message, name });
-          cb({ message, name });
+          socket.to(id).emit('addMessage', { message, nickname });
+          cb({ message, nickname });
         });
       });
   });
@@ -38,7 +38,7 @@ const socketHandler = socket => {
     const userData = DataHandler.getData('users', nickname);
     if (userData.room !== 'Lobby') {
       const PlayRoom = GameManager.getPlayRoom(userData.room);
-      const Player = PlayRoom.players.find(item => item.nickname === userData.user);
+      const Player = PlayRoom.players.find(item => item.nickname === userData.nickname);
       GameManager.deletePlayer(userData);
       PlayRoom.isFull();
       PlayRoom.isEmpty();
@@ -48,13 +48,13 @@ const socketHandler = socket => {
         io.sockets.to(userData.room).emit('endGame');
       }
       io.sockets.to(userData.room).emit('syncData', PlayRoom);
-      DataHandler.deleteData('user', userData.user);
+      DataHandler.deleteData('user', userData.nickname);
       if (PlayRoom.emptyState) {
         GameManager.deleteRoom(userData.room);
         DataHandler.deleteData('room', userData.room);
       }
     } else {
-      DataHandler.deleteData('user', userData.user);
+      DataHandler.deleteData('user', userData.nickname);
     }
     socket.leave(userData.room);
     io.sockets.to('Lobby').emit('displayPlayers', DataHandler.getData('users'));
@@ -66,7 +66,7 @@ const socketHandler = socket => {
     if (userData) {
       if (userData.room !== 'Lobby') {
         const PlayRoom = GameManager.getPlayRoom(userData.room);
-        const Player = PlayRoom.getUser(userData.user);
+        const Player = PlayRoom.getUser(userData.nickname);
         GameManager.deletePlayer(userData);
         PlayRoom.isFull();
         PlayRoom.isEmpty();
@@ -76,13 +76,13 @@ const socketHandler = socket => {
           io.sockets.to(userData.room).emit('endGame');
         }
         io.sockets.to(userData.room).emit('syncData', PlayRoom);
-        DataHandler.deleteData('user', userData.user);
+        DataHandler.deleteData('user', userData.nickname);
         if (PlayRoom.emptyState) {
           GameManager.deleteRoom(userData.room);
           DataHandler.deleteData('room', userData.room);
         }
       } else {
-        DataHandler.deleteData('user', userData.user);
+        DataHandler.deleteData('user', userData.nickname);
       }
       socket.leave(userData.room);
       io.sockets.to('Lobby').emit('displayPlayers', DataHandler.getData('users'));
@@ -93,7 +93,7 @@ const socketHandler = socket => {
   socket.on('leaveRoom', room => {
     const userData = DataHandler.getData('users').find(item => item.room === room);
     const PlayRoom = GameManager.getPlayRoom(userData.room);
-    const Player = PlayRoom.getUser(userData.user);
+    const Player = PlayRoom.getUser(userData.nickname);
     GameManager.deletePlayer(userData);
     PlayRoom.isFull();
     PlayRoom.isEmpty();
@@ -108,7 +108,7 @@ const socketHandler = socket => {
       DataHandler.deleteData('room', userData.room);
     }
     DataHandler.updateData('room', 'Lobby', userData.room);
-    DataHandler.updateData('user', userData.user, 'Lobby');
+    DataHandler.updateData('user', userData.nickname, 'Lobby');
     socket.leave(userData.room);
     socket.join('Lobby');
     io.sockets.to('Lobby').emit('displayPlayers', DataHandler.getData('users'));
@@ -215,6 +215,7 @@ const socketHandler = socket => {
   socket.on('discardCards', nickname => {
     const userData = DataHandler.getData('users', nickname);
     const PlayRoom = GameManager.getPlayRoom(userData.room);
+    PlayRoom.logNextMessages();
     PlayRoom.takeCards();
     io.sockets.to(userData.room).emit('syncData', PlayRoom);
     io.sockets.to(userData.room).emit('defineMove');
@@ -223,10 +224,10 @@ const socketHandler = socket => {
   socket.on('takeCards', nickname => {
     const userData = DataHandler.getData('users', nickname);
     const PlayRoom = GameManager.getPlayRoom(userData.room);
-    PlayRoom.interPhase = true;
-    PlayRoom.taken = true;
-    PlayRoom.countCardsToTake();
     if (PlayRoom.curPlayer.active) {
+      PlayRoom.interPhase = true;
+      PlayRoom.taken = true;
+      PlayRoom.countCardsToTake();
       PlayRoom.logNextMessages();
       PlayRoom.logNextTurn();
       PlayRoom.defineMove(true, false, 'offence', 'defence');
@@ -238,7 +239,9 @@ const socketHandler = socket => {
         io.sockets.to(userData.room).emit('defineMove');
       }, 5000);
     } else {
+      PlayRoom.logNextMessages();
       PlayRoom.takeCards();
+      PlayRoom.logNextTurn();
       io.sockets.to(userData.room).emit('syncData', PlayRoom);
       io.sockets.to(userData.room).emit('defineMove');
     }

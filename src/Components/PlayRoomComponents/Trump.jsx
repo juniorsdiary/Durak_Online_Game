@@ -2,14 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { EachCard } from 'Components';
 import { Paper } from '@material-ui/core';
-import { makeStyles } from '@material-ui/styles';
+import { makeStyles } from '@material-ui/core/styles';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles({
   trump: {
     width: '100px',
     height: '141px',
   },
-}));
+});
 
 const Trump = ({ trump }) => {
   const classes = useStyles();

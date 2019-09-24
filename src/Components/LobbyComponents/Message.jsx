@@ -24,13 +24,13 @@ const useStyles = makeStyles(theme => {
   };
 });
 
-const Message = ({ clientName, name, message }) => {
-  const classes = useStyles({ client: name === clientName });
+const Message = ({ clientName, nickname, message }) => {
+  const classes = useStyles({ client: nickname === clientName });
   return (
     <Grow in={true}>
       <Grid item className={classes.container}>
         <Typography display='inline' className={classes.nickname}>
-          {`${name}:`}
+          {`${nickname}:`}
         </Typography>
         <Paper className={classes.message}>{message}</Paper>
       </Grid>
@@ -40,7 +40,7 @@ const Message = ({ clientName, name, message }) => {
 
 Message.propTypes = {
   message: PropTypes.string,
-  name: PropTypes.string,
+  nickname: PropTypes.string,
   clientName: PropTypes.string,
 };
 

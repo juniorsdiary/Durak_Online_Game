@@ -67,25 +67,25 @@ class PlayRoomManager {
     this.initialDeck = deck;
   }
   setUsers() {
-    this.users = [...Array(this.playersNumber).keys()].map(() => ({ name: null, active: false }));
+    this.users = [...Array(this.playersNumber).keys()].map(() => ({ nickname: null, active: false }));
   }
-  addUser(name, id) {
-    this.players.push(new Player(name, id));
-    const index = this.players.findIndex(item => item.nickname === name);
-    this.users[index].name = name;
+  addUser(nickname, id) {
+    this.players.push(new Player(nickname, id));
+    const index = this.players.findIndex(item => item.nickname === nickname);
+    this.users[index].nickname = nickname;
   }
-  activateUser(name) {
-    this.players.find(item => item.nickname === name).active = true;
-    this.users.find(item => item.name === name).active = true;
+  activateUser(nickname) {
+    this.players.find(item => item.nickname === nickname).active = true;
+    this.users.find(item => item.nickname === nickname).active = true;
   }
   isFull() {
-    this.fullState = this.users.every(item => item.name);
+    this.fullState = this.users.every(item => item.nickname);
   }
   checkUsersReady() {
     this.usersReady = this.players.every(item => item.active);
   }
   isEmpty() {
-    this.emptyState = this.users.every(item => !item.name);
+    this.emptyState = this.users.every(item => !item.nickname);
   }
   getUser(nickname) {
     return this.players.find(item => item.nickname === nickname);
@@ -189,9 +189,9 @@ class PlayRoomManager {
   }
   logNextTurn() {
     if (this.taken) {
-      this.logMessages.unshift({ nickName: this.curPlayer.nickname, messageIndex: 9 });
+      this.logMessages.unshift({ nickname: this.curPlayer.nickname, messageIndex: 9 });
     } else {
-      this.logMessages.unshift({ nickName: this.curPlayer.nickname, messageIndex: 0 });
+      this.logMessages.unshift({ nickname: this.curPlayer.nickname, messageIndex: 0 });
     }
   }
   makeOffenceMove(placeIndex) {
@@ -248,7 +248,7 @@ class PlayRoomManager {
     this.trumpData = [];
     this.gameInProgress = false;
     this.playerHasLeft = false;
-    this.endGame = { state: false, nickName: '', msgIndex: '' };
+    this.endGame = { state: false, nickname: '', messageIndex: '' };
     this.logMessages = [];
     this.gameField = {};
 
@@ -363,7 +363,6 @@ class PlayRoomManager {
     this.logNextTurn();
   }
   discardScenario() {
-    this.logNextMessages();
     this.curPlayer = this.getPlayer(this.curPlayerIndex);
     this.curPlayerIndex = this.players.indexOf(this.curPlayer);
     this.defender = this.getPlayer(this.curPlayerIndex);
@@ -371,12 +370,16 @@ class PlayRoomManager {
     this.logNextTurn();
   }
   logNextMessages() {
-    const nickname = this.defender.nickname;
-    const messageIndex = this.taken ? 1 : 2;
-    this.logMessages.unshift({ nickname, messageIndex });
+    if (this.taken) {
+      const nickname = this.defender.nickname;
+      this.logMessages.unshift({ nickname, messageIndex: 1 });
+    } else {
+      const nickname = this.curPlayer.nickname;
+      this.logMessages.unshift({ nickname, messageIndex: 2 });
+    }
   }
   countCardsToTake() {
-    this.defender.cardsToTake = this.defender.cardsNumber - this.gameField.offenceCards.length;
+    this.defender.cardsToTake = this.defender.cardsNumber - this.gameField.offenceCards.filter(item => item).length;
   }
 }
 
@@ -424,9 +427,9 @@ const GameManager = (() => {
       const NewRoom = new PlayRoom(players, cards, room);
       gameRooms[room] = NewRoom;
     },
-    deletePlayer({ user, room }) {
-      gameRooms[room].players = gameRooms[room].players.filter(item => item.nickname !== user);
-      gameRooms[room].users = gameRooms[room].users.map(item => (item.name === user ? { name: null, active: false } : item));
+    deletePlayer({ nickname, room }) {
+      gameRooms[room].players = gameRooms[room].players.filter(item => item.nickname !== nickname);
+      gameRooms[room].users = gameRooms[room].users.map(item => (item.nickname === nickname ? { nickname: null, active: false } : item));
     },
     deleteRoom(room) {
       delete gameRooms[room];

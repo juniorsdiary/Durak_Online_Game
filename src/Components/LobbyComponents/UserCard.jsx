@@ -10,19 +10,19 @@ const useStyles = makeStyles({
     },
   },
 });
-const UserCard = ({ user, room }) => {
+const UserCard = ({ nickname, room }) => {
   const classes = useStyles();
   return (
     <Grow in={true}>
       <ListItem dense>
-        <ListItemText primary={user} secondary={room} className={classes.root} />
+        <ListItemText primary={nickname} secondary={room} className={classes.root} />
       </ListItem>
     </Grow>
   );
 };
 
 UserCard.propTypes = {
-  user: PropTypes.string,
+  nickname: PropTypes.string,
   room: PropTypes.string,
 };
 

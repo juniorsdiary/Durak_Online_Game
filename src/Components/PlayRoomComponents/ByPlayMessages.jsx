@@ -21,7 +21,7 @@ const ByPlayMessages = ({ messages, textData }) => {
   const renderLogMessages = messages.map((item, index) => {
     return (
       <div key={index}>
-        {item.nickName} {textData[item.messageIndex]}
+        {item.nickname} {textData[item.messageIndex]}
       </div>
     );
   });

@@ -4,23 +4,23 @@ class DataStorage {
     this.rooms = [];
     this.messages = [];
   }
-  checkNickname(user) {
-    return this.users.some(item => item.user === user);
+  checkNickname(nickname) {
+    return this.users.some(item => item.nickname === nickname);
   }
   checkRooms(room) {
     return this.rooms.some(item => item.room === room);
   }
-  addUser(user, id) {
-    this.users.push({ id, user, connectTime: new Date(), room: '' });
+  addUser(nickname, id) {
+    this.users.push({ id, nickname, connectTime: new Date(), room: '' });
   }
   addRoom(room, settings) {
     this.rooms.push({ room, users: [], settings });
   }
-  updateRoom(room, user) {
-    this.rooms.find(item => item.room === room).users.push(user);
+  updateRoom(room, nickname) {
+    this.rooms.find(item => item.room === room).users.push(nickname);
   }
-  updateUser(user, room) {
-    this.users.find(item => item.user === user).room = room;
+  updateUser(nickname, room) {
+    this.users.find(item => item.nickname === nickname).room = room;
   }
   addMessage(message, nickname) {
     this.messages = [...this.messages, { nickname, message, time: new Date() }];
@@ -48,27 +48,27 @@ const DataHandler = (() => {
         return { error: false, messageIndex: 0 };
       }
     },
-    user: function(user, id) {
-      const used = Storage.checkNickname(user);
-      const tested = /^\s+/.test(user);
-      if (!user) {
+    user: function(nickname, id) {
+      const used = Storage.checkNickname(nickname);
+      const tested = /^\s+/.test(nickname);
+      if (!nickname) {
         return { error: true, messageIndex: 1 };
       } else if (tested) {
         return { error: true, messageIndex: 2 };
       } else if (used) {
         return { error: true, messageIndex: 3 };
       } else {
-        Storage.addUser(user, id);
+        Storage.addUser(nickname, id);
         return { error: false, messageIndex: 0 };
       }
     },
   };
   const updateFns = {
-    room: function(room, user) {
-      Storage.updateRoom(room, user);
+    room: function(room, nickname) {
+      Storage.updateRoom(room, nickname);
     },
-    user: function(user, room) {
-      Storage.updateUser(user, room);
+    user: function(nickname, room) {
+      Storage.updateUser(nickname, room);
     },
   };
   const deleteFns = {
@@ -78,20 +78,20 @@ const DataHandler = (() => {
     room: function(room) {
       Storage.rooms = Storage.rooms.filter(item => item.room !== room);
     },
-    user: function(user) {
-      const userData = Storage.users.find(item => item.user === user);
+    user: function(nickname) {
+      const userData = Storage.users.find(item => item.nickname === nickname);
       let roomData = Storage.rooms.find(item => item.room === userData.room);
-      roomData.users = roomData.users.filter(item => item !== user);
-      Storage.users = Storage.users.filter(item => item.user !== user);
+      roomData.users = roomData.users.filter(item => item !== nickname);
+      Storage.users = Storage.users.filter(item => item.nickname !== nickname);
     },
   };
   const getFns = {
     messages: function() {
       return Storage.messages;
     },
-    users: function(user) {
-      if (user) {
-        return Storage.users.find(item => item.user === user);
+    users: function(nickname) {
+      if (nickname) {
+        return Storage.users.find(item => item.nickname === nickname);
       } else {
         return Storage.users;
       }
