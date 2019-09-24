@@ -17,32 +17,18 @@ export function setControlsState(data) {
 
 export function definePlayersMove(curPlayer, defender, id) {
   let value = {};
-  if (curPlayer.id === id && curPlayer.turn) {
+  if (curPlayer.id === id) {
     value = {
       activeTake: false,
-      activeDiscard: true,
-      turn: true,
+      activeDiscard: curPlayer.turn,
+      turn: curPlayer.turn,
       defenceOrOffence: curPlayer.defenceOrOffence,
     };
-  } else if (curPlayer.id === id && !curPlayer.turn) {
+  } else if (defender.id === id) {
     value = {
-      activeTake: false,
+      activeTake: defender.turn,
       activeDiscard: false,
-      turn: false,
-      defenceOrOffence: curPlayer.defenceOrOffence,
-    };
-  } else if (defender.id === id && defender.turn) {
-    value = {
-      activeTake: true,
-      activeDiscard: false,
-      turn: true,
-      defenceOrOffence: defender.defenceOrOffence,
-    };
-  } else if (defender.id === id && !defender.turn) {
-    value = {
-      activeTake: false,
-      activeDiscard: false,
-      turn: false,
+      turn: defender.turn,
       defenceOrOffence: defender.defenceOrOffence,
     };
   } else {

@@ -32,9 +32,6 @@ class GameField {
 }
 
 class PlayersManager {
-  activateUser() {
-    this.active = true;
-  }
   defineSmallestTrump(trumpSuit) {
     this.trumps = this.cards.filter(item => item[0] === trumpSuit);
     this.cheapTrump = sortCards(this.trumps)[0];
@@ -58,7 +55,7 @@ class Player extends PlayersManager {
     this.turn = false;
     this.defenceOrOffence = '';
     this.curCard = [];
-    this.position = 0;
+    this.playerIndex = 0;
     this.active = false;
     this.cardsToTake = 0;
     this.cardsNumber = 0;
@@ -69,20 +66,29 @@ class PlayRoomManager {
   constructor() {
     this.initialDeck = deck;
   }
-
-  addUser(nickname, id) {
-    this.users.push(nickname);
-    this.players.push(new Player(nickname, id));
+  setUsers() {
+    this.users = [...Array(this.playersNumber).keys()].map(() => ({ name: null, active: false }));
   }
-  checkVacantSpots() {
-    this.isFull = this.users.length === this.playersNumber;
+  addUser(name, id) {
+    this.players.push(new Player(name, id));
+    const index = this.players.findIndex(item => item.nickname === name);
+    this.users[index].name = name;
+  }
+  activateUser(name) {
+    this.players.find(item => item.nickname === name).active = true;
+    this.users.find(item => item.name === name).active = true;
+  }
+  isFull() {
+    this.fullState = this.users.every(item => item.name);
   }
   checkUsersReady() {
     this.usersReady = this.players.every(item => item.active);
   }
+  isEmpty() {
+    this.emptyState = this.users.every(item => !item.name);
+  }
   getUser(nickname) {
-    const index = this.users.indexOf(nickname);
-    return this.players[index];
+    return this.players.find(item => item.nickname === nickname);
   }
   chooseDeckSize() {
     if (this.cardsNumber !== 52) {
@@ -231,6 +237,7 @@ class PlayRoomManager {
   }
   resetSettings() {
     this.players.forEach(item => item.resetUser());
+    this.users = this.users.map(item => ({ ...item, active: false }));
     this.usersReady = false;
     this.discardPile = [];
     this.shuffledDeck = [];
@@ -379,7 +386,7 @@ class PlayRoom extends PlayRoomManager {
     this.room = room;
     this.users = [];
     this.players = [];
-    this.isFull = false;
+    this.fullState = false;
     this.usersReady = false;
     this.gameDeck = [];
     this.shuffledDeck = [];
@@ -401,6 +408,7 @@ class PlayRoom extends PlayRoomManager {
 
     this.chooseDeckSize();
     this.chooseTrump();
+    this.setUsers();
   }
 }
 
@@ -414,9 +422,12 @@ const GameManager = (() => {
       const NewRoom = new PlayRoom(players, cards, room);
       gameRooms[room] = NewRoom;
     },
-    deletePlayerFromRoom({ user, room }) {
+    deletePlayer({ user, room }) {
       gameRooms[room].players = gameRooms[room].players.filter(item => item.nickname !== user);
-      gameRooms[room].users = gameRooms[room].users.filter(item => item !== user);
+      gameRooms[room].users = gameRooms[room].users.map(item => (item.name === user ? { name: null, active: false } : item));
+    },
+    deleteRoom(room) {
+      delete gameRooms[room];
     },
   };
 })();

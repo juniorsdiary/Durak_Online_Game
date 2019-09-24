@@ -111,11 +111,11 @@ class PlayRoom extends Component {
 
   render() {
     const { socket, isReady, data, classes, player0, player1, player2, player3, defenceOrOffence, activeTake, activeDiscard, textData } = this.props;
-    const { usersReady, users, shuffledDeck, isFull, trumpData, discardPile, gameField, logMessages, endGame, players } = data;
+    const { usersReady, users, shuffledDeck, fullState, trumpData, discardPile, gameField, logMessages, endGame, players } = data;
     return (
       <Container onSelect={() => false} onMouseDown={() => false} className={classes.board} maxWidth='xl'>
-        <Ready activeUsers={usersReady} users={users} isReady={isReady} isFull={isFull} setReadyState={this.setReadyValue} textData={textData} />
-        {usersReady && isFull && (
+        <Ready activeUsers={usersReady} users={users} isReady={isReady} isFull={fullState} setReadyState={this.setReadyValue} textData={textData} />
+        {usersReady && fullState && (
           <>
             <Container className={classes.cards}>
               <Deck deck={shuffledDeck} />

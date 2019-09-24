@@ -7,7 +7,7 @@ import { useForm } from 'Utilities';
 
 const useStyles = makeStyles(theme => ({
   title: {
-    padding: theme.spacing(2),
+    padding: theme.spacing(0, 2),
     '& h2': {
       fontWeight: 'bold',
     },
@@ -53,7 +53,7 @@ const Settings = ({ open, handleSettingsModal, checkRoomsData }) => {
     <Dialog onClose={closeDialog} open={open}>
       <DialogTitle className={classes.title}>{textData[7]}</DialogTitle>
       <form onSubmit={submitValue} className={classes.form}>
-        <TextField id='roomName' name='roomName' required label={textData[8]} onChange={setValue} value={values.roomName} margin='normal' />
+        <TextField id='roomName' name='roomName' required label={textData[8]} onChange={setValue} value={values.roomName} />
         <FormLabel className={classes.margin}>{textData[9]}</FormLabel>
         <RadioGroup className={classes.radioWrapper} aria-label='players' name='players' value={values.players} onChange={setValue}>
           <FormControlLabel value='2' control={<Radio />} label='2' />

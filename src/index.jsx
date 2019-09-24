@@ -13,3 +13,8 @@ ReactDOM.render(
   </Provider>,
   document.getElementById('container')
 );
+
+// able to leave room while ready stage and adter that in app bar leave btn
+// fix take discard states
+// style log messages
+// drag and drop
