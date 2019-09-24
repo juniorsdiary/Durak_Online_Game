@@ -188,7 +188,11 @@ class PlayRoomManager {
     this.defender.defenceOrOffence = value2;
   }
   logNextTurn() {
-    this.logMessages.unshift({ nickName: this.curPlayer.nickname, messageIndex: 0 });
+    if (this.taken) {
+      this.logMessages.unshift({ nickName: this.curPlayer.nickname, messageIndex: 9 });
+    } else {
+      this.logMessages.unshift({ nickName: this.curPlayer.nickname, messageIndex: 0 });
+    }
   }
   makeOffenceMove(placeIndex) {
     if (this.checkConditions()) {
@@ -300,13 +304,12 @@ class PlayRoomManager {
     this.gameField.cards.push(card);
     playerCards.splice(cardIndex, 1);
   }
-  takeCards(value) {
+  takeCards() {
     this.interPhase = false;
-    this.taken = value;
     this.playerHasLeft = false;
     this.curPlayer.turn = false;
     let cardsDiff = 6 - this.curPlayer.cards.length;
-    if (value) {
+    if (this.taken) {
       this.gameField.cards.forEach(item => this.defender.cards.push(item));
       this.nextDealForCurPlayer(cardsDiff);
     } else {
@@ -345,14 +348,13 @@ class PlayRoomManager {
   }
   anotherStep() {
     if (this.taken) {
-      this.takeScenario();
       this.taken = false;
+      this.takeScenario();
     } else {
       this.discardScenario();
     }
   }
   takeScenario() {
-    this.logNextMessages();
     this.curPlayerIndex = this.players.indexOf(this.defender);
     this.curPlayer = this.getPlayer(this.curPlayerIndex);
     this.curPlayerIndex = this.players.indexOf(this.curPlayer);

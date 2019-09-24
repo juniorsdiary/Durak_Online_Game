@@ -212,32 +212,33 @@ const socketHandler = socket => {
     }
   });
 
-  socket.on('takeOrDiscard', (nickname, value) => {
+  socket.on('discardCards', nickname => {
     const userData = DataHandler.getData('users', nickname);
     const PlayRoom = GameManager.getPlayRoom(userData.room);
-    PlayRoom.takeCards(value);
+    PlayRoom.takeCards();
     io.sockets.to(userData.room).emit('syncData', PlayRoom);
     io.sockets.to(userData.room).emit('defineMove');
   });
 
-  socket.on('interPhase', nickname => {
+  socket.on('takeCards', nickname => {
     const userData = DataHandler.getData('users', nickname);
     const PlayRoom = GameManager.getPlayRoom(userData.room);
     PlayRoom.interPhase = true;
+    PlayRoom.taken = true;
     PlayRoom.countCardsToTake();
     if (PlayRoom.curPlayer.active) {
+      PlayRoom.logNextMessages();
+      PlayRoom.logNextTurn();
       PlayRoom.defineMove(true, false, 'offence', 'defence');
       io.sockets.to(userData.room).emit('syncData', PlayRoom);
       io.sockets.to(userData.room).emit('defineMove');
-      io.sockets.to(userData.room).emit('startTimer', PlayRoom.curPlayer);
-      io.sockets.to(userData.room).emit('logMessages', PlayRoom.logMessages);
       setTimeout(() => {
-        PlayRoom.takeCards(true);
+        PlayRoom.takeCards();
         io.sockets.to(userData.room).emit('syncData', PlayRoom);
         io.sockets.to(userData.room).emit('defineMove');
       }, 5000);
     } else {
-      PlayRoom.takeCards(true);
+      PlayRoom.takeCards();
       io.sockets.to(userData.room).emit('syncData', PlayRoom);
       io.sockets.to(userData.room).emit('defineMove');
     }

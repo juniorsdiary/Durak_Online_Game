@@ -9,7 +9,7 @@ let russian = {
     'Ждем других игроков',
     'Готовы?',
     'проиграл',
-    'Есть еще карты? Подкидывай',
+    'подкидывает',
   ],
   logInPage: ['Придумай псевдоним', 'Крутой псевдоним', 'Войти в лобби'],
   lobbyPage: [
@@ -49,7 +49,7 @@ let english = {
     'Waiting for other players',
     'Ready?',
     'lost',
-    'Have cards to give? Go ahead',
+    'can shed cards',
   ],
   logInPage: ['Create a Nick Name', 'Awesome nickname', 'Join Lobby'],
   lobbyPage: [

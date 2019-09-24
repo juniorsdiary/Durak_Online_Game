@@ -48,14 +48,6 @@ class PlayRoom extends Component {
       setReady(false);
       setControlsState({ activeTake: false, activeDiscard: false });
     });
-
-    socket.on('startTimer', curPlayer => {
-      const { turn } = this.props;
-      if (curPlayer.id === socket.id && turn) {
-        // if only the curPlayer is a client the timer starts and the progress line shows
-        this.start();
-      }
-    });
   }
 
   setReadyValue = () => {
@@ -90,23 +82,16 @@ class PlayRoom extends Component {
   };
 
   takeCards = () => {
-    const { socket, activeTake, setControlsState, nickname } = this.props;
-    if (activeTake) {
-      socket.emit('interPhase', nickname);
+    const { socket, setControlsState, nickname } = this.props;
+    // if (activeTake) {
+      socket.emit('takeCards', nickname);
       setControlsState({ activeTake: false, activeDiscard: false });
-    }
+    // }
   };
 
   discardCards = () => {
-    const { socket, activeDiscard, nickname } = this.props;
-
-    if (activeDiscard) {
-      socket.emit('takeOrDiscard', nickname, false);
-    }
-  };
-
-  start = () => {
-    console.log('start');
+    const { socket, nickname } = this.props;
+      socket.emit('discardCards', nickname);
   };
 
   render() {
@@ -144,7 +129,6 @@ class PlayRoom extends Component {
             <EndGame data={endGame} text={textData[8]} />
           </>
         )}
-        {/* <Timer timerBlock={timerBlock} widthValue={widthValue} text={textsData[9]} /> */}
       </Container>
     );
   }
