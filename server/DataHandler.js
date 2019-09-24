@@ -72,9 +72,6 @@ const DataHandler = (() => {
     },
   };
   const deleteFns = {
-    message: function(message) {
-      return `You deleted message: ${message}`;
-    },
     room: function(room) {
       Storage.rooms = Storage.rooms.filter(item => item.room !== room);
     },

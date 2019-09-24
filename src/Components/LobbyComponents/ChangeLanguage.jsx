@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import PropTypes from 'prop-types';
 import { Grid, Switch } from '@material-ui/core';
+import { connect } from 'react-redux';
 
-const ChangeLanguage = () => {
+const ChangeLanguage = ({ changeLang, socket }) => {
   const [checked, setChecked] = useState(true);
-  const socket = useSelector(state => state.authentication.socket);
-  const dispatch = useDispatch();
+
   useEffect(() => {
-    socket.emit('changeLanguage', checked, dispatch);
+    socket.emit('changeLanguage', checked, changeLang);
     /* eslint-disable */
   }, [checked]);
   /* eslint-enable */
@@ -28,6 +28,21 @@ const ChangeLanguage = () => {
   );
 };
 
-ChangeLanguage.propTypes = {};
+ChangeLanguage.propTypes = {
+  changeLang: PropTypes.func,
+  socket: PropTypes.object,
+};
+const mapStateToProps = state => ({
+  socket: state.authentication.socket,
+});
 
-export default ChangeLanguage;
+const mapDispatchToProps = dispatch => ({
+  changeLang: data => {
+    dispatch({ type: 'CHANGE_LANGUAGE', payload: data });
+  },
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ChangeLanguage);

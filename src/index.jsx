@@ -13,7 +13,5 @@ ReactDOM.render(
   </Provider>,
   document.getElementById('container')
 );
-
-// fix take discard states
 // style log messages
 // drag and drop
