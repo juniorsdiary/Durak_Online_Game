@@ -17,8 +17,6 @@ class GameField {
     this.offenceCards = [];
     this.defenceCards = [];
     this.cards = [];
-    this.curCard = [];
-    this.curPlaceIndex = 0;
   }
   clearField() {
     this.offenceCards = Array(6);

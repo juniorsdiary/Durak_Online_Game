@@ -14,6 +14,20 @@ module.exports = merge(common, {
     publicPath: '/',
   },
   optimization: {
+    splitChunks: {
+      cacheGroups: {
+        vendors: {
+          test: /[\\/]node_modules[\\/]((?!react).*)[\\/]/,
+          name: 'vendors',
+          chunks: 'all',
+        },
+        react: {
+          test: /[\\/]node_modules[\\/]((react).*)[\\/]/,
+          name: 'react',
+          chunks: 'all',
+        },
+      },
+    },
     minimizer: [new TerserPlugin()],
   },
   plugins: [

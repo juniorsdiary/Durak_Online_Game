@@ -3,6 +3,7 @@ const merge = require('webpack-merge');
 const common = require('./webpack.config.js');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = merge(common, {
   mode: 'development',
@@ -24,5 +25,9 @@ module.exports = merge(common, {
     noInfo: true,
     open: true,
   },
-  plugins: [new HtmlWebpackPlugin({ template: paths.appHtml, inject: true, favicon: `${paths.appSrc}/favicon.ico` }), new CleanWebpackPlugin()],
+  plugins: [
+    new HtmlWebpackPlugin({ template: paths.appHtml, inject: true, favicon: `${paths.appSrc}/favicon.ico` }),
+    new CleanWebpackPlugin(),
+    new BundleAnalyzerPlugin(),
+  ],
 });
