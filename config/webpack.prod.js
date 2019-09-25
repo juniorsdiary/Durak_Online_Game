@@ -8,6 +8,7 @@ const common = require('./webpack.config.js');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = merge(common, {
+  mode: 'production',
   output: {
     path: paths.appPublic,
     filename: '[name].[hash].js',
