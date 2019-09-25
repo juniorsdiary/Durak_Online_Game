@@ -17,7 +17,7 @@ const Trump = ({ trump }) => {
 };
 
 Trump.propTypes = {
-  trump: PropTypes.array,
+  trump: PropTypes.object,
 };
 
 Trump.defaultProps = {

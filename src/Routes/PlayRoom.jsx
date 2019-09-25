@@ -61,12 +61,6 @@ class PlayRoom extends Component {
     socket.emit('initCard', nickname, cardData);
   };
 
-  dragOverEvent = e => {
-    if (!e) e = window.event;
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'copy';
-  };
-
   makeOffenceMove = placeIndex => {
     const { socket, turn, nickname } = this.props;
     if (turn) {

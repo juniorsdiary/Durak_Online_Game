@@ -19,14 +19,14 @@ const GameFieldCardPlace = ({ offenceCardData, defenceCardData }) => {
   return (
     <Paper className={classes.cardPlace}>
       {offenceCardData && <EachCard cardData={offenceCardData} rotated />}
-      {defenceCardData && <EachCard cardData={defenceCardData} distance={`20`} rotated beaten />}
+      {defenceCardData && <EachCard cardData={defenceCardData} distance={20} rotated beaten />}
     </Paper>
   );
 };
 
 GameFieldCardPlace.propTypes = {
-  offenceCardData: PropTypes.array,
-  defenceCardData: PropTypes.array,
+  offenceCardData: PropTypes.object,
+  defenceCardData: PropTypes.object,
   placeIndex: PropTypes.number,
 };
 

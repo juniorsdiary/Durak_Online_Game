@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Dialog, DialogTitle, Typography, Grid, LeaveRoom } from '@material-ui/core';
+import { Dialog, DialogTitle, Typography, Grid } from '@material-ui/core';
+import { LeaveRoom } from 'Components';
 
 const EndGame = ({ data, text }) => {
   const { nickName, state } = data;

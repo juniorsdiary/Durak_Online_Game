@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { EachCard } from 'Components';
-import { makeStyles } from '@material-ui/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import { Paper } from '@material-ui/core';
 
 const useStyles = makeStyles({
@@ -14,8 +14,8 @@ const useStyles = makeStyles({
 function Deck({ deck }) {
   const classes = useStyles();
 
-  let renderCards = deck.map((item, index) => {
-    return <EachCard margin={`0 0 0 ${index / 3}`} key={index} cardData={item} />;
+  let renderCards = deck.map(item => {
+    return <EachCard key={item.id} cardData={item} />;
   });
 
   return <Paper className={classes.deck}>{renderCards}</Paper>;

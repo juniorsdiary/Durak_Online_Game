@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useDrag } from 'react-dnd';
 import { makeStyles } from '@material-ui/styles';
 import cardDeck from '../../images/free-vector-card-deck.jpg';
 import cardBack from '../../images/back.jpg';
@@ -12,7 +13,14 @@ const useStyles = makeStyles(() => ({
     width: '100px',
     height: '141px',
     perspective: '1000px',
+    opacity: props => props.opacity,
     zIndex: props => (props.beaten ? 1 : 0),
+  },
+  previewCard: {
+    width: '100px',
+    height: '141px',
+    backgroundPosition: props => props.backgroundPosition,
+    backgroundSize: '1588%',
   },
   card: {
     position: 'relative',
@@ -43,16 +51,24 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const EachCard = ({ distance, dragValue, dragEvent, rotated, cardData, beaten }) => {
-  const backgroundPosition = `${cardData[1]}px ${cardData[2]}px`;
-  const classes = useStyles({ distance, rotated, backgroundPosition, beaten });
-
+const EachCard = ({ distance, dragEvent, rotated, cardData, beaten }) => {
+  const [{ opacity }, drag] = useDrag({
+    item: { type: 'card' },
+    begin: () => {
+      dragEvent(cardData);
+    },
+    collect: monitor => ({
+      opacity: monitor.isDragging() ? 0 : 1,
+    }),
+  });
+  const backgroundPosition = `${cardData.posX}px ${cardData.posY}px`;
+  const classes = useStyles({ distance, rotated, backgroundPosition, beaten, opacity });
   return (
     <Fade in={true}>
-      <div className={classes.parent} draggable={dragValue} onDragStart={() => dragEvent(cardData)}>
+      <div ref={drag} className={classes.parent}>
         <div className={classes.card}>
-          <div className={classes.face}></div>
           <div className={classes.back}></div>
+          <div className={classes.face}></div>
         </div>
       </div>
     </Fade>
@@ -63,13 +79,12 @@ EachCard.propTypes = {
   distance: PropTypes.number,
   dragEvent: PropTypes.func,
   rotated: PropTypes.bool,
-  dragValue: PropTypes.bool,
-  cardData: PropTypes.array,
+  cardData: PropTypes.object,
   beaten: PropTypes.bool,
 };
 
 EachCard.defaultProps = {
-  cardData: [],
+  cardData: {},
 };
 
 export default EachCard;

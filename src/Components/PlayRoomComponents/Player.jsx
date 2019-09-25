@@ -11,20 +11,11 @@ const useStyles = makeStyles({
 });
 
 const Player = ({ socket, playerInfo, playerNumber, dragEvent }) => {
-  const { nickname, cards, id, turn } = playerInfo;
+  const { nickname, cards, id } = playerInfo;
   const classes = useStyles({ playerNumber, nickname });
 
   const renderCards = cards.map((item, index) => {
-    return (
-      <EachCard
-        key={index}
-        cardData={item}
-        distance={index * distance(cards.length)}
-        rotated={id === socket.id}
-        dragValue={turn}
-        dragEvent={dragEvent}
-      />
-    );
+    return <EachCard key={item.id} cardData={item} distance={index * distance(cards.length)} rotated={id === socket.id} dragEvent={dragEvent} />;
   });
   return (
     <Grid container direction='column' className={classes.player}>

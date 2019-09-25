@@ -2,10 +2,10 @@ const deck = require('./cards.js');
 
 function sortCards(arr) {
   return arr.sort((a, b) => {
-    if (+a[3] > +b[3]) {
+    if (+a.value > +b.value) {
       return 1;
     }
-    if (+a[3] < +b[3]) {
+    if (+a.value < +b.value) {
       return -1;
     }
     return 0;
@@ -33,7 +33,7 @@ class GameField {
 
 class PlayersManager {
   defineSmallestTrump(trumpSuit) {
-    this.trumps = this.cards.filter(item => item[0] === trumpSuit);
+    this.trumps = this.cards.filter(item => item.suit === trumpSuit);
     this.cheapTrump = sortCards(this.trumps)[0];
   }
   resetUser() {
@@ -92,7 +92,7 @@ class PlayRoomManager {
   }
   chooseDeckSize() {
     if (this.cardsNumber !== 52) {
-      this.gameDeck = this.initialDeck.filter(item => item[3] > 5);
+      this.gameDeck = this.initialDeck.filter(item => item.value > 5);
       this.shuffleDeck();
     } else {
       this.gameDeck = this.initialDeck;
@@ -151,11 +151,11 @@ class PlayRoomManager {
     }
   }
   defineFirstMove() {
-    let cheapestTrump = ['', '', '', 14];
+    let cheapestTrump = { value: 14 };
     this.players.forEach((item, index) => {
-      item.defineSmallestTrump(this.trumpData[0]);
+      item.defineSmallestTrump(this.trumpData.suit);
       if (item.cheapTrump) {
-        if (item.cheapTrump[0] === this.trumpData[0] && item.cheapTrump[3] < cheapestTrump[3]) {
+        if (item.cheapTrump.suit === this.trumpData.suit && item.cheapTrump.value < cheapestTrump.value) {
           cheapestTrump = item.cheapTrump;
           this.curPlayerIndex = index;
         }
@@ -220,14 +220,14 @@ class PlayRoomManager {
     }
   }
   checkConditions() {
-    return this.gameField.cards.length === 0 || this.gameField.cards.some(item => this.curPlayer.curCard[3] === item[3]);
+    return this.gameField.cards.length === 0 || this.gameField.cards.some(item => this.curPlayer.curCard.value === item.value);
   }
   transferOffenceCards() {
     let card = this.curPlayer.curCard;
     let playerCards = this.curPlayer.cards;
     let cardIndex;
     playerCards.forEach((item, index) => {
-      if (item[0] === card[0] && +item[3] === +card[3]) {
+      if (item.suit === card.suit && item.value === card.value) {
         cardIndex = index;
       }
     });
@@ -279,16 +279,16 @@ class PlayRoomManager {
   checkDefCard() {
     let card = this.defender.curCard;
     let gameFieldCards = this.gameField.offenceCards;
-    let cardSuit = card[0];
-    let gameFieldSuit = gameFieldCards[this.placeIndex][0];
-    let cardValue = +card[3];
-    let gameFieldValue = +gameFieldCards[this.placeIndex][3];
-    if (gameFieldSuit === this.trumpDataSecondary[0]) {
-      return cardValue > gameFieldValue && cardSuit === this.trumpDataSecondary[0];
-    } else if (cardSuit === gameFieldSuit && cardSuit !== this.trumpDataSecondary[0]) {
+    let cardSuit = card.suit;
+    let gameFieldSuit = gameFieldCards[this.placeIndex].suit;
+    let cardValue = card.value;
+    let gameFieldValue = +gameFieldCards[this.placeIndex].value;
+    if (gameFieldSuit === this.trumpDataSecondary.suit) {
+      return cardValue > gameFieldValue && cardSuit === this.trumpDataSecondary.suit;
+    } else if (cardSuit === gameFieldSuit && cardSuit !== this.trumpDataSecondary.suit) {
       return cardValue > gameFieldValue;
     } else {
-      return cardSuit === this.trumpDataSecondary[0];
+      return cardSuit === this.trumpDataSecondary.suit;
     }
   }
   transferDefenceCards() {
@@ -296,7 +296,7 @@ class PlayRoomManager {
     let playerCards = this.defender.cards;
     let cardIndex;
     playerCards.forEach((item, index) => {
-      if (item[0] === card[0] && +item[3] === +card[3]) {
+      if (item.suit === card.suit && item.value === card.value) {
         cardIndex = index;
       }
     });

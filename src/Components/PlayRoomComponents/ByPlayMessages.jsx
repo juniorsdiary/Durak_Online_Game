@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
-import { Paper } from '@material-ui/core';
+import { Paper, Typography } from '@material-ui/core';
 
 const useStyles = makeStyles({
   logBlock: {
@@ -20,9 +20,9 @@ const ByPlayMessages = ({ messages, textData }) => {
   const classes = useStyles();
   const renderLogMessages = messages.map((item, index) => {
     return (
-      <div key={index}>
+      <Typography key={index}>
         {item.nickname} {textData[item.messageIndex]}
-      </div>
+      </Typography>
     );
   });
   return (
