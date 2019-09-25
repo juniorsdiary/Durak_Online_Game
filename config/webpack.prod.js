@@ -27,8 +27,13 @@ module.exports = merge(common, {
           name: 'react',
           chunks: 'all',
         },
+        reactDom: {
+          test: /[\\/]node_modules[\\/]((react-dom).*)[\\/]/,
+          name: 'react-dom',
+          chunks: 'all',
+        },
         vendors: {
-          test: /[\\/]node_modules[\\/]((?!(react)).*)[\\/]/,
+          test: /[\\/]node_modules[\\/]((?!(react|react-dom)).*)[\\/]/,
           name: 'vendors',
           chunks: 'all',
         },

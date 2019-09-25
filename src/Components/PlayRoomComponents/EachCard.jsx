@@ -4,7 +4,7 @@ import { useDrag } from 'react-dnd';
 import { makeStyles } from '@material-ui/styles';
 import cardDeck from '../../images/free-vector-card-deck.jpg';
 import cardBack from '../../images/back.jpg';
-import { Fade } from '@material-ui/core';
+import Fade from '@material-ui/core/Fade';
 
 const useStyles = makeStyles(() => ({
   parent: {

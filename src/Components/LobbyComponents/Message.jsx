@@ -1,7 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Grid, Typography, Paper, Grow } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import Grid from '@material-ui/core/Grid';
+import Grow from '@material-ui/core/Grow';
+import Typography from '@material-ui/core/Typography';
+import Paper from '@material-ui/core/Paper';
 
 const useStyles = makeStyles(theme => {
   const primary = theme.palette.primary;

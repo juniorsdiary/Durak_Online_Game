@@ -1,7 +1,9 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Grow, Grid, Paper } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import Grow from '@material-ui/core/Grow';
+import Grid from '@material-ui/core/Grid';
+import Paper from '@material-ui/core/Paper';
 
 const useStyles = makeStyles(theme => ({
   error: {

@@ -2,8 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { EachCard } from 'Components';
 import { makeStyles } from '@material-ui/core/styles';
-import { Grid, Typography } from '@material-ui/core';
 import { definePlayerStyle, distance } from 'Utilities';
+import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles({
   title: props => ({ position: 'absolute', bottom: '-20%', left: '50%', transform: 'translate(-50%, 0)' }),

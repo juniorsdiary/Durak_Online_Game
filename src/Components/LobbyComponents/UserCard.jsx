@@ -1,7 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { ListItem, ListItemText, Grow } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
+import Grow from '@material-ui/core/Grow';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItem from '@material-ui/core/ListItem';
+
 const useStyles = makeStyles({
   root: {
     '& span': {

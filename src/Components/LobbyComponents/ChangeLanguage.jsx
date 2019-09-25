@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Grid, Switch } from '@material-ui/core';
+import Grid from '@material-ui/core/Grid';
+import Switch from '@material-ui/core/Switch';
 import { connect } from 'react-redux';
 
 const ChangeLanguage = ({ changeLang, socket }) => {

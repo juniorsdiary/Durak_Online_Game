@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { Button } from '@material-ui/core';
+import Button from '@material-ui/core/Button';
 import { connect } from 'react-redux';
 
 const LeaveRoom = ({ leaveRoom, socket, isInRoom }) => {

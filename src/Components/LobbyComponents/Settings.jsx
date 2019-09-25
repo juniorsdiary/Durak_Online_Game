@@ -1,9 +1,16 @@
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Dialog, DialogTitle, Button, TextField, FormControlLabel, RadioGroup, FormLabel, Radio } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { useForm } from 'Utilities';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Dialog from '@material-ui/core/Dialog';
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormLabel from '@material-ui/core/FormLabel';
+import Radio from '@material-ui/core/Radio';
 
 const useStyles = makeStyles(theme => ({
   title: {

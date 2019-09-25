@@ -1,9 +1,12 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Grid, List, Paper, ListItemText } from '@material-ui/core';
 import { UserCard } from 'Components';
 import { makeStyles } from '@material-ui/core/styles';
+import ListItemText from '@material-ui/core/ListItemText';
+import List from '@material-ui/core/List';
+import Grid from '@material-ui/core/Grid';
+import Paper from '@material-ui/core/Paper';
 
 const useStyles = makeStyles(theme => ({
   wrapper: {

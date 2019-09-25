@@ -1,6 +1,8 @@
 import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { TextField, Grid, Button } from '@material-ui/core';
+import TextField from '@material-ui/core/TextField';
+import Grid from '@material-ui/core/Grid';
+import Button from '@material-ui/core/Button';
 
 const SendMessage = ({ submit, textData }) => {
   const [value, setValue] = useState('');
