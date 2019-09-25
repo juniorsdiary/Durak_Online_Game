@@ -6,6 +6,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Header, ErrorHandler } from 'Components';
 import Routes from './routes.jsx';
 
+// const port = 'http://localhost:8080';
+
 const useStyles = makeStyles({
   wrapper: {
     height: '100vh',
