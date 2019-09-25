@@ -53,6 +53,7 @@
     "@welldone-software/why-did-you-render": "^3.3.5",
     "babel-eslint": "^10.0.3",
     "babel-loader": "^8.0.6",
+    "babel-plugin-transform-imports": "^2.0.0",
     "clean-webpack-plugin": "^2.0.2",
     "copy-webpack-plugin": "^5.0.4",
     "eslint": "^5.16.0",

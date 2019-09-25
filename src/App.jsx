@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import io from 'socket.io-client';
-import { hot } from 'react-hot-loader/root';
 import { CssBaseline, Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { Header, ErrorHandler } from 'Components';
@@ -39,4 +38,4 @@ const App = () => {
   );
 };
 
-export default hot(App);
+export default App;
