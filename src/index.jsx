@@ -13,5 +13,6 @@ ReactDOM.render(
   </Provider>,
   document.getElementById('container')
 );
+
 // style log messages
 // drag and drop

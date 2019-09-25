@@ -94,41 +94,43 @@ class PlayRoom extends Component {
 
   render() {
     const { socket, isReady, data, classes, player0, player1, player2, player3, defenceOrOffence, activeTake, activeDiscard, textData } = this.props;
-    const { usersReady, users, shuffledDeck, fullState, trumpData, discardPile, gameField, logMessages, endGame, players } = data;
-    return (
-      <Container onSelect={() => false} onMouseDown={() => false} className={classes.board} maxWidth='xl'>
+    const { usersReady, users, shuffledDeck, fullState, trumpData, discardPile, gameField, logMessages, endGame, players, interPhase } = data;
+    if (usersReady && fullState) {
+      const gameFieldNotEmpty = gameField.offenceCards.some(item => item);
+      return (
+        <Container onSelect={() => false} onMouseDown={() => false} className={classes.board} maxWidth='xl'>
+          <Container className={classes.cards}>
+            <Deck deck={shuffledDeck} />
+            <Trump trump={trumpData} />
+          </Container>
+          <DiscardPile data={discardPile} />
+
+          <Player playerInfo={players[player0]} playerNumber={0} socket={socket} dragEvent={this.dragEvent} />
+          <Player playerInfo={players[player1]} playerNumber={1} socket={socket} dragEvent={this.dragEvent} />
+          <Player playerInfo={players[player2]} playerNumber={2} socket={socket} dragEvent={this.dragEvent} />
+          <Player playerInfo={players[player3]} playerNumber={3} socket={socket} dragEvent={this.dragEvent} />
+
+          <GameField
+            gameField={gameField}
+            onDragOver={this.dragOverEvent}
+            onDrop={defenceOrOffence === 'offence' ? this.makeOffenceMove : this.makeDefenceMove}
+          />
+          <Controls
+            takeCards={this.takeCards}
+            discardCards={this.discardCards}
+            activeTake={activeTake}
+            activeDiscard={activeDiscard && gameFieldNotEmpty && !interPhase}
+            textData={textData}
+          />
+          <ByPlayMessages messages={logMessages} textData={textData} />
+          <EndGame data={endGame} text={textData[8]} />
+        </Container>
+      );
+    } else {
+      return (
         <Ready activeUsers={usersReady} users={users} isReady={isReady} isFull={fullState} setReadyState={this.setReadyValue} textData={textData} />
-        {usersReady && fullState && (
-          <>
-            <Container className={classes.cards}>
-              <Deck deck={shuffledDeck} />
-              <Trump trump={trumpData} />
-            </Container>
-            <DiscardPile data={discardPile} />
-
-            <Player playerInfo={players[player0]} playerNumber={0} socket={socket} dragEvent={this.dragEvent} />
-            <Player playerInfo={players[player1]} playerNumber={1} socket={socket} dragEvent={this.dragEvent} />
-            <Player playerInfo={players[player2]} playerNumber={2} socket={socket} dragEvent={this.dragEvent} />
-            <Player playerInfo={players[player3]} playerNumber={3} socket={socket} dragEvent={this.dragEvent} />
-
-            <GameField
-              gameField={gameField}
-              onDragOver={this.dragOverEvent}
-              onDrop={defenceOrOffence === 'offence' ? this.makeOffenceMove : this.makeDefenceMove}
-            />
-            <Controls
-              takeCards={this.takeCards}
-              discardCards={this.discardCards}
-              activeTake={activeTake}
-              activeDiscard={activeDiscard}
-              textData={textData}
-            />
-            <ByPlayMessages messages={logMessages} textData={textData} />
-            <EndGame data={endGame} text={textData[8]} />
-          </>
-        )}
-      </Container>
-    );
+      );
+    }
   }
 }
 

@@ -62,30 +62,29 @@ const socketHandler = socket => {
   });
 
   socket.on('disconnect', () => {
-    const { room, nickname } = DataHandler.getData('users').find(item => item.id === socket.id);
-
-    if (nickname) {
-      if (room !== 'Lobby') {
-        const PlayRoom = GameManager.getPlayRoom(room);
-        const Player = PlayRoom.getUser(nickname);
-        GameManager.deletePlayer({ room, nickname });
+    const userData = DataHandler.getData('users').find(item => item.id === socket.id);
+    if (userData) {
+      if (userData.room !== 'Lobby') {
+        const PlayRoom = GameManager.getPlayRoom(userData.room);
+        const Player = PlayRoom.getUser(userData.nickname);
+        GameManager.deletePlayer(userData);
         PlayRoom.isFull();
         PlayRoom.isEmpty();
         if (PlayRoom.gameInProgress && Player.active) {
           PlayRoom.resetSettings();
           PlayRoom.lastPlayer = undefined;
-          io.sockets.to(room).emit('endGame');
+          io.sockets.to(userData.room).emit('endGame');
         }
-        io.sockets.to(room).emit('syncData', PlayRoom);
-        DataHandler.deleteData('user', nickname);
+        io.sockets.to(userData.room).emit('syncData', PlayRoom);
+        DataHandler.deleteData('user', userData.nickname);
         if (PlayRoom.emptyState) {
-          GameManager.deleteRoom(room);
-          DataHandler.deleteData('room', room);
+          GameManager.deleteRoom(userData.room);
+          DataHandler.deleteData('room', userData.room);
         }
       } else {
-        DataHandler.deleteData('user', nickname);
+        DataHandler.deleteData('user', userData.nickname);
       }
-      socket.leave(room);
+      socket.leave(userData.room);
       io.sockets.to('Lobby').emit('displayPlayers', DataHandler.getData('users'));
       io.sockets.to('Lobby').emit('displayRooms', DataHandler.getData('rooms'));
     }
@@ -141,10 +140,11 @@ const socketHandler = socket => {
     const PlayRoom = GameManager.getPlayRoom(roomName);
     PlayRoom.addUser(nickname, socket.id);
     PlayRoom.isFull();
+    console.log(PlayRoom);
     if (PlayRoom.fullState) {
       io.sockets.to(roomName).emit('readyStage', PlayRoom);
     } else {
-      io.sockets.to(room).emit('syncData', PlayRoom);
+      io.sockets.to(roomName).emit('syncData', PlayRoom);
     }
   });
 
