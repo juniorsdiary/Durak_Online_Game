@@ -15,6 +15,10 @@ module.exports = merge(common, {
     chunkFilename: '[name].bundle.js',
     publicPath: '/',
   },
+  externals: {
+    react: 'React',
+    reactDom: 'ReactDOM',
+  },
   optimization: {
     splitChunks: {
       cacheGroups: {
@@ -45,5 +49,8 @@ module.exports = merge(common, {
       },
     }),
     new BundleAnalyzerPlugin(),
+    new webpack.ProvidePlugin({
+      React: 'react',
+    }),
   ],
 });

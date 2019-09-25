@@ -21,7 +21,7 @@ const styles = {
 };
 
 class Lobby extends Component {
-  componentDidMount() {
+  componentDidUpdate() {
     const { socket, setConnectedUsers, setAvailableRooms } = this.props;
     socket.on('displayPlayers', connectedUsers => {
       setConnectedUsers(connectedUsers);
@@ -30,7 +30,6 @@ class Lobby extends Component {
       setAvailableRooms(availableRooms);
     });
   }
-
   handleResult = ({ error, roomName, messageIndex }) => {
     const { setError, handleSettingsModal, handlePasswordModal } = this.props;
     if (error) {
