@@ -40,7 +40,7 @@ module.exports = merge(common, {
     new CompressionPlugin({
       test: /\.js$|\.css$|\.html$/,
       threshold: 10240,
-      deleteOriginalAssets: true,
+      // deleteOriginalAssets: true,
       minRatio: 0.8,
     }),
     new HtmlWebpackPlugin({
