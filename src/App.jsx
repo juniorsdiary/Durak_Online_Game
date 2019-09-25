@@ -6,8 +6,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Header, ErrorHandler } from 'Components';
 import Routes from './routes.jsx';
 
-const port = 'http://localhost:8080';
-
 const useStyles = makeStyles({
   wrapper: {
     height: '100vh',
@@ -20,7 +18,7 @@ const App = () => {
   const socket = useSelector(state => state.authentication.socket);
 
   useEffect(() => {
-    const socket = io(port);
+    const socket = io();
     dispatch({ type: 'SET_SOCKET', payload: socket });
   }, [dispatch]);
 
