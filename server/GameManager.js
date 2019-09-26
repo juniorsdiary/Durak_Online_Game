@@ -256,7 +256,6 @@ class PlayRoomManager {
   makeDefenceMove() {
     if (this.checkDefCard()) {
       this.transferDefenceCards();
-      console.log(this.defender.cards);
       if (this.defender.cards.length === 0) {
         if (this.shuffledDeck.length === 0 && this.trumpData === null) {
           this.defender.active = false;
