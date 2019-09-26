@@ -9,7 +9,7 @@ function shouldCompress(req, res) {
   }
   return compression.filter(req, res);
 }
-// app.use(express.static('public'));
+app.use(express.static('public'));
 // app.use('*.js', function(req, res, next) {
 //   req.url = req.url + '.gz';
 //   res.set('Content-Encoding', 'gzip');
