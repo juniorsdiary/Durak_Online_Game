@@ -1,8 +1,14 @@
 const express = require('express');
 const app = express();
+const compression = require('compression');
 const PORT = process.env.PORT || 8080;
-console.log('creating server');
 app.use(express.static('public'));
+app.use(compression());
+// app.use('*.js', function(req, res, next) {
+//   req.url = req.url + '.gz';
+//   res.set('Content-Encoding', 'gzip');
+//   next();
+// });
 app.get('/', function(req, res) {
   res.sendFile('./index.html');
 });
@@ -12,14 +18,7 @@ app.get('/lobby', function(req, res) {
 app.get('/login', function(req, res) {
   res.sendFile('./index.html');
 });
-app.get('/users', function(req, res) {
-  res.send('users endpoint');
-});
-app.get('*.js', function(req, res, next) {
-  req.url = req.url + '.gz';
-  res.set('Content-Encoding', 'gzip');
-  next();
-});
+
 const server = app.listen(PORT, () => {
   console.log(`Connected to port ${PORT}`);
 });

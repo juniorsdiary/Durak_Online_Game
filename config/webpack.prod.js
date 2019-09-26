@@ -5,7 +5,7 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const common = require('./webpack.config.js');
-const CompressionPlugin = require('compression-webpack-plugin');
+// const CompressionPlugin = require('compression-webpack-plugin');
 // const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = merge(common, {
@@ -35,16 +35,15 @@ module.exports = merge(common, {
   },
   plugins: [
     new CleanWebpackPlugin(),
-    // new BundleAnalyzerPlugin(),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': '"production"',
     }),
-    new CompressionPlugin({
-      test: /\.js$|\.css$|\.html$/,
-      threshold: 10240,
-      // deleteOriginalAssets: true,
-      minRatio: 0.8,
-    }),
+    // new CompressionPlugin({
+    //   test: /\.js$|\.css$|\.html$/,
+    //   threshold: 10240,
+    //   // deleteOriginalAssets: true,
+    //   minRatio: 0.8,
+    // }),
     new HtmlWebpackPlugin({
       template: paths.appHtml,
       favicon: `${paths.appSrc}/favicon.ico`,
