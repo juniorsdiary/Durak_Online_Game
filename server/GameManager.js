@@ -256,19 +256,19 @@ class PlayRoomManager {
   makeDefenceMove() {
     if (this.checkDefCard()) {
       this.transferDefenceCards();
+      console.log(this.defender.cards);
       if (this.defender.cards.length === 0) {
         if (this.shuffledDeck.length === 0 && this.trumpData === null) {
           this.defender.active = false;
           this.lastPlayer = this.players.filter(item => item.active === true);
+          this.takeCards();
           if (this.lastPlayer.length === 1) {
             this.isEndGame();
-          } else if (this.defender.active) {
-            this.takeCards(false);
           }
         }
       }
       if (this.playerHasLeft) {
-        this.takeCards(false);
+        this.takeCards();
       } else {
         this.defineMove(true, false, 'offence', 'defence');
       }

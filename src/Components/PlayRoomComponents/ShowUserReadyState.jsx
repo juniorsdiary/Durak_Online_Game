@@ -24,7 +24,7 @@ const ShowUserReadyState = ({ nickname, active }) => {
           {nickname}
         </Typography>
       ) : (
-        <Skeleton variant='rect' width={100} height={32}></Skeleton>
+        <Skeleton className={classes.user} variant='rect' width={100} height={32}></Skeleton>
       )}
     </>
   );

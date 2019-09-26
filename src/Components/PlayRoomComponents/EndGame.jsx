@@ -10,8 +10,8 @@ const EndGame = ({ data, text }) => {
   const { nickName, state } = data;
   return (
     <Dialog open={state}>
-      <DialogTitle>Game Over</DialogTitle>
-      <Grid container justify='space-around'>
+      <Grid container justify='space-around' direction='column' alignItems='center'>
+        <DialogTitle>Game Over</DialogTitle>
         <Typography variant='h5'>
           {nickName} {text}
         </Typography>
