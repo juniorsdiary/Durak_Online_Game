@@ -13,6 +13,7 @@ import GameFieldCardPlace from './PlayRoomComponents/GameFieldCardPlace.jsx';
 import ShowUserReadyState from './PlayRoomComponents/ShowUserReadyState.jsx';
 import Room from './LobbyComponents/Room.jsx';
 import Header from './LobbyComponents/Header.jsx';
+import Loader from './LobbyComponents/Loader.jsx';
 import Message from './LobbyComponents/Message.jsx';
 import UserCard from './LobbyComponents/UserCard.jsx';
 import Settings from './LobbyComponents/Settings.jsx';
@@ -25,7 +26,6 @@ import ErrorHandler from './LobbyComponents/ErrorHandler.jsx';
 import AvailableRooms from './LobbyComponents/AvailableRooms.jsx';
 import CreateNickName from './LobbyComponents/CreateNickName.jsx';
 import ChangeLanguage from './LobbyComponents/ChangeLanguage.jsx';
-
 // const Deck = lazy(() => import('./PlayRoomComponents/Deck.jsx'));
 // const Trump = lazy(() => import('./PlayRoomComponents/Trump.jsx'));
 // const Ready = lazy(() => import('./PlayRoomComponents/Ready.jsx'));
@@ -61,6 +61,7 @@ export {
   Ready,
   Player,
   Header,
+  Loader,
   EndGame,
   Message,
   Password,
