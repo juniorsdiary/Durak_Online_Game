@@ -51,7 +51,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const EachCard = ({ distance, dragEvent, rotated, cardData, beaten }) => {
+const EachCard = ({ distance, dragValue, dragEvent, rotated, cardData, beaten }) => {
   const [{ opacity }, drag] = useDrag({
     item: { type: 'card' },
     begin: () => {
@@ -65,7 +65,7 @@ const EachCard = ({ distance, dragEvent, rotated, cardData, beaten }) => {
   const classes = useStyles({ distance, rotated, backgroundPosition, beaten, opacity });
   return (
     <Fade in={true}>
-      <div ref={drag} className={classes.parent}>
+      <div ref={dragValue && drag} className={classes.parent}>
         <div className={classes.card}>
           <div className={classes.back}></div>
           <div className={classes.face}></div>
@@ -81,6 +81,7 @@ EachCard.propTypes = {
   rotated: PropTypes.bool,
   cardData: PropTypes.object,
   beaten: PropTypes.bool,
+  dragValue: PropTypes.bool,
 };
 
 EachCard.defaultProps = {

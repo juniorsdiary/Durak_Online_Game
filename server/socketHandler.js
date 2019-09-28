@@ -140,7 +140,6 @@ const socketHandler = socket => {
     const PlayRoom = GameManager.getPlayRoom(roomName);
     PlayRoom.addUser(nickname, socket.id);
     PlayRoom.isFull();
-    console.log(PlayRoom);
     if (PlayRoom.fullState) {
       io.sockets.to(roomName).emit('readyStage', PlayRoom);
     } else {
